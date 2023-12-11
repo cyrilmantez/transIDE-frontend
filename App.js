@@ -31,9 +31,6 @@ export const store = configureStore({
 })
 
 export const persistor = persistStore(store);
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import users from './reducers/users';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
