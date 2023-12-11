@@ -17,7 +17,8 @@ return (
             source={require('../assets/logo.png')}
                 />
           <View style={styles.inputContainer}>  
-
+            <TextInput placeholder='Ton nom'/>
+            <TextInput placeholder='Ton mot de passe'/>
           </View>
         </View>
       </ScrollView>
