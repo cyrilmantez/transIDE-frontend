@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image, Keyboard } from 'react-native';
 
 export default function SignInScreen() {
  
@@ -27,8 +27,7 @@ const styles = StyleSheet.create({
    justifyContent: 'center',
  },
  image : {
-  width: 450, 
-  height: 450,
-  marginRight: 20,
+  width: 200, 
+  height: 200,
 },
 });
