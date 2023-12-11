@@ -8,9 +8,15 @@ import TransmissionScreen from './screens/TransmissionScreen';
 import ConnectionScreen from './screens/ConnectionScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import SignInScreen from './screens/SignInScreen';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import users from './reducers/users';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const store = configureStore({
+  reducer: { users },
+});
 
 const TabNavigator = () => {
  return (
@@ -26,8 +32,8 @@ const TabNavigator = () => {
 
       return <FontAwesome name={iconName} size={size} color={color} />;
     },
-    tabBarActiveTintColor: '#CADDC5',
-    tabBarInactiveTintColor: 'black',
+    tabBarActiveTintColor: 'black',
+    tabBarInactiveTintColor: '#CADDC5',
     headerShown: false,
     tabBarStyle: { backgroundColor: '#99BD8F'},
     tabBarLabelStyle: { fontSize: 12 },
