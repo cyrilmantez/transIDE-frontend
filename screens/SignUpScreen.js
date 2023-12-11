@@ -1,10 +1,10 @@
-import { Button, StyleSheet, Text, View, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform, TouchableOpacity } from 'react-native';
+import { Button, StyleSheet, SafeAreaView, Text, View, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { useDispatch } from 'react-redux';
 import { login } from '../reducers/users';
-import { TextInput } from 'react-native-paper';
+import { TextInput, DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
 export default function SignUpScreen({navigation}) {
   const [passwordVisible, setPasswordVisible] = useState(true);
@@ -49,88 +49,93 @@ export default function SignUpScreen({navigation}) {
     return <View />;
   } else {
     return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView contentContainerStyle={styles.scrollView}>
-          <View style={styles.innerContainer}>
-            <Text style={styles.bienvenue} >Bienvenue !</Text>
-          </View>
-          <View style={styles.innerContainer}>
-            <Text style={styles.creetoncompte} >Crée ton compte</Text>
-          </View>
-          <View style={styles.innerContainer}>
-            <TextInput 
-              label='Ton adresse mail' 
-              mode='outlined'
-              theme={{ 
-                colors: { 
-                  primary: '#99BD8F', 
-                }
-              }}
-              style={{ width: 350, marginTop: 15 }} 
-              
-              onChangeText={text => setSignUpEmail(text)} 
-              value={signUpEmail}/>
-            <TextInput 
-              label='Ton NOM et Prénom'
-              theme={{ 
-                colors: { 
-                  primary: '#99BD8F', 
-                }
-              }}
-              style={{ width: 350, marginTop: 15 }}  
-              mode='outlined'
-              onChangeText={text => setSignUpName(text)} 
-              value={signUpName}/>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TextInput 
-                  label='Ton mot de passe' 
-                  theme={{ 
-                    colors: { 
-                      primary: '#99BD8F', 
-                    }
-                  }}
-                  style={{ width: 350, marginTop: 15 }} 
-                  mode='outlined'
-                  secureTextEntry={passwordVisible}
-                  onChangeText={text => setSignUpPassword(text)}
-                  value={signUpPassword}
-                />
-                <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 32}}>
-                    <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='#99BD8F'/>
-                </TouchableOpacity>
+      <>
+      <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
+      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <ScrollView contentContainerStyle={styles.scrollView}>
+            <View style={styles.innerContainer}>
+              <Text style={styles.bienvenue} >Bienvenue !</Text>
             </View>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TextInput 
-                  label='Ton mot de passe (oui et encore)' 
-                  theme={{ 
-                    colors: { 
-                      primary: '#99BD8F', 
-                    }
-                  }}
-                  style={{ width: 350, marginTop: 15 }} 
-                  mode='outlined'
-                  secureTextEntry={passwordVisible}
-                  onChangeText={text => setConfirmPassword(text)}
-                  value={confirmPassword}
-                />
-                <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 33}}>
-                    <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='#99BD8F' />
-                </TouchableOpacity>
+            <View style={styles.innerContainer}>
+              <Text style={styles.creetoncompte} >Crée ton compte</Text>
             </View>
-            <TouchableOpacity style={styles.button} onPress={() => handleRegister()}>
-              <Text style={styles.text} >Valider</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.footer}>
-            <Text style={styles.footertext}>Déjà un compte ?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
-              <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>CONNECTE-TOI</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+            <View style={styles.innerContainer}>
+              <TextInput 
+                label='Ton adresse mail' 
+                mode='outlined'
+                theme={{ 
+                  colors: { 
+                    primary: '#99BD8F', 
+                  }
+                }}
+                style={{ width: 350, marginTop: 15 }} 
+                
+                onChangeText={text => setSignUpEmail(text)} 
+                value={signUpEmail}/>
+              <TextInput 
+                label='Ton nom et prénom'
+                theme={{ 
+                  colors: { 
+                    primary: '#99BD8F', 
+                  }
+                }}
+                style={{ width: 350, marginTop: 15 }}  
+                mode='outlined'
+                onChangeText={text => setSignUpName(text)} 
+                value={signUpName}/>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <TextInput 
+                    label='Ton mot de passe' 
+                    theme={{ 
+                      colors: { 
+                        primary: '#99BD8F', 
+                      }
+                    }}
+                    style={{ width: 350, marginTop: 15 }} 
+                    mode='outlined'
+                    secureTextEntry={passwordVisible}
+                    onChangeText={text => setSignUpPassword(text)}
+                    value={signUpPassword}
+                  />
+                  <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 32}}>
+                      <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='#99BD8F'/>
+                  </TouchableOpacity>
+              </View>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <TextInput 
+                    label='Ton mot de passe (oui et encore)' 
+                    theme={{ 
+                      colors: { 
+                        primary: '#99BD8F', 
+                      }
+                    }}
+                    style={{ width: 350, marginTop: 15 }} 
+                    mode='outlined'
+                    secureTextEntry={passwordVisible}
+                    onChangeText={text => setConfirmPassword(text)}
+                    value={confirmPassword}
+                  />
+                  <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 33}}>
+                      <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='#99BD8F' />
+                  </TouchableOpacity>
+              </View>
+              <TouchableOpacity style={styles.button} onPress={() => handleRegister()}>
+                <Text style={styles.text} >Valider</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.footer}>
+              <Text style={styles.footertext}>Déjà un compte ?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
+                <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>CONNECTE-TOI</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
+    </>
   );
 }
 }
@@ -153,9 +158,9 @@ const styles = StyleSheet.create({
  },
  bienvenue: {
   color: '#99BD8F',
-  fontFamily: 'Poppins_600SemiBold',
   fontSize: 30,
   marginBottom: 50,
+  fontFamily: 'Poppins_600SemiBold',
  },
  creetoncompte: {
   color: '#99BD8F',
