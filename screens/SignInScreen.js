@@ -10,7 +10,6 @@ export default function SignInScreen() {
     Poppins_400Regular,
   });
 
-  
   if (!fontsLoaded) {
     return <View />;
   } else {
