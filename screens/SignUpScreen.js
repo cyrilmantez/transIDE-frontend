@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, Keyboard, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, ScrollView, Platform, TextInput, TouchableOpacity } from 'react-native';
+import { Button, StyleSheet, Text, View, Keyboard, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Platform, TextInput, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
