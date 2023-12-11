@@ -1,11 +1,23 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image } from 'react-native';
 
 export default function SignInScreen() {
- return (
-   <View style={styles.container}>
-     <Text >SignIn Screen</Text>
-   </View>
- );
+ 
+return (
+  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <View>
+          <Text>Encore toi ?</Text>
+          <Text>Connecte-toi</Text>
+          <Image
+                    style={styles.image}
+                    source={require('../assets/logo.png')}
+                />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  </TouchableWithoutFeedback>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -14,4 +26,9 @@ const styles = StyleSheet.create({
    alignItems: 'center',
    justifyContent: 'center',
  },
+ image : {
+  width: 450, 
+  height: 450,
+  marginRight: 20,
+},
 });

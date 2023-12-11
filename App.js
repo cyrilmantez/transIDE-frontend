@@ -14,14 +14,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import {configureStore} from '@reduxjs/toolkit';
-import user from './reducers/user';
+import users from './reducers/users';
 
-const reducers = combineReducers({user});
+const reducers = combineReducers({users});
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['user'],
+  whitelist: ['users'],
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers);
