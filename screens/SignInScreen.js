@@ -1,4 +1,5 @@
 import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image, Keyboard } from 'react-native';
+import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
 
 export default function SignInScreen() {
  
@@ -7,12 +8,17 @@ return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <View>
-          <Text style={styles.text1} >Encore toi ?</Text>
-          <Text>Connecte-toi</Text>
+          <View style={styles.textContainer}>
+            <Text style={styles.text1}>Encore toi ?</Text>
+            <Text style={styles.text2}>Connecte-toi</Text>
+          </View>
           <Image
-                    style={styles.image}
-                    source={require('../assets/logo.png')}
+            style={styles.image}
+            source={require('../assets/logo.png')}
                 />
+          <View> style={styles.inputContainer}
+
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -30,7 +36,20 @@ const styles = StyleSheet.create({
   width: 200, 
   height: 200,
 },
-text1: {
-  textAlign: 'center,'
+textContainer: {
+  flex: 1,
 },
+text1: {
+  textAlign: 'center',
+  color: '#99BD8F',
+
+},
+text2: {
+  textAlign: 'center',
+  color: '#99BD8F',
+
+},
+inputContainer: {
+  flex : 1,
+}
 });
