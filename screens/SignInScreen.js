@@ -16,7 +16,7 @@ return (
             style={styles.image}
             source={require('../assets/logo.png')}
                 />
-          <View> style={styles.inputContainer}
+          <View style={styles.inputContainer}>  
 
           </View>
         </View>
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
 },
 textContainer: {
   flex: 1,
+  padding: '20',
 },
 text1: {
   textAlign: 'center',
@@ -47,7 +48,7 @@ text1: {
 text2: {
   textAlign: 'center',
   color: '#99BD8F',
-
+  fontWeight: '900',
 },
 inputContainer: {
   flex : 1,
