@@ -13,7 +13,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
-import {configureStore} from 'reactjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import user from './reducers/user';
 
 const reducers = combineReducers({user});
