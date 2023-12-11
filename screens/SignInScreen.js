@@ -7,7 +7,7 @@ return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <View>
-          <Text>Encore toi ?</Text>
+          <Text style={styles.text1} >Encore toi ?</Text>
           <Text>Connecte-toi</Text>
           <Image
                     style={styles.image}
@@ -29,5 +29,8 @@ const styles = StyleSheet.create({
  image : {
   width: 200, 
   height: 200,
+},
+text1: {
+  textAlign: 'center,'
 },
 });
