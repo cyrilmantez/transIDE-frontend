@@ -83,7 +83,7 @@ export default function SignUpScreen({navigation}) {
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TextInput 
                   label='Ton mot de passe' 
-                  style={[styles.input, { borderColor: isFocusedName ? '#99BD8F' : 'gray' }]}
+                  style={[styles.input, { borderColor: isFocusedPassword ? '#99BD8F' : 'gray' }]}
                   onFocus={() => setIsFocusedPassword(true)}
                   onBlur={() => setIsFocusedPassword(false)}
                   mode='outlined'
@@ -98,7 +98,7 @@ export default function SignUpScreen({navigation}) {
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TextInput 
                   label='Ton mot de passe (oui et encore)' 
-                  style={[styles.input, { borderColor: isFocusedName ? '#99BD8F' : 'gray' }]}
+                  style={[styles.input, { borderColor: isFocusedConfirmPassword ? '#99BD8F' : 'gray' }]}
                   onFocus={() => setIsFocusedConfirmPassword(true)}
                   onBlur={() => setIsFocusedConfirmPassword(false)}
                   mode='outlined'
