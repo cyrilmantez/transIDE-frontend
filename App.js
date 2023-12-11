@@ -8,6 +8,29 @@ import TransmissionScreen from './screens/TransmissionScreen';
 import ConnectionScreen from './screens/ConnectionScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import SignInScreen from './screens/SignInScreen';
+import {combineReducers} from 'redux';
+import { persistReducer, persistStore } from 'redux-persist';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
+import {configureStore} from 'reactjs/toolkit';
+import user from './reducers/user';
+
+const reducers = combineReducers({user});
+
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage,
+  whitelist: ['user'],
+}
+
+const persistedReducer = persistReducer(persistConfig, reducers);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+})
+
+export const persistor = persistStore(store);
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -26,8 +49,8 @@ const TabNavigator = () => {
 
       return <FontAwesome name={iconName} size={size} color={color} />;
     },
-    tabBarActiveTintColor: '#CADDC5',
-    tabBarInactiveTintColor: 'black',
+    tabBarActiveTintColor: 'black',
+    tabBarInactiveTintColor: '#CADDC5',
     headerShown: false,
     tabBarStyle: { backgroundColor: '#99BD8F'},
     tabBarLabelStyle: { fontSize: 12 },
@@ -41,14 +64,18 @@ const TabNavigator = () => {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="ConnectionScreen" component={ConnectionScreen} />
-        <Stack.Screen name="TabNavigator" component={TabNavigator} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
-        <Stack.Screen name="SignInScreen" component={SignInScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="ConnectionScreen" component={ConnectionScreen} />
+            <Stack.Screen name="TabNavigator" component={TabNavigator} />
+            <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+            <Stack.Screen name="SignInScreen" component={SignInScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PersistGate>
+    </Provider>
   );
 }
 
