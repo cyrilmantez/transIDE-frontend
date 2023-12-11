@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image } from 'react-native';
+import { Button, Keyboard, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image } from 'react-native';
 
 export default function SignInScreen() {
  

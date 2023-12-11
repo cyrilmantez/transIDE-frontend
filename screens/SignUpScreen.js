@@ -39,11 +39,6 @@ export default function SignUpScreen({navigation}) {
       })
   }
 
-  // Pour changer la couleur de l'input au "clic"
-  const [isFocusedEmail, setIsFocusedEmail] = useState(false);
-  const [isFocusedName, setIsFocusedName] = useState(false);
-  const [isFocusedPassword, setIsFocusedPassword] = useState(false);
-  const [isFocusedConfirmPassword, setIsFocusedConfirmPassword] = useState(false);
 
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -66,58 +61,71 @@ export default function SignUpScreen({navigation}) {
           <View style={styles.innerContainer}>
             <TextInput 
               label='Ton adresse mail' 
-              style={[styles.input, { borderColor: isFocusedEmail ? '#99BD8F' : 'gray' }]}
-              onFocus={() => setIsFocusedEmail(true)}
-              onBlur={() => setIsFocusedEmail(false)}
               mode='outlined'
+              theme={{ 
+                colors: { 
+                  primary: '#99BD8F', 
+                }
+              }}
+              style={{ width: 350, marginTop: 15 }} 
+              
               onChangeText={text => setSignUpEmail(text)} 
               value={signUpEmail}/>
             <TextInput 
               label='Ton NOM et Prénom'
-              style={[styles.input, { borderColor: isFocusedName ? '#99BD8F' : 'gray' }]}
-              onFocus={() => setIsFocusedName(true)}
-              onBlur={() => setIsFocusedName(false)}
+              theme={{ 
+                colors: { 
+                  primary: '#99BD8F', 
+                }
+              }}
+              style={{ width: 350, marginTop: 15 }}  
               mode='outlined'
               onChangeText={text => setSignUpName(text)} 
               value={signUpName}/>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TextInput 
                   label='Ton mot de passe' 
-                  style={[styles.input, { borderColor: isFocusedPassword ? '#99BD8F' : 'gray' }]}
-                  onFocus={() => setIsFocusedPassword(true)}
-                  onBlur={() => setIsFocusedPassword(false)}
+                  theme={{ 
+                    colors: { 
+                      primary: '#99BD8F', 
+                    }
+                  }}
+                  style={{ width: 350, marginTop: 15 }} 
                   mode='outlined'
                   secureTextEntry={passwordVisible}
                   onChangeText={text => setSignUpPassword(text)}
                   value={signUpPassword}
                 />
-                <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10}}>
-                    <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='grey' />
+                <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 32}}>
+                    <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='#99BD8F'/>
                 </TouchableOpacity>
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TextInput 
                   label='Ton mot de passe (oui et encore)' 
-                  style={[styles.input, { borderColor: isFocusedConfirmPassword ? '#99BD8F' : 'gray' }]}
-                  onFocus={() => setIsFocusedConfirmPassword(true)}
-                  onBlur={() => setIsFocusedConfirmPassword(false)}
+                  theme={{ 
+                    colors: { 
+                      primary: '#99BD8F', 
+                    }
+                  }}
+                  style={{ width: 350, marginTop: 15 }} 
                   mode='outlined'
                   secureTextEntry={passwordVisible}
                   onChangeText={text => setConfirmPassword(text)}
                   value={confirmPassword}
                 />
-                <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10}}>
-                    <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='grey' />
+                <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 33}}>
+                    <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='#99BD8F' />
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={() => handleRegister()}>
-              <Text>Valider</Text>
+            <TouchableOpacity style={styles.button} onPress={() => handleRegister()}>
+              <Text style={styles.text} >Valider</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.innerContainer}>
-            <Text>Déjà un compte ?</Text>
-            <TouchableOpacity>
-              <Text>CONNECTE-TOI</Text>
+          <View style={styles.footer}>
+            <Text style={styles.footertext}>Déjà un compte ?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
+              <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>CONNECTE-TOI</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -133,6 +141,7 @@ const styles = StyleSheet.create({
    flex: 1,
    alignItems: 'center',
    justifyContent: 'center',
+   backgroundColor: 'white',
  },
  scrollView: {
    flexGrow: 1,
@@ -146,11 +155,13 @@ const styles = StyleSheet.create({
   color: '#99BD8F',
   fontFamily: 'Poppins_600SemiBold',
   fontSize: 30,
+  marginBottom: 50,
  },
  creetoncompte: {
   color: '#99BD8F',
   fontFamily: 'Poppins_600SemiBold',
   fontSize: 40,
+  marginBottom: 80,
  },
  input: {
   height: 40,
@@ -162,4 +173,25 @@ const styles = StyleSheet.create({
   height: 40,
   marginTop: 15, 
 },
+button : {
+  backgroundColor: '#99BD8F',
+  width: 350,
+  height: 50,
+  borderRadius: 10,
+  marginTop: 25,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+text: {
+  fontSize: 17,
+  fontFamily: 'Poppins_600SemiBold', 
+},
+footer: {
+  alignItems: 'center',
+   justifyContent: 'center',
+  marginTop: 50,
+},
+footertext: {
+  fontFamily: 'Poppins_600SemiBold', 
+}
 });
