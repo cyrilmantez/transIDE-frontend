@@ -42,30 +42,30 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
- return (
-  <Tab.Navigator screenOptions={({ route }) => ({
-    tabBarIcon: ({ color, size }) => {
-      let iconName = '';
+  return (
+    <Tab.Navigator screenOptions={({ route }) => ({
+      tabBarIcon: ({ color, size }) => {
+        let iconName = '';
 
-      if (route.name === 'Tournée') {
-        iconName = 'briefcase';
-      } else if (route.name === 'Transmissions') {
-        iconName = 'newspaper-o';
-      }
+        if (route.name === 'Tournée') {
+          iconName = 'briefcase';
+        } else if (route.name === 'Transmissions') {
+          iconName = 'newspaper-o';
+        }
 
       return <FontAwesome name={iconName} size={size} color={color} />;
-    },
-    tabBarActiveTintColor: 'black',
-    tabBarInactiveTintColor: '#CADDC5',
-    headerShown: false,
-    tabBarStyle: { backgroundColor: '#99BD8F'},
-    tabBarLabelStyle: { fontSize: 12 },
-  })}>
+      },
+      tabBarActiveTintColor: 'black',
+      tabBarInactiveTintColor: '#CADDC5',
+      headerShown: false,
+      tabBarStyle: { backgroundColor: '#99BD8F'},
+      tabBarLabelStyle: { fontSize: 12 },
+    })}>
     <Tab.Screen name="Tournée" component={TourScreen} />
 
     <Tab.Screen name="Transmissions" component={TransmissionScreen} />
-  </Tab.Navigator>
- );
+    </Tab.Navigator>
+    );
 }
 
 export default function App() {
@@ -97,3 +97,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
