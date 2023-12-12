@@ -1,5 +1,6 @@
-import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image, Keyboard, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
-import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image, Keyboard, TouchableOpacity, SafeAreaView } from 'react-native';
+import { TextInput} from 'react-native-paper';
+import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch } from 'react-redux';
@@ -32,8 +33,10 @@ export default function SignInScreen() {
   }
 
   let [fontsLoaded] = useFonts({
-    Poppins_400Regular,
+    Poppins_400Regular, 
+    Poppins_600SemiBold,
   });
+
 
   if (!fontsLoaded) {
     return <View />;
@@ -44,36 +47,61 @@ export default function SignInScreen() {
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          <ScrollView contentContainerStyle={styles.scrollView}>
             <View>
-              <View style={styles.innerContainer}>
-                <Text style={styles.text1}>Encore toi ?</Text>
+              <View style={styles.header}>
+                <View >
+                  <Text style={styles.text1}>Encore toi ?</Text>
+                </View>
+                <View >
+                  <Text style={styles.text2}>Connecte-toi</Text>
+                </View>
+                <View >
+                  <Image
+                    style={styles.image}
+                    source={require('../assets/logo.png')}
+                        />
+                </View>
               </View>
-              <View style={styles.innerContainer}>
-                <Text style={styles.text2}>Connecte-toi</Text>
-              </View>
-              <Image
-                style={styles.image}
-                source={require('../assets/logo.png')}
-                    />
               <View style={styles.inputContainer}>  
-                <TextInput placeholder='Ton nom' onChangeText={text => setSignInName(text)} value={signInName}/>
-                <TextInput placeholder='Ton mot de passe' secureTextEntry={passwordVisible} style={{flex: 1}} onChangeText={text => setSignInPassword(text)} value={signInPassword}/>
-                <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
+                <TextInput 
+                label='Ton nom' 
+                mode='outlined'
+                theme={{ 
+                  colors: { 
+                    primary: '#99BD8F', 
+                  }
+                }}
+                style={{ width: 350, marginTop: 15 }}
+                onChangeText={text => setSignInName(text)} 
+                value={signInName}/>
+                <TextInput 
+                label='Ton mot de passe'
+                mode='outlined'
+                theme={{ 
+                  colors: { 
+                    primary: '#99BD8F', 
+                  }
+                }}
+                secureTextEntry={passwordVisible} 
+                style={{ width: 350, marginTop: 15 }}
+                onChangeText={text => setSignInPassword(text)} 
+                value={signInPassword}/>
+                <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 104}}>
                   <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='grey' />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={() => handleConnexion()}>
                   <Text style={styles.text}>Valider</Text>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                  <Text>Des trous de mémoire ?</Text>
+                  <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Des trous de mémoire ?</Text>
                 </TouchableOpacity>
-              </View>
-              <View style={styles.footer}>
-                <Text style={styles.footertext}>Pas encore de compte ?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
-                  <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Créer un compte</Text>
-                </TouchableOpacity>
+                <View style={styles.footer}>
+                  <Text style={styles.footertext}>Pas encore de compte ?</Text>
+                  <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
+                    <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Créer un compte</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </ScrollView>
@@ -91,53 +119,60 @@ const styles = StyleSheet.create({
    alignItems: 'center',
    justifyContent: 'center',
  },
- innerContainer: {
-  alignItems: 'center',
-  justifyContent: 'center',
- },
  image : {
   width: 200, 
   height: 200,
 },
+  header: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },  
+  text1: {
+    color: '#99BD8F',
+    fontSize: 30,
+    marginTop: 30,
+    fontFamily: 'Poppins_600SemiBold',
+  },
+  text2: {
+    color: '#99BD8F',
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 40,
+  
+  },
+  inputContainer: {
+    flex : 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  footer: {
+    alignItems: 'center',
+     justifyContent: 'center',
+    marginTop: 50,
+  },
+  footertext: {
+    fontFamily: 'Poppins_600SemiBold', 
+  },
+  button : {
+    backgroundColor: '#99BD8F',
+    width: 350,
+    height: 50,
+    borderRadius: 10,
+    marginTop: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 17,
+    fontFamily: 'Poppins_600SemiBold', 
+  },
+ /* 
 textContainer: {
   
 },
-text1: {
-  color: '#99BD8F',
-  fontSize: 30,
-  marginBottom: 50,
-  fontFamily: 'Poppins_600SemiBold',
-},
-text2: {
-  color: '#99BD8F',
-  fontFamily: 'Poppins_600SemiBold',
-  fontSize: 40,
-  marginBottom: 80,
-},
-inputContainer: {
-  flex : 1,
-  alignItems: 'center',
-  justifyContent: 'center',
-},
-button : {
-  backgroundColor: '#99BD8F',
-  width: 350,
-  height: 50,
-  borderRadius: 10,
-  marginTop: 25,
+scrollView: {
+  flexGrow: 1,
   justifyContent: 'center',
   alignItems: 'center',
-},
-text: {
-  fontSize: 17,
-  fontFamily: 'Poppins_600SemiBold', 
-},
-footer: {
-  alignItems: 'center',
-   justifyContent: 'center',
-  marginTop: 50,
-},
-footertext: {
-  fontFamily: 'Poppins_600SemiBold', 
-}
+}, */
 });

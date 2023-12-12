@@ -7,7 +7,7 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 
 export default function TourScreen({navigation}) {
   
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date());
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
 
