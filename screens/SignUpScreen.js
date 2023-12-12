@@ -22,7 +22,7 @@ export default function SignUpScreen({navigation}) {
       return;
     }
 
-    fetch('/http://192.168.1.5:3000/users/signup', {
+    fetch('http://192.168.1.5:3000/users/signup', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({email: signUpEmail, username: signUpName, password: signUpPassword})
@@ -105,7 +105,7 @@ export default function SignUpScreen({navigation}) {
               </View>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <TextInput 
-                    label='Ton mot de passe (oui oui encore...)' 
+                    label='Ton mot de passe (oui oui, encore...)' 
                     theme={{ 
                       colors: { 
                         primary: '#99BD8F', 
