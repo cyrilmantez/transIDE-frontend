@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image, Keyboard, TextInput, TouchableOpacity } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image, Keyboard, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -14,12 +14,17 @@ export default function SignInScreen() {
     return <View />;
   } else {
     return (
+      <>
+      <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
+      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <ScrollView contentContainerStyle={{flexGrow: 1}}>
             <View>
-              <View style={styles.textContainer}>
+              <View style={styles.innerContainer}>
                 <Text style={styles.text1}>Encore toi ?</Text>
+              </View>
+              <View style={styles.innerContainer}>
                 <Text style={styles.text2}>Connecte-toi</Text>
               </View>
               <Image
@@ -50,6 +55,8 @@ export default function SignInScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
+      </SafeAreaView>
+      </>
     );
   }
 }
@@ -69,18 +76,19 @@ const styles = StyleSheet.create({
   height: 200,
 },
 textContainer: {
-  flex: 1,
   
 },
 text1: {
-  textAlign: 'center',
   color: '#99BD8F',
-
+  fontSize: 30,
+  marginBottom: 50,
+  fontFamily: 'Poppins_600SemiBold',
 },
 text2: {
-  textAlign: 'center',
   color: '#99BD8F',
-  fontWeight: '900',
+  fontFamily: 'Poppins_600SemiBold',
+  fontSize: 40,
+  marginBottom: 80,
 },
 inputContainer: {
   flex : 1,
