@@ -1,7 +1,7 @@
 import { Button, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
 
-export default function ConnectionScreen({ navigation }) {
+export default function RessourcesScreen() {
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
       });
@@ -14,24 +14,7 @@ export default function ConnectionScreen({ navigation }) {
       <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
             <View style={styles.container}>
-              <View>
-                  <Image
-                      style={styles.image}
-                      source={require('../assets/logo.png')}
-                  />
-              </View>
-              <View style={styles.contentButton}>
-                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignUpScreen')}>
-                      <Text style={styles.text}>Créer un compte</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignInScreen')}>
-                      <Text style={styles.text}>Se connecter</Text>
-                  </TouchableOpacity>
-              </View>
-              <Button
-                title="Lien temporaire"
-                onPress={() => navigation.navigate('TabNavigator')}
-              />
+                <Text>Ressources</Text>
             </View>
             </SafeAreaView>
           </>

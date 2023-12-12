@@ -8,15 +8,38 @@ import TransmissionScreen from './screens/TransmissionScreen';
 import ConnectionScreen from './screens/ConnectionScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import SignInScreen from './screens/SignInScreen';
+import MyAccountScreen from './screens/MyAccountScreen';
+import {combineReducers} from 'redux';
+import { persistReducer, persistStore } from 'redux-persist';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import {configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import users from './reducers/users';
+import ManagementScreen from './screens/ManagementScreen';
+import JoinScreen from './screens/JoinScreen';
+import RessourcesScreen from './screens/RessourcesScreen';
+
+
+const reducers = combineReducers({users});
+
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage,
+  whitelist: ['users'],
+}
+
+const persistedReducer = persistReducer(persistConfig, reducers);
+
+const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
+ });
+
+export const persistor = persistStore(store);
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-const store = configureStore({
-  reducer: { users },
-});
 
 const TabNavigator = () => {
  return (
@@ -47,14 +70,22 @@ const TabNavigator = () => {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="ConnectionScreen" component={ConnectionScreen} />
-        <Stack.Screen name="TabNavigator" component={TabNavigator} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
-        <Stack.Screen name="SignInScreen" component={SignInScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="ConnectionScreen" component={ConnectionScreen}/>
+            <Stack.Screen name="TabNavigator" component={TabNavigator}/>
+            <Stack.Screen name="SignUpScreen" component={SignUpScreen}/>
+            <Stack.Screen name="SignInScreen" component={SignInScreen}/>
+            <Stack.Screen name="MyAccountScreen" component={MyAccountScreen}/>
+            <Stack.Screen name="ManagementScreen" component={ManagementScreen}/>
+            <Stack.Screen name="JoinScreen" component={JoinScreen}/>
+            <Stack.Screen name="RessourcesScreen" component={RessourcesScreen}/>
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PersistGate>
+    </Provider>
   );
 }
 
