@@ -37,7 +37,7 @@ export default function TourScreen({navigation}) {
     Poppins_400Regular,
     Poppins_600SemiBold,
   });
-
+ 
   if (!fontsLoaded) {
     return <View />;
   } else {
@@ -66,7 +66,7 @@ export default function TourScreen({navigation}) {
                 <FontAwesome name={'chevron-right'} size={24} color='#99BD8F'onPress={() => changeDate(+1)}/>
               </View>
               <View>
-              {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
+             {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
               </View>
               </View>
           </View>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     marginTop: 0,
-    marginLeft: 'A00%',
+    marginLeft: 0,
     marginRight: 15,
   },
   dropdown: {
