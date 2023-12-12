@@ -66,7 +66,7 @@ export default function SignInScreen({navigation}) {
               </View>
               <View style={styles.inputContainer}>  
                 <TextInput 
-                label='Ton nom' 
+                label='Ton nom utilisateur' 
                 mode='outlined'
                 theme={{ 
                   colors: { 

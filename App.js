@@ -84,6 +84,7 @@ export default function App() {
             <Stack.Screen name="JoinScreen" component={JoinScreen}/>
             <Stack.Screen name="RessourcesScreen" component={RessourcesScreen}/>
             <Stack.Screen name="PatientScreen" component={PatientScreen}/>
+            
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>
