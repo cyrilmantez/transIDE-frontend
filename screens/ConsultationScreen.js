@@ -3,11 +3,13 @@ import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { useDispatch } from 'react-redux';
-import PatientScreen from './screens/PatientScreen';
+import { useDispatch, useSelector } from 'react-redux';
+//import PatientScreen from './screens/PatientScreen';
+//import users from '../reducers/users';
 
 export default function ConsultationScreen() {
     const dispatch = useDispatch();
+    const users = useSelector((state) => state.users.value.username);
 
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
@@ -18,7 +20,7 @@ export default function ConsultationScreen() {
     return (
     <SafeAreaView  style={styles.container}>
         <View styles={styles.titleContainer}>
-            <Text style={styles.titlePage}>Fiche Consultation</Text>
+            <Text style={styles.titlePage}>Consultation</Text>
         </View>
         <View>
             <Text style={styles.name}></Text>
