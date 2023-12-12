@@ -32,6 +32,14 @@ export default function ConnectionScreen({ navigation }) {
                 title="Lien temporaire"
                 onPress={() => navigation.navigate('TabNavigator')}
               />
+
+              <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PatientScreen')}>
+                      <Text style={styles.text}>Lien temporaire vers la fiche patient</Text>
+              </TouchableOpacity>
+              {/* <Button
+                title="Lien temporaire vers la fiche patient"
+                onPress={() => navigation.navigate('PatientScreen')}
+              /> */}
             </View>
             </SafeAreaView>
           </>
