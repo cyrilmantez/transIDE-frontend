@@ -19,8 +19,7 @@ import users from './reducers/users';
 import ManagementScreen from './screens/ManagementScreen';
 import JoinScreen from './screens/JoinScreen';
 import RessourcesScreen from './screens/RessourcesScreen';
-import PatientScreen from './screens/PatientScreen';
-import ConsultationScreen from './screens/ConsultationScreen';
+
 
 
 const reducers = combineReducers({users});
