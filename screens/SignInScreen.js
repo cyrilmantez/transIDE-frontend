@@ -4,8 +4,9 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch } from 'react-redux';
+import { login } from '../reducers/users';
 
-export default function SignInScreen() {
+export default function SignInScreen({navigation}) {
   const [passwordVisible, setPasswordVisible] = useState(true);
   const dispatch = useDispatch();
   const [signInName, setSignInName] = useState('');
@@ -97,7 +98,7 @@ export default function SignInScreen() {
                   <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Des trous de mémoire ?</Text>
                 </TouchableOpacity>
                 <View style={styles.footer}>
-                  <Text style={styles.footertext} >Pas encore de compte ?</Text>
+                  <Text style={styles.footertext}>Pas encore de compte ?</Text>
                   <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
                     <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Créer un compte</Text>
                   </TouchableOpacity>
