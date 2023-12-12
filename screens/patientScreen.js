@@ -13,7 +13,14 @@ export default function PatientScreen() {
         <View styles={styles.titleContainer}>
             <Text style={styles.titlePage}>Fiche Patient</Text>
         </View>
-        <View></View>
+        <View>
+            <Text style={styles.name}></Text>
+            <View>
+                <View style={styles.name}></View>
+                <View> style={styles.name}</View>
+            </View>
+            <View></View>
+        </View>
         <View>
         <Text style={styles.titleHistorique}>Historique des soins</Text>
         </View>
