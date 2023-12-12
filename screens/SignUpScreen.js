@@ -21,7 +21,7 @@ export default function SignUpScreen({navigation}) {
 
   const handleRegister = () => {
     if (signUpPassword !== confirmPassword) {
-      alert('Les mots de passe ne correspondent pas.');
+      alert('Les mots de passe ne correspondent pas. Dommage...');
       return;
     };
 
