@@ -19,6 +19,8 @@ import users from './reducers/users';
 import ManagementScreen from './screens/ManagementScreen';
 import JoinScreen from './screens/JoinScreen';
 import RessourcesScreen from './screens/RessourcesScreen';
+import PatientScreen from './screens/PatientScreen';
+import ConsultationScreen from './screens/ConsultationScreen';
 
 
 const reducers = combineReducers({users});
@@ -82,6 +84,8 @@ export default function App() {
             <Stack.Screen name="ManagementScreen" component={ManagementScreen}/>
             <Stack.Screen name="JoinScreen" component={JoinScreen}/>
             <Stack.Screen name="RessourcesScreen" component={RessourcesScreen}/>
+            <Stack.Screen name="PatientScreen" component={PatientScreen}/>
+            <Stack.Screen name="ConsultationScreen" component={ConsultationScreen}/>
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

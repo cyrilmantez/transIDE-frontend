@@ -1,11 +1,22 @@
-import { Button, StyleSheet, Text, View, SafeAreaView  } from 'react-native';
+import { Button, StyleSheet, Text, View, SafeAreaView, TouchableOpacity  } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function PatientScreen() {
+    let [fontsLoaded] = useFonts({
+        Poppins_400Regular,
+        Poppins_600SemiBold,
+      });
+
+
     const [isDisponible, setIsDisponible] = useState(true)
+
+    
 
     const changeDispo = () =>{
         setIsDisponible(!isDisponible)
+
     }
 
  return (
@@ -17,24 +28,26 @@ export default function PatientScreen() {
             <Text style={styles.name}></Text>
             <View>
                 <View style={styles.name}></View>
-                <View> style={styles.name}</View>
+                <View></View>
             </View>
             <View></View>
         </View>
         <View>
         <Text style={styles.titleHistorique}>Historique des soins</Text>
         </View>
-        <View>
         <TouchableOpacity  style={styles.button} onPress={()=>changeDispo()}>  
-            <Text style={styles.text}>AJOUTER UNE CONSULTATION</Text>            
-            </TouchableOpacity>
-        </View>
-        <View>
+            <View style={styles.buttonDispo}>
+                <Text style={styles.text}>Disponible</Text> 
+                <Text style={styles.text}>Indisponible</Text>    
+            </View>
+        </TouchableOpacity>
+        
+        <View style={styles.rdv}>
             <Text>Prochains RDV:</Text>
-            <Text></Text>
+            <View style={styles.rdvContainer}></View>
         </View>
         <View>
-            <TouchableOpacity  style={styles.button} onPress={}>  
+            <TouchableOpacity  style={styles.button}>  
             <Text style={styles.text}>AJOUTER UNE CONSULTATION</Text>            
             </TouchableOpacity>
         </View>
@@ -44,10 +57,12 @@ export default function PatientScreen() {
 
 const styles = StyleSheet.create({
  container: {
+   marginTop: 35, 
+   marginBottom: 10,
    flex: 1,
    backgroundColor: '#fff',
    alignItems: 'center',
-   justifyContent: 'center',
+   justifyContent: 'space-between',
  },
 titlePage: {
     color: '#99BD8F',
@@ -66,6 +81,8 @@ text:{
     fontFamily: 'Poppins_400Regular', 
 },
 button : {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     backgroundColor: '#99BD8F',
     width: 350,
     height: 50,
@@ -74,4 +91,20 @@ button : {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  buttonDispo:{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  rdv:{
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    width: 350,
+    height: 200,
+    backgroundColor: '#F0F0F0',
+    borderRadius: 10,
+  },
+  rdvContainer: {
+    marginTop: 5,
+    marginLeft: 5,
+  }
 });
