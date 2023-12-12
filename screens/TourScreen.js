@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native';
 import Dropdown from './Dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -42,7 +42,7 @@ export default function TourScreen({navigation}) {
     { id: '1', nom: 'Patient 1', soin: 'Soin 1', adresse: 'Adresse 1', date: new Date('2023-12-12'), heure: '10:00' },
     { id: '2', nom: 'Patient 2', soin: 'Soin 2', adresse: 'Adresse 2', date: new Date('2023-12-12'), heure: '11:00' },
     { id: '3', nom: 'Patient 3', soin: 'Soin 3', adresse: 'Adresse 3', date: new Date('2023-12-13'), heure: '12:00' },
-    { id: '4', nom: 'Patient 4', soin: 'Soin 4', adresse: 'Adresse 4', date: new Date('2023-12-13'), heure: '13:00' },
+    { id: '4', nom: 'Patient 4000000000000000000000', soin: 'Soin 4', adresse: 'Adresse 4', date: new Date('2023-12-13'), heure: '13:00' },
     { id: '5', nom: 'Patient 5', soin: 'Soin 5', adresse: 'Adresse 5', date: new Date('2023-12-13'), heure: '14:00' },
     { id: '6', nom: 'Patient 6', soin: 'Soin 6', adresse: 'Adresse 6', date: new Date('2023-12-13'), heure: '15:00' },
     { id: '7', nom: 'Patient 7', soin: 'Soin 7', adresse: 'Adresse 7', date: new Date('2023-12-13'), heure: '16:00' },
@@ -69,19 +69,24 @@ export default function TourScreen({navigation}) {
     datePatient.setHours(0, 0, 0, 0);
     return datePatient.getTime() === dateDuJour.getTime();
   }).map((patient, i) => {
+    let truncatedNom;
+    if (patient.nom.length > 15) {
+      truncatedNom = `${patient.nom.substring(0, 15)}...`;
+    } else {
+      truncatedNom = patient.nom;
+    }
     return (
-      <ScrollView style={{flex: 1}}>
         <View key={i}>
           <Card style={styles.contentcard}>
             <Card.Content style={styles.card}>
               <View>
-                <Paragraph style={styles.heure}>{patient.heure}</Paragraph>
+                <Paragraph >{patient.heure}</Paragraph>
               </View>
               <View>
-                <Paragraph style={styles.nompatient}>{patient.nom}</Paragraph>
+                <Paragraph style={styles.nompatient}>{truncatedNom}</Paragraph>
               </View>
               <View>
-                <FontAwesome name={'map-pin'} size={24} color='#99BD8F' />
+                <FontAwesome  name={'map-pin'} size={24} color='#99BD8F' />
               </View>
               <View>
                 <FontAwesome name={'user'} size={24} color='#99BD8F' />
@@ -92,7 +97,6 @@ export default function TourScreen({navigation}) {
             </Card.Content>
           </Card>
         </View>
-      </ScrollView>
     );
   });
 
@@ -135,11 +139,13 @@ export default function TourScreen({navigation}) {
               </View>
             </View>
             <View style={styles.pluscircle}>
-              <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' />
+              <TouchableOpacity>
+                <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' onPress={() => navigation.navigate('AddPatientScreen')}/>
+              </TouchableOpacity>
             </View>
-            <View style={styles.allcards} >
-              {allDayPatients}
-            </View>
+            <ScrollView contentContainerStyle={styles.allcards}>
+            {allDayPatients}
+          </ScrollView>
           </ScrollView>
         </SafeAreaView>
       </>
@@ -210,8 +216,14 @@ const styles = StyleSheet.create({
   },
   contentcard:{
     marginTop: 15, 
-
-   
+    marginBottom: 2,
   },
-
+  nompatient: {
+    width: 100,
+    fontFamily: 'Poppins_400Regular',
+  },
+  allcards: {
+    width: '95%',
+    marginLeft: 10,
+  }
 });
