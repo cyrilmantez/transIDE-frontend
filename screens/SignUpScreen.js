@@ -16,16 +16,27 @@ export default function SignUpScreen({navigation}) {
   const [signUpPassword, setSignUpPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const handleRegister = () => {
     if (signUpPassword !== confirmPassword) {
       alert('Les mots de passe ne correspondent pas.');
       return;
-    }
+    };
 
+<<<<<<< HEAD
     fetch('http://192.168.1.5:3000/users/signup', {
+=======
+    if (!emailRegex.test(signUpEmail)) {
+      alert('Veuillez saisir une adresse e-mail valide.');
+      return;
+    };
+    
+    fetch('/http://192.168.1.5:3000/users/signup', {
+>>>>>>> e3e3abd23de90c17aebda5fadf7f4fbff64a6cc8
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
-      body: JSON.stringify({email: signUpEmail, username: signUpName, password: signUpPassword})
+      body: JSON.stringify({email: signUpEmail.toLowerCase(), username: signUpName, password: signUpPassword})
     }).then(response => response.json())
       .then(data => {
         if (data.result){

@@ -97,7 +97,7 @@ export default function SignInScreen() {
                   <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Des trous de mémoire ?</Text>
                 </TouchableOpacity>
                 <View style={styles.footer}>
-                  <Text style={styles.footertext}>Pas encore de compte ?</Text>
+                  <Text style={styles.footertext} >Pas encore de compte ?</Text>
                   <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
                     <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Créer un compte</Text>
                   </TouchableOpacity>
@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
   },
   footertext: {
     fontFamily: 'Poppins_600SemiBold', 
+    marginTop: 40,
   },
   button : {
     backgroundColor: '#99BD8F',
