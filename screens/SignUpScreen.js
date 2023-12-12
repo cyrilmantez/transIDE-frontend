@@ -4,17 +4,17 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { useDispatch } from 'react-redux';
 import { login } from '../reducers/users';
-import { TextInput, DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import { TextInput} from 'react-native-paper';
 
 export default function SignUpScreen({navigation}) {
   const [passwordVisible, setPasswordVisible] = useState(true);
 
   const dispatch = useDispatch();
 
-  const [signUpEmail, setSignUpEmail] = useState();
-  const [signUpName, setSignUpName] = useState();
-  const [signUpPassword, setSignUpPassword] = useState();
-  const [confirmPassword, setConfirmPassword] = useState();
+  const [signUpEmail, setSignUpEmail] = useState('');
+  const [signUpName, setSignUpName] = useState('');
+  const [signUpPassword, setSignUpPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleRegister = () => {
     if (signUpPassword !== confirmPassword) {
