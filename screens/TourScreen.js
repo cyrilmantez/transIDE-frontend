@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     marginTop: 0,
-    marginLeft: 'A00%',
+    marginLeft: 0,
     marginRight: 15,
   },
   dropdown: {
