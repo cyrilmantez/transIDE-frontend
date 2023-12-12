@@ -6,23 +6,23 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 
 export default function TourScreen({navigation}) {
-
-  const [date, setDate] = useState(new Date());
+  
+  const [date, setDate] = useState(new Date(1598051730000));
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
 
-  const showPicker = () => {
+  const showPicker = (currentMode) => {
     setVisible(true);
+    setMode(currentMode)
   };
 
   const showDate = () => {
-    setMode('date');
     showPicker();
     
   };
 
   const dateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
+    const currentDate = selectedDate;
     setVisible(false);
     setDate(currentDate);
   };
