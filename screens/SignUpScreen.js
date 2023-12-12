@@ -25,9 +25,6 @@ export default function SignUpScreen({navigation}) {
       return;
     };
 
-<<<<<<< HEAD
-    fetch('http://192.168.1.5:3000/users/signup', {
-=======
     if (!emailRegex.test(signUpEmail)) {
       alert('Veuillez saisir une adresse e-mail valide.');
       return;
@@ -39,7 +36,6 @@ export default function SignUpScreen({navigation}) {
     }
     
     fetch('/http://192.168.1.5:3000/users/signup', {
->>>>>>> e3e3abd23de90c17aebda5fadf7f4fbff64a6cc8
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({email: signUpEmail.toLowerCase(), username: signUpName, password: signUpPassword})
