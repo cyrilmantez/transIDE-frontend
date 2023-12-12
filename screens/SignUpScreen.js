@@ -168,16 +168,7 @@ const styles = StyleSheet.create({
   fontSize: 40,
   marginBottom: 80,
  },
- input: {
-  height: 40,
-  width: '100%',
-  borderWidth: 1,
-  textAlignVertical: 'top',
-  borderRadius: 10, 
-  width: 350,
-  height: 40,
-  marginTop: 15, 
-},
+
 button : {
   backgroundColor: '#99BD8F',
   width: 350,
