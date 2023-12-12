@@ -17,6 +17,7 @@ export default function SignUpScreen({navigation}) {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /.*[!@#$%^&*()_+{}\|:<>?].*/;
 
   const handleRegister = () => {
     if (signUpPassword !== confirmPassword) {
@@ -28,6 +29,11 @@ export default function SignUpScreen({navigation}) {
       alert('Veuillez saisir une adresse e-mail valide.');
       return;
     };
+
+    if (!passwordRegex.test(signUpPassword)) {
+      alert('Le mot de passe doit contenir au moins un caractère spécial.');
+      return;
+    }
     
     fetch('/http://192.168.1.5:3000/users/signup', {
       method: 'POST',
