@@ -6,7 +6,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 //import PatientScreen from './screens/PatientScreen';
 //import users from '../reducers/users';
-//import patients from '../reducers/patients';
+import patients from '../reducers/patients';
 
 export default function ConsultationScreen() {
     const dispatch = useDispatch();
@@ -24,41 +24,45 @@ export default function ConsultationScreen() {
 
         return (
         <SafeAreaView  style={styles.container}>
-            <View styles={styles.titleContainer}>
-                <Text style={styles.titlePage}>Consultation</Text>
-            </View>
-            <View>
-                <Text style={styles.name}>{/* {patients} */}</Text>
-                <View>
-                    <View style={styles.name}></View>
-                    <View></View>
-                </View>
-            </View>
-            <View style={styles.inputContainer}>
-                <View>
-                    <Text style={styles.titleSoins}>Soins prévus</Text>
-                </View>            
-                <View style={styles.soinsPrevusContainer}>
-                    <View style={styles.soinsPrevus}></View>
-                </View>
-                <View>
-                    <Text style={styles.titleSoins}>Soins supplémentaires</Text>
-                </View>            
-                <View style={styles.soinsPrevusContainer}>
-                    <View style={styles.soinsPrevus}></View>
-                </View>
-                <View>
-                    <Text style={styles.titleSoins}>Transmissions</Text>
-                </View>            
-                <View style={styles.soinsPrevusContainer}>
-                    <View style={styles.soinsPrevus}></View>
-                </View>
-            </View>
-            <View>
-                <TouchableOpacity  style={styles.button}>  
-                <Text style={styles.text}>Valider</Text>            
-                </TouchableOpacity>
-            </View>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                    <View styles={styles.titleContainer}>
+                        <Text style={styles.titlePage}>Consultation</Text>
+                    </View>
+                    <View>
+                        <Text style={styles.name}>{patients}</Text>
+                        <View>
+                            <View style={styles.name}></View>
+                            <View></View>
+                        </View>
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <View>
+                            <Text style={styles.titleSoins}>Soins prévus</Text>
+                        </View>            
+                        <View style={styles.soinsPrevusContainer}>
+                            <View style={styles.soinsPrevus}></View>
+                        </View>
+                        <View>
+                            <Text style={styles.titleSoins}>Soins supplémentaires</Text>
+                        </View>            
+                        <View style={styles.soinsPrevusContainer}>
+                            <View style={styles.soinsPrevus}></View>
+                        </View>
+                        <View>
+                            <Text style={styles.titleSoins}>Transmissions</Text>
+                        </View>            
+                        <View style={styles.soinsPrevusContainer}>
+                            <View style={styles.soinsPrevus}></View>
+                        </View>
+                    </View>
+                    <View>
+                        <TouchableOpacity  style={styles.button}>  
+                        <Text style={styles.text}>Valider</Text>            
+                        </TouchableOpacity>
+                    </View>
+                </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
         </SafeAreaView >
         );
     }
