@@ -74,7 +74,27 @@ export default function AddPatientScreen({navigation}) {
             }).then(response => response.json())
               .then(data => {
                 if (data.result){
-                  dispatch(addPatient({name: lastnamePatient, firstname: firstnamePatient, token: data.officeToken }));
+                  dispatch(addPatient({
+                    name: lastnamePatient, 
+                    firstname: firstnamePatient, 
+                    yearOfBirthday: dobPatient,
+                    address : [{
+                      road: addressPatient,
+                      infos: additionalAddress,
+                    }],
+                    treatment: [{
+                      date: addRdv,
+                      actions: addTreatment,
+                    }],
+                    phoneNumbers: [{
+                      home: phoneNumber,
+                      mobile : homePhone,
+                    }],
+                    inCaseOfEmergency: [{
+                      identity: personToContact,
+                      phoneNumber: phonePersonToContact,
+                    }],
+                    token: data.officeToken }));
                   setFirstnamePatient('');
                   setLastnamePatient('');
                   setAddressPatient('');
@@ -90,8 +110,6 @@ export default function AddPatientScreen({navigation}) {
                 }
               })
       }
-      
-      
       // Modal RDV enregistré 
       const [modalVisible, setModalVisible] = useState(false);
 
