@@ -1,6 +1,6 @@
-import { Button, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView  } from 'react-native';
+import { Button, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, TouchableWithoutFeedback  } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -20,44 +20,59 @@ export default function PatientScreen(props) {
 
   // const patient = useSelector((state) => state.onePatient.value);
 
-fetch(`http://192.168.1.5:3000/patients/${props._id}`).then(response => response.json())
-.then(data => {
-    setPatient(data.patient)
-})
+  useEffect(() => {
+    fetch(`http://192.168.1.5:3000/patients/${props._id}`).then(response => response.json())
+    .then(data => {
+        setPatient(data.patient)
+    })
+  }, []);
+
 
     
 
 ///////////// création date du jour en MS :    
     const today = new Date();
     const timestamp = today.getTime()
-
+    
+    
 ////////////// 10 prochain jours à afficher dans les prochains rdv :
-    const rdv = patient.treatment.map((data) => {
+let rdv;
+if (patient) {
+    rdv = patient.treatment.map((data) => {
         const tenDaysLaterInMS = timestamp + (10 * 24 * 60 * 60 * 1000);
         if (data.date <= tenDaysLaterInMS)
         return (
             <Text>`${data.date}: ${data.actions}`</Text>
-
         )
     })
-
+}
+     
  ///////////////////// 90 jours passés à afficher dans l'historique : 
-    const oldRdv = patient.treatment.map((data) => {
+ let oldRdv;
+ if (patient) {
+    oldRdv = patient.treatment.map((data) => {
         const ninetyDaysBeforeInMS = timestamp - (90 * 24 * 60 * 60 * 1000);
         if (data.date >= ninetyDaysBeforeInMS)
         return (
             <Text>`${data.date}: ${data.actions}`</Text>
-
         )
     })
+ }
+    
+
+/////////////////////: bouton dispo/indispo :
 
     const changeDispo = () =>{
         setIsDisponible(!isDisponible)
 
     }
+    const containerStyle = {
+        backgroundColor: isDisponible ? '#CADDC5' : '99BD8F',
+      };
 
 
 
+///////////////////////////////////////////////////////////////
  if (!patient){
     return(
         <Text>Data not found</Text>
@@ -89,13 +104,12 @@ fetch(`http://192.168.1.5:3000/patients/${props._id}`).then(response => response
 
                 </View>
             </View>
-
-            <TouchableOpacity  style={styles.button} onPress={()=>changeDispo()}>  
-                <View style={styles.buttonDispo}>
-                    <Text style={styles.text}>Disponible</Text> 
-                    <Text style={styles.text}>Indisponible</Text>    
+            <TouchableWithoutFeedback onPress={changeDispo}>
+                <View style={[styles.buttonDispo, containerStyle]}>
+                    <Text style={[styles.text, styles.leftText, leftTextStyle]}>Disponible</Text>
+                    <Text style={[styles.text, styles.rightText, rightTextStyle]}>Indisponible</Text>
                 </View>
-            </TouchableOpacity>
+            </TouchableWithoutFeedback>
             <View>
             <Text style={styles.titleJournal}>Journal des soins</Text>
             <ScrollView style={styles.journalContainer}>
@@ -120,6 +134,9 @@ fetch(`http://192.168.1.5:3000/patients/${props._id}`).then(response => response
     );
     };
 }
+
+
+////////////////// style :
 
 const styles = StyleSheet.create({
  container: {
@@ -168,6 +185,24 @@ button : {
   buttonDispo:{
     flexDirection: 'row',
     justifyContent: 'space-between',
+    padding: 10,
+    borderRadius: 8,
+  },
+  leftText: {
+    flex: 1,
+    textAlign: 'center',
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+    paddingVertical: 10,
+    fontSize: 16,
+
+  },
+  rightText: {
+    flex: 1,
+    textAlign: 'center',
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+    paddingVertical: 10,
   },
   rdv:{
     justifyContent: 'flex-start',
@@ -176,7 +211,7 @@ button : {
     height: 400,
     backgroundColor: '#F0F0F0',
     borderRadius: 10,
-
+    fontSize: 16,
   },
   journalContainer: {
     // marginTop: 5,
@@ -185,5 +220,7 @@ button : {
     height: 400,
   },
   previousRdv:{},
-  nextRdv: {},
+  nextRdv: {
+    color: 'lightgray'
+  },
 });
