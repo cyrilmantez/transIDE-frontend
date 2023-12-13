@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image, Keyboard, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Keyboard, TouchableOpacity, SafeAreaView } from 'react-native';
 import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 //import users from '../reducers/users';
 import patients from '../reducers/patients';
 
-export default function ConsultationScreen(props) {
+export default function ConsultationScreen() {
     const dispatch = useDispatch();
     //const users = useSelector((state) => state.users.value.username);
     const [patient, setPatient]= useState(null);
@@ -16,7 +16,7 @@ export default function ConsultationScreen(props) {
     const [transmission, setTransmission] = useState(null);
 
 
-    /* useEffect(() => {
+   /*  useEffect(() => {
         fetch(`http://192.168.1.5:3000/patient/${props._id}`).then(response => response.json())
         .then(data => {
             setPatient(data.patient)
@@ -25,6 +25,11 @@ export default function ConsultationScreen(props) {
 
         //console.log(patient);
     //const patientInfo = 
+
+    const handleSubmit = () => {
+        
+        navigation.navigate('TabNavigator');
+      };
 
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
@@ -86,8 +91,8 @@ export default function ConsultationScreen(props) {
                                     value={transmission}/>
                             </View>
                             <View>
-                                <TouchableOpacity  style={styles.button}>  
-                                <Text style={styles.text}>Valider</Text>            
+                                <TouchableOpacity onPress={() => handleSubmit()} style={styles.button} activeOpacity={0.8}>  
+                                    <Text style={styles.text}>Valider</Text>            
                                 </TouchableOpacity>
                             </View>
                         </ScrollView>
