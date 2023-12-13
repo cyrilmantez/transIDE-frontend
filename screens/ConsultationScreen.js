@@ -12,16 +12,18 @@ export default function ConsultationScreen(props) {
     const dispatch = useDispatch();
     //const users = useSelector((state) => state.users.value.username);
     const [patient, setPatient]= useState(null);
+    const [soinsPrevus, setSoinsPrevus] = useState(null);
+    const [transmission, setTransmission] = useState(null);
 
 
-    useEffect(() => {
+    /* useEffect(() => {
         fetch(`http://192.168.1.5:3000/patient/${props._id}`).then(response => response.json())
         .then(data => {
             setPatient(data.patient)
         })
-      }, []);
+      }, []); */
 
-        console.log(patient);
+        //console.log(patient);
     //const patientInfo = 
 
     let [fontsLoaded] = useFonts({
@@ -42,8 +44,7 @@ export default function ConsultationScreen(props) {
                             <View styles={styles.titleContainer}>
                                 <Text style={styles.titlePage}>Consultation</Text>
                             </View>
-                            <View>
-                                <Text></Text>
+                            <View style={styles.patient}>
                                 <View>
                                     <View style={styles.name}>{/* {patientInfo} */}</View>
                                     <View></View>
@@ -53,21 +54,36 @@ export default function ConsultationScreen(props) {
                                 <View>
                                     <Text style={styles.titleSoins}>Soins prévus</Text>
                                 </View>            
-                                <View style={styles.soinsPrevusContainer}>
-                                    <View style={styles.soinsPrevus}></View>
+                                <View style={styles.soinsPrevus}>
                                 </View>
                                 <View>
                                     <Text style={styles.titleSoins}>Soins supplémentaires</Text>
                                 </View>            
-                                <View style={styles.soinsPrevusContainer}>
-                                    <View style={styles.soinsPrevus}></View>
-                                </View>
+                                <TextInput 
+                                    mode='outlined'
+                                    multiline
+                                    theme={{ 
+                                    colors: { 
+                                        primary: '#99BD8F', 
+                                    }
+                                    }}
+                                    style={styles.soinsPrevus} 
+                                    onChangeText={text => setSoinsPrevus(text)} 
+                                    value={soinsPrevus}/>
                                 <View>
                                     <Text style={styles.titleSoins}>Transmissions</Text>
                                 </View>            
-                                <View style={styles.soinsPrevusContainer}>
-                                    <View style={styles.soinsPrevus}></View>
-                                </View>
+                                <TextInput 
+                                    mode='outlined'
+                                    multiline
+                                    theme={{ 
+                                    colors: { 
+                                        primary: '#99BD8F', 
+                                    }
+                                    }}
+                                    style={styles.soinsPrevus} 
+                                    onChangeText={text => setTransmission(text)} 
+                                    value={transmission}/>
                             </View>
                             <View>
                                 <TouchableOpacity  style={styles.button}>  
@@ -92,23 +108,27 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
-   titlePage: {
+    titlePage: {
        color: '#99BD8F',
        fontSize: 30,
        marginBottom: 30,
        fontFamily: 'Poppins_600SemiBold',
    },
-   titleSoins: {
+    patient: {
+        backgroundColor: '#99BD8F',
+   },
+    titleSoins: {
        color: '#99BD8F',
        fontSize: 22,
-       marginBottom: 50,
+       marginBottom: 0,
+       marginTop: 20,
        fontFamily: 'Poppins_400Regular',
    },
-   text:{
+    text:{
        fontSize: 17,
        fontFamily: 'Poppins_400Regular', 
    },
-   button : {
+    button : {
        flexDirection: 'row',
        justifyContent: 'space-between',
        backgroundColor: '#99BD8F',
@@ -119,28 +139,31 @@ const styles = StyleSheet.create({
        justifyContent: 'center',
        alignItems: 'center',
      },
-     buttonDispo:{
+    buttonDispo:{
        flexDirection: 'row',
        justifyContent: 'space-between',
      },
-     inputContainer: {
+    inputContainer: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
      },
-     soinsPrevus:{
+     /* soinsPrevusContainer: {
+         //marginTop: 0,
+         //marginLeft: 10,
+         //marginRight: 10,
+        }, */
+    soinsPrevus:{
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
-        width: 350,
-        height: 200,
+        width: 340,
+        height: 180,
         backgroundColor: '#F0F0F0',
         borderRadius: 10,
-      },
-     soinsPrevusContainer: {
-        marginTop: 5,
-        marginLeft: 5,
-     },
-     scrollView: {
+        marginLeft: 10,
+        marginRight: 10,
+        },
+    scrollView: {
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
