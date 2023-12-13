@@ -139,9 +139,7 @@ export default function TourScreen({navigation}) {
               </View>
             </View>
             <View style={styles.pluscircle}>
-              <TouchableOpacity>
                 <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' onPress={() => navigation.navigate('AddPatientScreen')}/>
-              </TouchableOpacity>
             </View>
             <ScrollView contentContainerStyle={styles.allcards}>
             {allDayPatients}
