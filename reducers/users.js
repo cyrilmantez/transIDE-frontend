@@ -18,8 +18,11 @@ export const usersSlice = createSlice({
             state.value.username = null;
             state.value.officesTokens = []
           },
+        addPhoto: (state, action) => {
+            state.value.photos.push(action.payload);
+        }
     },
 });
 
-export const {login, logout} = usersSlice.actions;
+export const {login, logout, addPhoto} = usersSlice.actions;
 export default usersSlice.reducer;

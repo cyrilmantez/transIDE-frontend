@@ -1,12 +1,13 @@
 import { Button, TouchableWithoutFeedback, ScrollView, Modal, Keyboard, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { TextInput, List} from 'react-native-paper';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
-//import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { addPatient } from '../reducers/patients';
 import { useDispatch } from 'react-redux';
-
+import { Camera, FlashMode} from 'expo-camera';
+import { addPhoto } from '../reducers/users';
 export default function AddPatientScreen({navigation}) {
     const dispatch = useDispatch();
     
@@ -21,7 +22,7 @@ export default function AddPatientScreen({navigation}) {
     const [personToContact, setPersonToContact] = useState('');
     const [phonePersonToContact, setPhonePersonToContact] = useState('');
     const [addRdv, setAddRdv] = useState(Date());
-    const [addTreatment, setAddTreatment] = useState([]);
+    const [addTreatment, setAddTreatment] = useState('');
     const [dobPatient, setdobPatient] = useState('');
     const [results, setResults] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -133,14 +134,42 @@ export default function AddPatientScreen({navigation}) {
       </Modal>
       );
 
+      // Photo
+              //Permission
+      const [hasPermission, setHasPermission] = useState(false);
+      const [flashMode, setFlashMode] = useState(FlashMode.off);
+
+      useEffect(() => {
+        (async () => {
+          const {status} = await Camera.requestCameraPermissionsAsync();
+          setHasPermission(status === 'granted')
+        })();
+      }, []);
+
+      const takePicture = async () => {
+        const photo = await cameraRef.takePictureAsync({quality: 0.4});
+        const formData = new FormData();
+          formData.append('photoFromAddPatientScreen', {
+            ueri: photo.uri,
+            type: 'image/jpeg',
+            name: 'photo.jpg',
+          });
+
+          fetch('/upload', {
+            method: 'POST',
+            body: formData,
+          }).then((response) => response.json())
+          .then((data) =>{
+
+          })
+          dispatch(addPhoto(photo.uri))
+      }
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
         Poppins_600SemiBold,
       });
-  /*  
- <KeyboardAwareScrollView contentContainerStyle={styles.scrollView} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}></KeyboardAwareScrollView>
- </KeyboardAwareScrollView>*/
-
+  
+ 
       if (!fontsLoaded) {
         return <View />;
       } else {
@@ -149,7 +178,7 @@ export default function AddPatientScreen({navigation}) {
       <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-               
+              <KeyboardAwareScrollView contentContainerStyle={styles.scrollView} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} enableOnAndroid={true}>
                     <ScrollView contentContainerStyle={styles.scrollView}>
                         <View style={styles.container}>
                         {modalContent}
@@ -328,7 +357,7 @@ export default function AddPatientScreen({navigation}) {
                                     }
                                 }}
                                 value={addTreatment}
-                                onChangeText={text => setAddTreatment([...addTreatment, text])}
+                                onChangeText={text => setAddTreatment(text)}
                                 style={{ width: 350, marginTop: 15}} 
                             />
                             <View>
@@ -339,7 +368,7 @@ export default function AddPatientScreen({navigation}) {
                             </View>
                         </View>
                     </ScrollView>
-               
+                    </KeyboardAwareScrollView>
             </TouchableWithoutFeedback>
         </SafeAreaView>
     </>
