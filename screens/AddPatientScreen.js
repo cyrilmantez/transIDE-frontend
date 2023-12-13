@@ -21,7 +21,7 @@ export default function AddPatientScreen({navigation}) {
     const [personToContact, setPersonToContact] = useState('');
     const [phonePersonToContact, setPhonePersonToContact] = useState('');
     const [addRdv, setAddRdv] = useState(Date());
-    const [addTreatment, setAddTreatment] = useState([]);
+    const [addTreatment, setAddTreatment] = useState('');
     const [dobPatient, setdobPatient] = useState('');
     const [results, setResults] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -51,50 +51,48 @@ export default function AddPatientScreen({navigation}) {
               method: 'POST',
               headers: {'Content-Type' : 'application/json'},
               body: JSON.stringify({
-                name: lastnamePatient, 
-                firstname: firstnamePatient, 
-                yearOfBirthday: dobPatient,
-                address : [{
-                  road: addressPatient,
-                  infos: additionalAddress,
-                }],
+                officeToken: '',
+                name: lastnamePatient,
+                firstname: firstnamePatient,
+                yearOfBirthday : dobPatient,
+                address: {
+                road: addressPatient,
+                infos : additionalAddress
+                },
+                phoneNumbers: {
+                    home: phoneNumber,
+                    mobile: homePhone
+                },    
                 treatment: [{
-                  date: addRdv,
-                  actions: addTreatment,
+                    state : true,
+                    date : addRdv,          
+                    actions: [addTreatment],
+                    nurse: '',
+                    documentsOfTreatment: [{
+                        creationDate: Date,
+                        urls: ['']
+                    }],
                 }],
-                phoneNumbers: [{
-                  home: phoneNumber,
-                  mobile : homePhone,
+                documents : [{
+                    creationDate: Date,
+                    urls: ['']
                 }],
-                inCaseOfEmergency: [{
-                  identity: personToContact,
-                  phoneNumber: phonePersonToContact,
-                }]
+                transmissions: [{
+                    date: Date,
+                    nurse : '',
+                    info : '',
+                    document: '',
+                }],
+                disponibility: true,
+                inCaseOfEmergency : {
+                    identity: personToContact,
+                    phoneNumber: phonePersonToContact,
+                }
               })
             }).then(response => response.json())
               .then(data => {
                 if (data.result){
-                  dispatch(addPatient({
-                    name: lastnamePatient, 
-                    firstname: firstnamePatient, 
-                    yearOfBirthday: dobPatient,
-                    address : [{
-                      road: addressPatient,
-                      infos: additionalAddress,
-                    }],
-                    treatment: [{
-                      date: addRdv,
-                      actions: addTreatment,
-                    }],
-                    phoneNumbers: [{
-                      home: phoneNumber,
-                      mobile : homePhone,
-                    }],
-                    inCaseOfEmergency: [{
-                      identity: personToContact,
-                      phoneNumber: phonePersonToContact,
-                    }],
-                    token: data.officeToken }));
+                  dispatch(addPatient());
                   setFirstnamePatient('');
                   setLastnamePatient('');
                   setAddressPatient('');
@@ -222,12 +220,10 @@ export default function AddPatientScreen({navigation}) {
                                     setAddressPatient(result.properties.label);
                                     setShowSuggestions(false);
                                     setResults([]);
-                                    
                                 }
                                 }                    
                             />
                             ))}
-
                             <TextInput 
                                 label="Complément d'adresse"
                                 mode='outlined'
@@ -410,6 +406,9 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
+    textAlign: "center",
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 17,
+    color: '#F0F0F0',
   }
 });
