@@ -8,11 +8,34 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
  
 
 export default function TransmissionScreen(navigation) {
-  //hook d'état ==>  All translissions
+  const [date, setDate] = useState (new Date())
+  const [transmissions, setTransmissions] = useState([])
+  
   
   //get data from dataBase, and dispatch in the reducer, avec la limite de 7j
-  
+  useEffect(() => {
+    fetch(`http://192.168.1.162:3000/transmissions/allTraransmissions/${date}`).then(response => response.json())
+    .then((data) => {
+      console.log(data)
+      if(data){
+        setTransmissions(data.transmissions)
+      }
+    })
+  },[])
   //display data from the hook
+  const transmissionsToDisplay = transmissions.map(element => {
+    const years = element.date.getFullYear();
+    const month = element.date.getMonth();
+    const day = element.date.getDate();
+    const hours = 
+
+    return 
+    <ScrollView style={styles.transmission}>
+      <Text style={styles.personAbout}>Pour {element.name} {element.firstname}</Text>
+      <Text style={styles.publicationDate}>Publié le {day}/{month}/{years} à 13h00, par {element.nurse}.</Text>
+      <Text style={styles.message}>Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random  Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random </Text>
+  </ScrollView>
+  })
 
  return (
   <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>

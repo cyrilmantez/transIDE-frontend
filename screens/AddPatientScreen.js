@@ -3,7 +3,7 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import { TextInput, List} from 'react-native-paper';
 import { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
-//import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { addPatient } from '../reducers/patients';
 import { useDispatch } from 'react-redux';
 
@@ -142,8 +142,8 @@ export default function AddPatientScreen({navigation}) {
         Poppins_600SemiBold,
       });
   /*  
- <KeyboardAwareScrollView contentContainerStyle={styles.scrollView} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}></KeyboardAwareScrollView>
- </KeyboardAwareScrollView>*/
+ 
+*/
 
       if (!fontsLoaded) {
         return <View />;
@@ -153,7 +153,7 @@ export default function AddPatientScreen({navigation}) {
       <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-               
+               <KeyboardAwareScrollView contentContainerStyle={styles.scrollView} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                     <ScrollView contentContainerStyle={styles.scrollView}>
                         <View style={styles.container}>
                         {modalContent}
@@ -345,7 +345,7 @@ export default function AddPatientScreen({navigation}) {
                             </View>
                         </View>
                     </ScrollView>
-               
+                </KeyboardAwareScrollView>
             </TouchableWithoutFeedback>
         </SafeAreaView>
     </>
