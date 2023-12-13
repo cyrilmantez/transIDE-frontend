@@ -1,12 +1,13 @@
 import { Button, TouchableWithoutFeedback, ScrollView, Modal, Keyboard, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { TextInput, List} from 'react-native-paper';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { addPatient } from '../reducers/patients';
 import { useDispatch } from 'react-redux';
-
+import { Camera, FlashMode} from 'expo-camera';
+import { addPhoto } from '../reducers/users';
 export default function AddPatientScreen({navigation}) {
     const dispatch = useDispatch();
     
@@ -21,7 +22,7 @@ export default function AddPatientScreen({navigation}) {
     const [personToContact, setPersonToContact] = useState('');
     const [phonePersonToContact, setPhonePersonToContact] = useState('');
     const [addRdv, setAddRdv] = useState(Date());
-    const [addTreatment, setAddTreatment] = useState([]);
+    const [addTreatment, setAddTreatment] = useState('');
     const [dobPatient, setdobPatient] = useState('');
     const [results, setResults] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -51,50 +52,46 @@ export default function AddPatientScreen({navigation}) {
               method: 'POST',
               headers: {'Content-Type' : 'application/json'},
               body: JSON.stringify({
-                name: lastnamePatient, 
-                firstname: firstnamePatient, 
-                yearOfBirthday: dobPatient,
-                address : [{
-                  road: addressPatient,
-                  infos: additionalAddress,
-                }],
-                treatment: [{
-                  date: addRdv,
-                  actions: addTreatment,
-                }],
+                officeToken: '',
+                name: lastnamePatient,
+                firstname: firstnamePatient,
+                yearOfBirthday : dobPatient,
+                address: addressPatient,
+                infosAddress : additionalAddress,
                 phoneNumbers: [{
-                  home: phoneNumber,
-                  mobile : homePhone,
+                    home: phoneNumber,
+                    mobile: homePhone
+                }],    
+                treatment: [{
+                    state : true,
+                    date : addRdv,          
+                    actions: addTreatment,
+                    nurse: '',
+                    documentsOfTreatment: [{
+                        creationDate: Date,
+                        urls: ['']
+                    }],
                 }],
-                inCaseOfEmergency: [{
-                  identity: personToContact,
-                  phoneNumber: phonePersonToContact,
-                }]
+                documents : [{
+                    creationDate: Date,
+                    urls: ['']
+                }],
+                transmissions: [{
+                    date: Date,
+                    nurse : '',
+                    info : '',
+                    document: '',
+                }],
+                disponibility: true,
+                inCaseOfEmergency : [{
+                    identity: personToContact,
+                    phoneNumber: phonePersonToContact,
+                }],
               })
             }).then(response => response.json())
               .then(data => {
                 if (data.result){
-                  dispatch(addPatient({
-                    name: lastnamePatient, 
-                    firstname: firstnamePatient, 
-                    yearOfBirthday: dobPatient,
-                    address : [{
-                      road: addressPatient,
-                      infos: additionalAddress,
-                    }],
-                    treatment: [{
-                      date: addRdv,
-                      actions: addTreatment,
-                    }],
-                    phoneNumbers: [{
-                      home: phoneNumber,
-                      mobile : homePhone,
-                    }],
-                    inCaseOfEmergency: [{
-                      identity: personToContact,
-                      phoneNumber: phonePersonToContact,
-                    }],
-                    token: data.officeToken }));
+                  dispatch(addPatient());
                   setFirstnamePatient('');
                   setLastnamePatient('');
                   setAddressPatient('');
@@ -137,11 +134,42 @@ export default function AddPatientScreen({navigation}) {
       </Modal>
       );
 
+      // Photo
+              //Permission
+      const [hasPermission, setHasPermission] = useState(false);
+      const [flashMode, setFlashMode] = useState(FlashMode.off);
+
+      useEffect(() => {
+        (async () => {
+          const {status} = await Camera.requestCameraPermissionsAsync();
+          setHasPermission(status === 'granted')
+        })();
+      }, []);
+
+      const takePicture = async () => {
+        const photo = await cameraRef.takePictureAsync({quality: 0.4});
+        const formData = new FormData();
+          formData.append('photoFromAddPatientScreen', {
+            ueri: photo.uri,
+            type: 'image/jpeg',
+            name: 'photo.jpg',
+          });
+
+          fetch('/upload', {
+            method: 'POST',
+            body: formData,
+          }).then((response) => response.json())
+          .then((data) =>{
+
+          })
+          dispatch(addPhoto(photo.uri))
+      }
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
         Poppins_600SemiBold,
       });
-    
+  
+ 
       if (!fontsLoaded) {
         return <View />;
       } else {
@@ -150,7 +178,7 @@ export default function AddPatientScreen({navigation}) {
       <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <KeyboardAwareScrollView contentContainerStyle={styles.scrollView} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+              <KeyboardAwareScrollView contentContainerStyle={styles.scrollView} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} enableOnAndroid={true}>
                     <ScrollView contentContainerStyle={styles.scrollView}>
                         <View style={styles.container}>
                         {modalContent}
@@ -222,12 +250,10 @@ export default function AddPatientScreen({navigation}) {
                                     setAddressPatient(result.properties.label);
                                     setShowSuggestions(false);
                                     setResults([]);
-                                    
                                 }
                                 }                    
                             />
                             ))}
-
                             <TextInput 
                                 label="Complément d'adresse"
                                 mode='outlined'
@@ -342,7 +368,7 @@ export default function AddPatientScreen({navigation}) {
                             </View>
                         </View>
                     </ScrollView>
-                </KeyboardAwareScrollView>
+                    </KeyboardAwareScrollView>
             </TouchableWithoutFeedback>
         </SafeAreaView>
     </>
@@ -410,6 +436,9 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
+    textAlign: "center",
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 17,
+    color: '#F0F0F0',
   }
 });
