@@ -21,9 +21,9 @@ export default function ConsultationScreen(props) {
         })
       }, []);
 
-    const patientInfo = 
+        console.log(patient);
+    //const patientInfo = 
 
-    
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
         Poppins_600SemiBold,
@@ -33,47 +33,52 @@ export default function ConsultationScreen(props) {
         return <View />;
     } else {
         return (
-        <SafeAreaView  style={styles.container}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                    <View styles={styles.titleContainer}>
-                        <Text style={styles.titlePage}>Consultation</Text>
-                    </View>
-                    <View>
-                        <Text></Text>
-                        <View>
-                            <View style={styles.name}>{patients}</View>
-                            <View></View>
-                        </View>
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <View>
-                            <Text style={styles.titleSoins}>Soins prévus</Text>
-                        </View>            
-                        <View style={styles.soinsPrevusContainer}>
-                            <View style={styles.soinsPrevus}></View>
-                        </View>
-                        <View>
-                            <Text style={styles.titleSoins}>Soins supplémentaires</Text>
-                        </View>            
-                        <View style={styles.soinsPrevusContainer}>
-                            <View style={styles.soinsPrevus}></View>
-                        </View>
-                        <View>
-                            <Text style={styles.titleSoins}>Transmissions</Text>
-                        </View>            
-                        <View style={styles.soinsPrevusContainer}>
-                            <View style={styles.soinsPrevus}></View>
-                        </View>
-                    </View>
-                    <View>
-                        <TouchableOpacity  style={styles.button}>  
-                        <Text style={styles.text}>Valider</Text>            
-                        </TouchableOpacity>
-                    </View>
-                </KeyboardAvoidingView>
-            </TouchableWithoutFeedback>
-        </SafeAreaView >
+            <>
+            <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
+            <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                        <ScrollView contentContainerStyle={styles.scrollView}>
+                            <View styles={styles.titleContainer}>
+                                <Text style={styles.titlePage}>Consultation</Text>
+                            </View>
+                            <View>
+                                <Text></Text>
+                                <View>
+                                    <View style={styles.name}>{/* {patientInfo} */}</View>
+                                    <View></View>
+                                </View>
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <View>
+                                    <Text style={styles.titleSoins}>Soins prévus</Text>
+                                </View>            
+                                <View style={styles.soinsPrevusContainer}>
+                                    <View style={styles.soinsPrevus}></View>
+                                </View>
+                                <View>
+                                    <Text style={styles.titleSoins}>Soins supplémentaires</Text>
+                                </View>            
+                                <View style={styles.soinsPrevusContainer}>
+                                    <View style={styles.soinsPrevus}></View>
+                                </View>
+                                <View>
+                                    <Text style={styles.titleSoins}>Transmissions</Text>
+                                </View>            
+                                <View style={styles.soinsPrevusContainer}>
+                                    <View style={styles.soinsPrevus}></View>
+                                </View>
+                            </View>
+                            <View>
+                                <TouchableOpacity  style={styles.button}>  
+                                <Text style={styles.text}>Valider</Text>            
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </KeyboardAvoidingView>
+                </TouchableWithoutFeedback>
+            </SafeAreaView>
+            </>
         );
     }
 }
@@ -95,7 +100,7 @@ const styles = StyleSheet.create({
    },
    titleSoins: {
        color: '#99BD8F',
-       fontSize: 30,
+       fontSize: 22,
        marginBottom: 50,
        fontFamily: 'Poppins_400Regular',
    },
@@ -120,6 +125,8 @@ const styles = StyleSheet.create({
      },
      inputContainer: {
         flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
      },
      soinsPrevus:{
         justifyContent: 'flex-start',
@@ -133,5 +140,9 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginLeft: 5,
      },
-     
+     scrollView: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },     
    });
