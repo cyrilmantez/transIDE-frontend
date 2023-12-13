@@ -16,12 +16,13 @@ export default function TourScreen({navigation}) {
   const [allPatients, setAllPatients] = useState()
 
   const user = useSelector((state) => state.users.value)
+  const dateOfToday = new Date(date)
   useEffect(() => {
 
     fetch('http://192.168.1.5:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
-      body: JSON.stringify({officeToken: user.officeToken, dateOfToday : new Date(date)})
+      body: JSON.stringify({officeToken: user.officesTokens[0], dateOfToday : dateOfToday })
     }).then(response => response.json())
       .then(data => {
         setAllPatients(data.patientsToSee)
