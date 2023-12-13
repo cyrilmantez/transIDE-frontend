@@ -13,21 +13,40 @@ export default function TourScreen({navigation}) {
   const [date, setDate] = useState(new Date());
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
-  const [allPatients, setAllPatients] = useState()
+  const [allPatients, setAllPatients] = useState([])
 
   const user = useSelector((state) => state.users.value)
-  const dateOfToday = new Date(date)
-  useEffect(() => {
 
+  //const dateToday = new Date(date)
+
+  // useEffect(() => {
+
+  //   fetch('http://192.168.1.5:3000/patients/allPatients', {
+  //     method: 'POST',
+  //     headers: {'Content-Type' : 'application/json'},
+  //     body: JSON.stringify({officeToken: user.officesTokens[0].token, dateOfToday : dateToday })
+  //   }).then(response => response.json())
+  //     .then(data => {
+  //       setAllPatients(data.patientsToSee)
+  //     })
+  // }, [date]);
+
+  const allData =()=> {
     fetch('http://192.168.1.5:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
-      body: JSON.stringify({officeToken: user.officesTokens[0], dateOfToday : dateOfToday })
+      body: JSON.stringify({officeToken: user.officesTokens[0].token, dateOfToday : date })
     }).then(response => response.json())
       .then(data => {
         setAllPatients(data.patientsToSee)
       })
-  }, [date]);
+  };
+
+  useEffect(()=>{
+    allData()
+  }
+ , [date] )
+
 
 
   const showPicker = (currentMode) => {
@@ -53,13 +72,12 @@ export default function TourScreen({navigation}) {
     setDate(newDate);
   }
 
-  if (allPatients) {
     const allDayPatients = allPatients.map((patient, i) => {
     let truncatedNom;
-    if (patient.nom.length > 15) {
-      truncatedNom = `${patient.nom.substring(0, 15)}...`;
+    if (patient.name.length > 15) {
+      truncatedNom = `${patient.name.substring(0, 15)}...`;
     } else {
-      truncatedNom = patient.nom;
+      truncatedNom = patient.name;
     }
     return (
         <View key={i}>
@@ -87,7 +105,7 @@ export default function TourScreen({navigation}) {
         </View>
     );
   });
-  };
+
   
 
   let [fontsLoaded] = useFonts({
