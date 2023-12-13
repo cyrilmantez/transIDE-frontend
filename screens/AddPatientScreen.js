@@ -4,6 +4,7 @@ import { TextInput, List} from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { addPatient } from '../reducers/patients';
 import { useDispatch, useSelector } from 'react-redux';
 import { Camera, FlashMode} from 'expo-camera';
