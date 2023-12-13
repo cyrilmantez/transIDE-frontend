@@ -16,6 +16,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import {configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import users from './reducers/users';
+import patients from './reducers/patients';
 import ManagementScreen from './screens/ManagementScreen';
 import JoinScreen from './screens/JoinScreen';
 import RessourcesScreen from './screens/RessourcesScreen';
@@ -23,7 +24,7 @@ import PatientScreen from './screens/PatientScreen';
 import ConsultationScreen from './screens/ConsultationScreen';
 import AddPatientScreen from './screens/AddPatientScreen';
 
-const reducers = combineReducers({users});
+const reducers = combineReducers({users, patients});
 
 const persistConfig = {
   key: 'root',
