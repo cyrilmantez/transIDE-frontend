@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { addPatient } from '../reducers/patients';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Camera, FlashMode} from 'expo-camera';
 import { addPhoto } from '../reducers/users';
 export default function AddPatientScreen({navigation}) {
@@ -26,16 +26,25 @@ export default function AddPatientScreen({navigation}) {
     const [dobPatient, setdobPatient] = useState('');
     const [results, setResults] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const [displayDate, setDisplayDate] = useState('');
+    const [isoDate, setIsoDate] = useState('');
 
     // Hook Add RDV
     const handleDateChange = (event, selectedDate) => {
-        const currentDate = selectedDate || dateHeure;
-        setDateHeure(currentDate);
-        
-        const formattedDate = currentDate.toLocaleDateString('fr-FR');
-        const formattedTime = currentDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-        setAddRdv(`${formattedDate} ${formattedTime}`);
+      const currentDate = selectedDate || dateHeure;
+      setDateHeure(currentDate);
+      
+      const formattedDate = currentDate.toLocaleDateString('fr-FR');
+      const formattedTime = currentDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      setDisplayDate(`${formattedDate} ${formattedTime}`);
+      
+      const localFormat = currentDate.toISOString();
+      setIsoDate(localFormat);
     };
+    
+    
+  
+  
     
     // Hook Add Patient
     const fetchAddress = (query) => {
@@ -47,66 +56,63 @@ export default function AddPatientScreen({navigation}) {
         })
       };
 
-    const handleRegister = () => {      
-            fetch('http://192.168.1.14:3000/patients/addPatient', {
-              method: 'POST',
-              headers: {'Content-Type' : 'application/json'},
-              body: JSON.stringify({
-                officeToken: '',
-                name: lastnamePatient,
-                firstname: firstnamePatient,
-                yearOfBirthday : dobPatient,
-                address: addressPatient,
-                infosAddress : additionalAddress,
-                phoneNumbers: [{
-                    home: phoneNumber,
-                    mobile: homePhone
-                }],    
-                treatment: [{
-                    state : true,
-                    date : addRdv,          
-                    actions: addTreatment,
-                    nurse: '',
-                    documentsOfTreatment: [{
-                        creationDate: Date,
-                        urls: ['']
-                    }],
-                }],
-                documents : [{
-                    creationDate: Date,
-                    urls: ['']
-                }],
-                transmissions: [{
-                    date: Date,
-                    nurse : '',
-                    info : '',
-                    document: '',
-                }],
-                disponibility: true,
-                inCaseOfEmergency : [{
-                    identity: personToContact,
-                    phoneNumber: phonePersonToContact,
-                }],
-              })
-            }).then(response => response.json())
-              .then(data => {
-                if (data.result){
-                  dispatch(addPatient());
-                  setFirstnamePatient('');
-                  setLastnamePatient('');
-                  setAddressPatient('');
-                  setAdditionalAddress('');
-                  setPhoneNumber('');
-                  setHomePhone('');
-                  setPersonToContact('');
-                  setPhonePersonToContact('');
-                  setAddRdv(new Date());
-                  setAddTreatment('');
-                  setdobPatient('');
-                  setModalVisible(true);
-                }
-              })
+      const handleRegister = () => {      
+        fetch('http://192.168.1.14:3000/patients/addPatient', {
+          method: 'POST',
+          headers: {'Content-Type' : 'application/json'},
+          body: JSON.stringify({
+            officesToken: officesToken,
+            name: lastnamePatient,
+            firstname: firstnamePatient,
+            dateOfBirthday : dobPatient, 
+            address: addressPatient,
+            infosAddress : additionalAddress,
+            homePhone : homePhone,
+            mobile: phoneNumber, 
+            treatments:[{
+              state: false,
+              treatmentDate: addRdv, 
+              actions: [addTreatment], 
+              nurse: '',
+              documentsOfTreatment: [{
+                creationDate: Date,
+                urls: ['']
+              }],
+            }],
+            documents: [{
+              creationDate: Date,
+              url: '',
+            }],    
+            transmissions: [{
+              date: Date,
+              nurse : '',
+              info : '',
+              urlDocument: '',    
+            }],
+            disponibility: true,
+            ICEIdentity: personToContact,
+            ICEPhoneNumber: phonePersonToContact, 
+          })
+        }).then(response => response.json())
+          .then(data => {
+            if (data.result){
+              dispatch(addPatient());
+              setFirstnamePatient('');
+              setLastnamePatient('');
+              setAddressPatient('');
+              setAdditionalAddress('');
+              setPhoneNumber('');
+              setHomePhone('');
+              setPersonToContact('');
+              setPhonePersonToContact('');
+              setAddRdv(new Date());
+              setAddTreatment('');
+              setdobPatient('');
+              setModalVisible(true);
+            }
+          })
       }
+      
       // Modal RDV enregistré 
       const [modalVisible, setModalVisible] = useState(false);
 
@@ -136,34 +142,34 @@ export default function AddPatientScreen({navigation}) {
 
       // Photo
               //Permission
-      const [hasPermission, setHasPermission] = useState(false);
-      const [flashMode, setFlashMode] = useState(FlashMode.off);
+      // const [hasPermission, setHasPermission] = useState(false);
+      // const [flashMode, setFlashMode] = useState(FlashMode.off);
 
-      useEffect(() => {
-        (async () => {
-          const {status} = await Camera.requestCameraPermissionsAsync();
-          setHasPermission(status === 'granted')
-        })();
-      }, []);
+      // useEffect(() => {
+      //   (async () => {
+      //     const {status} = await Camera.requestCameraPermissionsAsync();
+      //     setHasPermission(status === 'granted')
+      //   })();
+      // }, []);
 
-      const takePicture = async () => {
-        const photo = await cameraRef.takePictureAsync({quality: 0.4});
-        const formData = new FormData();
-          formData.append('photoFromAddPatientScreen', {
-            ueri: photo.uri,
-            type: 'image/jpeg',
-            name: 'photo.jpg',
-          });
+      // const takePicture = async () => {
+      //   const photo = await cameraRef.takePictureAsync({quality: 0.4});
+      //   const formData = new FormData();
+      //     formData.append('photoFromAddPatientScreen', {
+      //       ueri: photo.uri,
+      //       type: 'image/jpeg',
+      //       name: 'photo.jpg',
+      //     });
 
-          fetch('/upload', {
-            method: 'POST',
-            body: formData,
-          }).then((response) => response.json())
-          .then((data) =>{
+      //     fetch('/upload', {
+      //       method: 'POST',
+      //       body: formData,
+      //     }).then((response) => response.json())
+      //     .then((data) =>{
 
-          })
-          dispatch(addPhoto(photo.uri))
-      }
+      //     })
+      //     dispatch(addPhoto(photo.uri))
+      // }
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
         Poppins_600SemiBold,
@@ -328,21 +334,21 @@ export default function AddPatientScreen({navigation}) {
                                     onChange={handleDateChange}
                                 />
                                     <TouchableWithoutFeedback onPress={() => {}}>
-                                        <View>
+                                    <View>
                                         <TextInput
-                                        label='Date et Heure du rendez-vous'
-                                        mode='outlined'
-                                        theme={{ 
-                                        colors: { 
-                                            primary: '#99BD8F', 
-                                        }
-                                        }}
-                                        style={{ width: 350, marginTop: 15 }} 
-                                        value={addRdv}
-                                        onChangeText={text => setAddRdv(text)}
-                                        editable={false} 
+                                            label='Date et Heure du rendez-vous'
+                                            mode='outlined'
+                                            theme={{ 
+                                                colors: { 
+                                                    primary: '#99BD8F', 
+                                                }
+                                            }}
+                                            style={{ width: 350, marginTop: 15 }} 
+                                            value={displayDate}
+                                            onChangeText={text => setDisplayDate(text)}
+                                            editable={false} 
                                         />
-                                        </View>
+                                    </View>
                                     </TouchableWithoutFeedback>
                                 </View>
                             <View>
