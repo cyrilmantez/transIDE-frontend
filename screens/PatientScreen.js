@@ -1,11 +1,11 @@
-import { Button, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, TouchableWithoutFeedback  } from 'react-native';
+import { Button, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Image } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 
 
-export default function PatientScreen(props) {
+export default function PatientScreen( { navigation }, props) {
 
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
@@ -38,7 +38,7 @@ export default function PatientScreen(props) {
 ////////////// 10 prochain jours à afficher dans les prochains rdv :
 let rdv;
 if (patient) {
-    rdv = patient.treatment.map((data) => {
+    rdv = patient.treatments.map((data) => {
         const tenDaysLaterInMS = timestamp + (10 * 24 * 60 * 60 * 1000);
         if (data.date <= tenDaysLaterInMS)
         return (
@@ -50,7 +50,7 @@ if (patient) {
  ///////////////////// 90 jours passés à afficher dans l'historique : 
  let oldRdv;
  if (patient) {
-    oldRdv = patient.treatment.map((data) => {
+    oldRdv = patient.treatments.map((data) => {
         const ninetyDaysBeforeInMS = timestamp - (90 * 24 * 60 * 60 * 1000);
         if (data.date >= ninetyDaysBeforeInMS)
         return (
@@ -64,27 +64,50 @@ if (patient) {
 
     const changeDispo = () =>{
         setIsDisponible(!isDisponible)
-
     }
+
     const containerStyle = {
         backgroundColor: isDisponible ? '#CADDC5' : '99BD8F',
       };
 
-
-
 ///////////////////////////////////////////////////////////////
  if (!patient){
     return(
-        <Text>Data not found</Text>
+        <SafeAreaView  style={styles.container}>
+        <View style={styles.noPatient}>
+                <TouchableOpacity 
+                    onPress={() => {
+                        navigation.navigate('TabNavigator')
+                        setPatient(null)}}>
+                    <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' />
+                </TouchableOpacity>
+            <Text>Data not found</Text>
+            <Image
+                  style={styles.image}
+                  source={require('../assets/logo.png')}
+            />
+        </View>
+        </SafeAreaView >
+
+        
     )
     }  else {
 
     return (
     <SafeAreaView  style={styles.container}>
             <View styles={styles.titleContainer}>
-                <Text style={styles.titlePage}>Fiche Patient</Text>
+                <TouchableOpacity 
+                    onPress={() => {
+                        navigation.navigate('TabNavigator')
+                        setPatient(null)}}>
+                    <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' />
+                </TouchableOpacity>
+                <Image
+                  style={styles.image}
+                  source={require('../assets/logo.png')}
+                />   
             </View>
-
+            <Text style={styles.titlePage}>Fiche Patient</Text>
             <View style={styles.infos}>
                 <Text>`${patient.firstname} ${patient.name.toUppercase()}`</Text>
                 <View style={styles.address}>
@@ -147,6 +170,15 @@ const styles = StyleSheet.create({
    alignItems: 'center',
    justifyContent: 'space-between',
  },
+ noPatient: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+
+ },
+ image: {
+    width: 60,
+    height: 60,
+  },
 titlePage: {
     color: '#99BD8F',
     fontSize: 30,
