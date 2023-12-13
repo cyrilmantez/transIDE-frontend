@@ -21,7 +21,7 @@ export default function AddPatientScreen({navigation}) {
     const [personToContact, setPersonToContact] = useState('');
     const [phonePersonToContact, setPhonePersonToContact] = useState('');
     const [addRdv, setAddRdv] = useState(Date());
-    const [addTreatment, setAddTreatment] = useState('');
+    const [addTreatment, setAddTreatment] = useState([]);
     const [dobPatient, setdobPatient] = useState('');
     const [results, setResults] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -55,18 +55,16 @@ export default function AddPatientScreen({navigation}) {
                 name: lastnamePatient,
                 firstname: firstnamePatient,
                 yearOfBirthday : dobPatient,
-                address: {
-                road: addressPatient,
-                infos : additionalAddress
-                },
-                phoneNumbers: {
+                address: addressPatient,
+                infosAddress : additionalAddress,
+                phoneNumbers: [{
                     home: phoneNumber,
                     mobile: homePhone
-                },    
+                }],    
                 treatment: [{
                     state : true,
                     date : addRdv,          
-                    actions: [addTreatment],
+                    actions: addTreatment,
                     nurse: '',
                     documentsOfTreatment: [{
                         creationDate: Date,
@@ -84,10 +82,10 @@ export default function AddPatientScreen({navigation}) {
                     document: '',
                 }],
                 disponibility: true,
-                inCaseOfEmergency : {
+                inCaseOfEmergency : [{
                     identity: personToContact,
                     phoneNumber: phonePersonToContact,
-                }
+                }],
               })
             }).then(response => response.json())
               .then(data => {
@@ -327,7 +325,7 @@ export default function AddPatientScreen({navigation}) {
                                     }
                                 }}
                                 value={addTreatment}
-                                onChangeText={text => setAddTreatment(text)}
+                                onChangeText={text => setAddTreatment([...addTreatment, text])}
                                 style={{ width: 350, marginTop: 15}} 
                             />
                             <View>
