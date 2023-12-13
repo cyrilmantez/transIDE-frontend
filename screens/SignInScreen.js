@@ -100,7 +100,7 @@ export default function SignInScreen({navigation}) {
                 <View style={styles.footer}>
                   <Text style={styles.footertext}>Pas encore de compte ?</Text>
                   <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
-                    <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Créer un compte</Text>
+                    <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Vite! Crée le en 10 secondes</Text>
                   </TouchableOpacity>
                 </View>
               </View>
