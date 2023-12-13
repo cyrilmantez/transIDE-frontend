@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, View, SafeAreaView, ScrollView, Image,TouchableOpacity, StatusBar , Platform } from 'react-native';
 import Dropdown from './Dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -8,6 +8,12 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
  
 
 export default function TransmissionScreen(navigation) {
+  //hook d'état ==>  All translissions
+  
+  //get data from dataBase, and dispatch in the reducer, avec la limite de 7j
+  
+  //display data from the hook
+
  return (
   <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
     <StatusBar barStyle="light-content"/>
@@ -44,7 +50,7 @@ export default function TransmissionScreen(navigation) {
               <ScrollView style={styles.transmission}>
                 <Text style={styles.personAbout}>Pour Mme Musk ELONA</Text>
                 <Text style={styles.publicationDate}>Publié le 04/12/2023 à 13h00, par SuperCyril.</Text>
-                <Text style={styles.message}>Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random  Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random </Text>
+                <Text style={styles.message}>Ceci est un message random Ceci est un messagi est un message random Ceci est un message random  Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random </Text>
               </ScrollView>
               <ScrollView style={styles.transmission}>
                 <Text style={styles.personAbout}>Pour Mme Musk ELONA</Text>
@@ -54,7 +60,7 @@ export default function TransmissionScreen(navigation) {
               <ScrollView style={styles.transmission}>
                 <Text style={styles.personAbout}>Pour Mme Musk ELONA</Text>
                 <Text style={styles.publicationDate}>Publié le 04/12/2023 à 13h00, par SuperCyril.</Text>
-                <Text style={styles.message}>Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random  Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random </Text>
+                <Text style={styles.message}>Ceci est un message random Ceci est un message random Ceci est st un message random Ceci est un message random  Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random </Text>
               </ScrollView>
               <ScrollView style={styles.transmission}>
                 <Text style={styles.personAbout}>Pour Mme Musk ELONA</Text>
@@ -146,19 +152,20 @@ transmissions : {
 },
 transmission :{
   width: '100%',
-  maxHeight: 150,
-  marginTop: 8,
+ 
   ...Platform.select({
     ios: {
       shadowColor: 'black',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.5,
-      shadowRadius: 2,
+      shadowRadius: 3,
     },
     android: {
-      elevation: 2,
+      elevation: 5,
     },
   }),
+  maxHeight: 150,
+  marginTop: 10,
 },
 personAbout: {
   color: '#99BD8F',
@@ -166,6 +173,7 @@ personAbout: {
   fontFamily: 'Poppins_600SemiBold',
   paddingLeft: 5,
   paddingTop: 5,
+  marginBottom: -2,
 },
 publicationDate :{
   fontSize: 10,
@@ -175,10 +183,11 @@ publicationDate :{
 message : {
   fontSize: 12,
   fontFamily: 'Poppins_600SemiBold',
-  marginTop:5,
+  marginTop:2,
   paddingLeft: 5,
-  paddingRight: 5,
+  paddingRight: 8,
   paddingBottom: 5,
+  textAlign: 'justify',
 },
 
 });
