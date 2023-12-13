@@ -9,7 +9,8 @@ import { useSelector } from 'react-redux';
 
 export default function TourScreen({navigation}) {
   
-  //Date
+  //Date 
+  /*
   const [date, setDate] = useState(new Date());
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
@@ -88,7 +89,7 @@ export default function TourScreen({navigation}) {
     );
   });
   };
-  
+ 
 
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -138,7 +139,10 @@ export default function TourScreen({navigation}) {
         </SafeAreaView>
       </>
     );
-  }
+  } */
+  return(
+    <View></View>
+  )
 }
 
 const styles = StyleSheet.create({
