@@ -18,14 +18,14 @@ export default function SignInScreen({navigation}) {
       return;
     }
 
-    fetch('http://192.168.1.162:3000/users/signin', {
+    fetch('http://192.168.1.5:3000/users/signin', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({username: signInName, password: signInPassword})
     }).then(response => response.json())
       .then(data => {
         if (data.result){
-          dispatch(login({username: signInName, token: data.token, officesTokens : data.officesTokens }));
+          dispatch(login({username: signInName, token: data.token, officesTokens : data.officesToken }));
           setSignInName('');
           setSignInPassword('');
           navigation.navigate('TabNavigator');
