@@ -1,17 +1,35 @@
-import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image, Keyboard, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Keyboard, TouchableOpacity, SafeAreaView } from 'react-native';
 import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 //import PatientScreen from './screens/PatientScreen';
 //import users from '../reducers/users';
-//import patients from '../reducers/patients';
+import patients from '../reducers/patients';
 
 export default function ConsultationScreen() {
     const dispatch = useDispatch();
     //const users = useSelector((state) => state.users.value.username);
-    //const patients = useSelector((state) => state.patients.value.XXXX);
+    const [patient, setPatient]= useState(null);
+    const [soinsPrevus, setSoinsPrevus] = useState(null);
+    const [transmission, setTransmission] = useState(null);
+
+
+   /*  useEffect(() => {
+        fetch(`http://192.168.1.5:3000/patient/${props._id}`).then(response => response.json())
+        .then(data => {
+            setPatient(data.patient)
+        })
+      }, []); */
+
+        //console.log(patient);
+    //const patientInfo = 
+
+    const handleSubmit = () => {
+        
+        navigation.navigate('TabNavigator');
+      };
 
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
@@ -21,45 +39,67 @@ export default function ConsultationScreen() {
     if (!fontsLoaded) {
         return <View />;
     } else {
-
         return (
-        <SafeAreaView  style={styles.container}>
-            <View styles={styles.titleContainer}>
-                <Text style={styles.titlePage}>Consultation</Text>
-            </View>
-            <View>
-                <Text style={styles.name}>{/* {patients} */}</Text>
-                <View>
-                    <View style={styles.name}></View>
-                    <View></View>
-                </View>
-            </View>
-            <View style={styles.inputContainer}>
-                <View>
-                    <Text style={styles.titleSoins}>Soins prévus</Text>
-                </View>            
-                <View style={styles.soinsPrevusContainer}>
-                    <View style={styles.soinsPrevus}></View>
-                </View>
-                <View>
-                    <Text style={styles.titleSoins}>Soins supplémentaires</Text>
-                </View>            
-                <View style={styles.soinsPrevusContainer}>
-                    <View style={styles.soinsPrevus}></View>
-                </View>
-                <View>
-                    <Text style={styles.titleSoins}>Transmissions</Text>
-                </View>            
-                <View style={styles.soinsPrevusContainer}>
-                    <View style={styles.soinsPrevus}></View>
-                </View>
-            </View>
-            <View>
-                <TouchableOpacity  style={styles.button}>  
-                <Text style={styles.text}>Valider</Text>            
-                </TouchableOpacity>
-            </View>
-        </SafeAreaView >
+            <>
+            <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
+            <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                        <ScrollView contentContainerStyle={styles.scrollView}>
+                            <View styles={styles.titleContainer}>
+                                <Text style={styles.titlePage}>Consultation</Text>
+                            </View>
+                            <View style={styles.patient}>
+                                <View>
+                                    <View style={styles.name}>{/* {patientInfo} */}</View>
+                                    <View></View>
+                                </View>
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <View>
+                                    <Text style={styles.titleSoins}>Soins prévus</Text>
+                                </View>            
+                                <View style={styles.soinsPrevus}>
+                                </View>
+                                <View>
+                                    <Text style={styles.titleSoins}>Soins supplémentaires</Text>
+                                </View>            
+                                <TextInput 
+                                    mode='outlined'
+                                    multiline
+                                    theme={{ 
+                                    colors: { 
+                                        primary: '#99BD8F', 
+                                    }
+                                    }}
+                                    style={styles.soinsPrevus} 
+                                    onChangeText={text => setSoinsPrevus(text)} 
+                                    value={soinsPrevus}/>
+                                <View>
+                                    <Text style={styles.titleSoins}>Transmissions</Text>
+                                </View>            
+                                <TextInput 
+                                    mode='outlined'
+                                    multiline
+                                    theme={{ 
+                                    colors: { 
+                                        primary: '#99BD8F', 
+                                    }
+                                    }}
+                                    style={styles.soinsPrevus} 
+                                    onChangeText={text => setTransmission(text)} 
+                                    value={transmission}/>
+                            </View>
+                            <View>
+                                <TouchableOpacity onPress={() => handleSubmit()} style={styles.button} activeOpacity={0.8}>  
+                                    <Text style={styles.text}>Valider</Text>            
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </KeyboardAvoidingView>
+                </TouchableWithoutFeedback>
+            </SafeAreaView>
+            </>
         );
     }
 }
@@ -71,25 +111,29 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      justifyContent: 'center',
     },
-   titlePage: {
+    titlePage: {
        color: '#99BD8F',
        fontSize: 30,
        marginBottom: 30,
        fontFamily: 'Poppins_600SemiBold',
    },
-   titleSoins: {
+    patient: {
+        backgroundColor: '#99BD8F',
+   },
+    titleSoins: {
        color: '#99BD8F',
-       fontSize: 30,
-       marginBottom: 50,
+       fontSize: 22,
+       marginBottom: 0,
+       marginTop: 20,
        fontFamily: 'Poppins_400Regular',
    },
-   text:{
+    text:{
        fontSize: 17,
        fontFamily: 'Poppins_400Regular', 
    },
-   button : {
+    button : {
        flexDirection: 'row',
        justifyContent: 'space-between',
        backgroundColor: '#99BD8F',
@@ -100,24 +144,33 @@ const styles = StyleSheet.create({
        justifyContent: 'center',
        alignItems: 'center',
      },
-     buttonDispo:{
+    buttonDispo:{
        flexDirection: 'row',
        justifyContent: 'space-between',
      },
-     inputContainer: {
+    inputContainer: {
         flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
      },
-     soinsPrevus:{
+     /* soinsPrevusContainer: {
+         //marginTop: 0,
+         //marginLeft: 10,
+         //marginRight: 10,
+        }, */
+    soinsPrevus:{
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
-        width: 350,
-        height: 200,
+        width: 340,
+        height: 180,
         backgroundColor: '#F0F0F0',
         borderRadius: 10,
-      },
-     soinsPrevusContainer: {
-        marginTop: 5,
-        marginLeft: 5,
-     },
-     
+        marginLeft: 10,
+        marginRight: 10,
+        },
+    scrollView: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },     
    });

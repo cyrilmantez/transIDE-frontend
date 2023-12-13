@@ -167,13 +167,9 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontFamily: 'Poppins_600SemiBold', 
   },
- /* 
-textContainer: {
-  
-},
-scrollView: {
-  flexGrow: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-}, */
+  scrollView: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
