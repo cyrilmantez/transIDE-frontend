@@ -20,7 +20,7 @@ export default function TransmissionScreen(navigation) {
   
   //get data from dataBase, and dispatch in the reducer, avec la limite de 7j
   useEffect(() => {
-    fetch(`http://192.168.1.162:3000/transmissions/allTransmissions/${date}`).then(response => response.json())
+    fetch(`http://192.168.1.5:3000/transmissions/allTransmissions/${date}`).then(response => response.json())
     .then((data) => {
       console.log(data)
       if(data.result){
