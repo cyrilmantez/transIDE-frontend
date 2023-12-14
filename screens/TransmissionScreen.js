@@ -4,25 +4,41 @@ import Dropdown from './Dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
+import { useSelector } from 'react-redux';
 
  
 
 export default function TransmissionScreen(navigation) {
-  const [date, setDate] = useState (new Date())
+  const initialDate = new Date();
+  initialDate.setDate(initialDate.getDate() - 10);
+  const [date, setDate] = useState (initialDate)
   const [transmissions, setTransmissions] = useState([])
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const userToken = useSelector((state) => state.users.value.officesTokens[0].token)
+  const [ideVisible, setIdeVisible] = useState(false);
+  const [patientsVisible, setPatientsVisible] = useState(false);
+  const [ideFiltered, setIdeFiltered] = useState('');
+  const [patientFiltered, setPatientFiltered] = useState('');
 
-  const openModal = () => setModalVisible(true);
-  const closeModal = () => setModalVisible(false);
-  console.log(date)
-  
-  //get data from dataBase, and dispatch in the reducer, avec la limite de 7j
+  //Open the Modal
+  const openModal = (target) => {
+    setModalVisible(true);
+    console.log(target)
+      target === 'IDE' ? setIdeVisible(true) : setPatientsVisible(true);
+  };
+  //Close Modal
+  const closeModal = () => {
+    setModalVisible(false);
+    setIdeVisible(false);
+    setPatientsVisible(true);
+  }
+
+  //get 10lastDayData from dataBase, and dispatch in the reducer
   useEffect(() => {
-    fetch(`http://192.168.1.162:3000/transmissions/allTransmissions/${date}`).then(response => response.json())
+    fetch(`http://192.168.1.162:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
     .then((data) => {
-      console.log(data)
       if(data.result){
         const compareDates = (a, b) => new Date(b.date) - new Date(a.date);
         const sortedData = data.transmissions.sort(compareDates);
@@ -33,15 +49,18 @@ export default function TransmissionScreen(navigation) {
     })
   },[date])
 
+
   const showPicker = (currentMode) => {
     setVisible(true);
     setMode(currentMode)
   };
-
-  const showDate = () => {
+  //Filter by date
+  const showDate = (target) => {
     showPicker();
-    
   };
+
+ 
+
   const dateChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     console.log('selectedDate', selectedDate)
@@ -60,7 +79,19 @@ export default function TransmissionScreen(navigation) {
         <Text style={styles.message}>{element.info} </Text>
     </ScrollView>)
     })
-
+console.log(transmissions)
+ //IDE List
+  const ideListToDisplay = transmissions.map((element,index) => {
+      return (
+        <Text style={styles.modalText} key={index}>Infirmier : {element.nurse}</Text>
+      )
+  })
+  //Patients List
+  const patientsListToDisplay = transmissions.map((element,index) => {
+      return (
+      <Text style={styles.modalText} key={index}>{element.name} {element.firstname}</Text>
+    )
+})
  return (
   <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
     <StatusBar barStyle="light-content"/>
@@ -75,13 +106,13 @@ export default function TransmissionScreen(navigation) {
         <View style={styles.filterContainer}>
             <Text style={styles.text}>Filtrer par :</Text>
             <View style={styles.buttonContainer}>
-                  <TouchableOpacity style={styles.button} onPress={openModal}>
+                  <TouchableOpacity style={styles.button} onPress={() => openModal('IDE')}>
                       <Text style={styles.text} >IDE</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={showDate}>
                       <Text style={styles.text} >Date</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={openModal}>
+                  <TouchableOpacity style={styles.button} onPress={() => openModal('Patients')}>
                       <Text style={styles.text} >Patient</Text>
                   </TouchableOpacity>
             </View>
@@ -89,24 +120,8 @@ export default function TransmissionScreen(navigation) {
                 <View style={styles.modalContainer}>
                   <View style={styles.modalContent}>
                     <ScrollView style={styles.modalList}>
-                       <Text style={styles.modalText}>Mr LEGRAND François</Text>
-                       <Text style={styles.modalText}>Mme LAGRANDE Françoise</Text>
-                       <Text style={styles.modalText}>Mr LEGRAND François</Text>
-                       <Text style={styles.modalText}>Mme LAGRANDE Françoise</Text>
-                       <Text style={styles.modalText}>Mr LEGRAND François</Text>
-                       <Text style={styles.modalText}>Mme LAGRANDE Françoise</Text>
-                       <Text style={styles.modalText}>Mr LEGRAND François</Text>
-                       <Text style={styles.modalText}>Mme LAGRANDE Françoise</Text>
-                       <Text style={styles.modalText}>Mr LEGRAND François</Text>
-                       <Text style={styles.modalText}>Mme LAGRANDE Françoise</Text>
-                       <Text style={styles.modalText}>Mr LEGRAND François</Text>
-                       <Text style={styles.modalText}>Mme LAGRANDE Françoise</Text>
-                       <Text style={styles.modalText}>Mr LEGRAND François</Text>
-                       <Text style={styles.modalText}>Mme LAGRANDE Françoise</Text>
-                       <Text style={styles.modalText}>Mr LEGRAND François</Text>
-                       <Text style={styles.modalText}>Mme LAGRANDE Françoise</Text>
-                       <Text style={styles.modalText}>Mr LEGRAND François</Text>
-                       <Text style={styles.modalText}>Mme LAGRANDE Françoise</Text>
+                      {ideVisible && <Text style={styles.modalText} >Tout le cabinet</Text> && ideListToDisplay}
+                      {patientsVisible && <Text style={styles.modalText} >Tout les patients</Text> && patientsListToDisplay}
                     </ScrollView>
                     <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
                       <Text style={styles.modalButtonText}>Fermer la modale</Text>
