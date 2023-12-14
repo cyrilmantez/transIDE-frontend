@@ -43,9 +43,8 @@ export default function AddPatientScreen({navigation}) {
       setIsoDate(localFormat);
     };
     
+    const user = useSelector((state) => state.users.value)
     
-  
-  
     
     // Hook Add Patient
     const fetchAddress = (query) => {
@@ -57,12 +56,12 @@ export default function AddPatientScreen({navigation}) {
         })
       };
 
-      const handleRegister = () => {      
+  const handleRegister = () => {      
         fetch('http://192.168.1.14:3000/patients/addPatient', {
           method: 'POST',
           headers: {'Content-Type' : 'application/json'},
           body: JSON.stringify({
-            officesToken: officesToken,
+            officeToken: user.officesTokens,
             name: lastnamePatient,
             firstname: firstnamePatient,
             dateOfBirthday : dobPatient, 

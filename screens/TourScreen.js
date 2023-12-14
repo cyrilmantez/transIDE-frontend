@@ -6,49 +6,17 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import { useSelector } from 'react-redux';
+import { ProgressBar, Switch  } from 'react-native-paper';
 
 export default function TourScreen({navigation}) {
-  
+  const user = useSelector((state) => state.users.value)
+
   //Date 
-  /*
+  
   const [date, setDate] = useState(new Date());
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
-  const [allPatients, setAllPatients] = useState([])
-
-  const user = useSelector((state) => state.users.value)
-  console.log(user.officesTokens[0].token)
-
-  //const dateToday = new Date(date)
-
-  // useEffect(() => {
-
-  //   fetch('http://192.168.1.5:3000/patients/allPatients', {
-  //     method: 'POST',
-  //     headers: {'Content-Type' : 'application/json'},
-  //     body: JSON.stringify({officeToken: user.officesTokens[0].token, dateOfToday : dateToday })
-  //   }).then(response => response.json())
-  //     .then(data => {
-  //       setAllPatients(data.patientsToSee)
-  //     })
-  // }, [date]);
-
-  const allData =()=> {
-    fetch('http://192.168.1.5:3000/patients/allPatients', {
-      method: 'POST',
-      headers: {'Content-Type' : 'application/json'},
-      body: JSON.stringify({officeToken: user.officesTokens[0].token, dateOfToday : date })
-    }).then(response => response.json())
-      .then(data => {
-        setAllPatients(data.patientsToSee)
-      })
-  };
-
-  useEffect(()=>{
-    allData()
-  }
- , [date] )
-
+  const [patients, setPatients] = useState([]);
 
 
   const showPicker = (currentMode) => {
@@ -74,40 +42,110 @@ export default function TourScreen({navigation}) {
     setDate(newDate);
   }
 
-    const allDayPatients = allPatients.map((patient, i) => {
+  // Progess bar
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 1) {
+          return 0;
+        }
+        const newProgress = oldProgress + 0.1;
+        return newProgress > 1 ? 1 : newProgress;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  // Switch
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
+
+  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+  // Affichage des patients 
+  useEffect(() => {
+  
+    fetch('http://192.168.1.14:3000/patients/allPatientDay')
+      .then(response => response.json())
+      .then(data => {
+        console.log('Data structure:', data);
+        if (data.allPatient) {
+          // Filtrer les patients par date
+          const filteredPatients = data.allPatient.filter(patient => {
+            // Convertir la date du patient en objet Date pour la comparaison
+            const patientDate = new Date(patient.date);
+            // Comparer l'année, le mois et le jour
+            return patientDate.getFullYear() === date.getFullYear() &&
+                   patientDate.getMonth() === date.getMonth() &&
+                   patientDate.getDate() === date.getDate();
+          });
+  
+          // Trier les patients par date, office token et heure
+          const sortedPatients = filteredPatients.sort((a, b) => {
+            // Comparer les dates
+            const dateComparison = new Date(a.date) - new Date(b.date);
+            if (dateComparison !== 0) return dateComparison;
+  
+            // Si les dates sont les mêmes, comparer les office tokens
+            const officeTokenComparison = a.officeToken.localeCompare(user.officesTokens);
+            if (officeTokenComparison !== 0) return officeTokenComparison;
+  
+            // Si les office tokens sont les mêmes, comparer les heures
+            return new Date(`1970-01-01T${a.time}:00`) - new Date(`1970-01-01T${b.time}:00`);
+          });
+  
+          setPatients(sortedPatients);
+        }
+      });
+  }, [date]);
+  
+  
+  
+    const AfficherPatients =  patients.map((patient, i) => {
+    if (!patient.treatments) {
+      return null;
+    }
+  
     let truncatedNom;
     if (patient.name.length > 15) {
       truncatedNom = `${patient.name.substring(0, 15)}...`;
     } else {
       truncatedNom = patient.name;
     }
+  
+    const sortedTreatments = patient.treatments.sort((a, b) => new Date(a.date) - new Date(b.date));
+  
     return (
-        <View key={i}>
-          <Card style={styles.contentcard}>
-            <Card.Content style={styles.card}>
-              <View>
-                <Paragraph >{patient.heure}</Paragraph>
-              </View>
-              <View>
-                <Paragraph style={styles.nompatient}>{truncatedNom}</Paragraph>
-              </View>
-              <View>
-                <TouchableOpacity>
-                  <FontAwesome  name={'map-pin'} size={24} color='#99BD8F' />
-                </TouchableOpacity>
-              </View>
-              <View>
-                <FontAwesome name={'user'} size={24} color='#99BD8F' onPress={() => navigation.navigate('PatientScreen', { _id: patient._id})}/>
-              </View>
-              <View>
-                <FontAwesome name={'square-o'} size={24} color='#99BD8F' />
-              </View>
-            </Card.Content>
-          </Card>
-        </View>
+      <View key={i}>
+        <Card style={styles.contentcard}>
+          <Card.Content style={styles.card}>
+            <View>
+              <Text>{new Date(sortedTreatments[0].date).toLocaleTimeString()}</Text>
+            </View>
+            <View>
+              <Text style={styles.nompatient}>{truncatedNom}</Text>
+            </View>
+            <View>
+              <TouchableOpacity>
+                <FontAwesome name={'map-pin'} size={24} color='#99BD8F' />
+              </TouchableOpacity>
+            </View>
+            <View>
+              <FontAwesome name={'user'} size={24} color='#99BD8F' onPress={() => navigation.navigate('PatientScreen', { _id: patient._id })} />
+            </View>
+            <View>
+              <FontAwesome name={'square-o'} size={24} color='#99BD8F' />
+            </View>
+          </Card.Content>
+        </Card>
+      </View>
     );
   });
-  };
+  
  
 
   let [fontsLoaded] = useFonts({
@@ -148,20 +186,28 @@ export default function TourScreen({navigation}) {
                 </View>
               </View>
             </View>
+            <View style={styles.nbrpatient}>
+              <Text style={styles.textnbrpatient}>Patients visités 3/5</Text>
+            </View>
+            <View style={styles.progressBar}>
+              <ProgressBar progress={progress} style={{width: 200}} theme={{ colors: { primary: '#99BD8F' } }}   />
+            </View>
             <View style={styles.pluscircle}>
                 <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' onPress={() => navigation.navigate('AddPatientScreen')}/>
             </View>
+            <View style={styles.switchitem}>
+              <Text style={styles.switchitemtext}>Tout</Text>
+              <Switch value={isSwitchOn} theme={{ colors: { primary: '#99BD8F' } }}  onValueChange={onToggleSwitch}/>
+              <Text style={styles.switchitemtext}>Restant</Text>
+            </View>
             <ScrollView contentContainerStyle={styles.allcards}>
-            {allDayPatients}
+            {AfficherPatients}
           </ScrollView>
           </ScrollView>
         </SafeAreaView>
       </>
     );
-  } */
-  return(
-    <View></View>
-  )
+  } 
 }
 
 const styles = StyleSheet.create({
@@ -236,5 +282,29 @@ const styles = StyleSheet.create({
   allcards: {
     width: '95%',
     marginLeft: 10,
-  }
+  },
+  progressBar: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  nbrpatient: {
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  textnbrpatient: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 17,
+  },
+  switchitem: {
+    marginLeft: 20,    
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  switchitemtext: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 17,
+    marginLeft: 5,
+    marginRight: 5,
+  },
 });
