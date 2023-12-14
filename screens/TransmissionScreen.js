@@ -27,14 +27,15 @@ export default function TransmissionScreen(navigation) {
     const years = element.date.getFullYear();
     const month = element.date.getMonth();
     const day = element.date.getDate();
-    const hours = 
+   // const hours = 
 
-    return 
+    return (
     <ScrollView style={styles.transmission}>
       <Text style={styles.personAbout}>Pour {element.name} {element.firstname}</Text>
       <Text style={styles.publicationDate}>Publié le {day}/{month}/{years} à 13h00, par {element.nurse}.</Text>
       <Text style={styles.message}>Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random  Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random Ceci est un message random </Text>
   </ScrollView>
+    )
   })
 
  return (
@@ -103,7 +104,7 @@ export default function TransmissionScreen(navigation) {
    
   </SafeAreaView>
 );
-}
+};
 
 const styles = StyleSheet.create({
  container: {
