@@ -15,10 +15,10 @@ export default function PatientScreen( { navigation, route }) {
     const [isDisponible, setIsDisponible] = useState(true)
     const [patient, setPatient]= useState(null)
 
-    //const dispatch = useDispatch();
+  
 
-console.log('sur patienScreen :', route.params._id)
-  // const patient = useSelector((state) => state.onePatient.value);
+//console.log('sur patienScreen :', route.params._id)
+  
 
   useEffect(() => {
     fetch(`http://192.168.1.5:3000/patients/patient/${route.params._id}`).then(response => response.json())
