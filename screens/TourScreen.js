@@ -6,17 +6,33 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import { useSelector } from 'react-redux';
-import { ProgressBar, Switch  } from 'react-native-paper';
+import { ProgressBar, Switch, Icon } from 'react-native-paper';
 
 export default function TourScreen({navigation}) {
   const user = useSelector((state) => state.users.value)
 
-  //Date 
-  
   const [date, setDate] = useState(new Date());
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
-  const [patients, setPatients] = useState([]);
+  const [allPatients, setAllPatients] = useState([])
+
+
+  const allData =()=> {
+    fetch('http://192.168.1.5:3000/patients/allPatients', {
+      method: 'POST',
+      headers: {'Content-Type' : 'application/json'},
+      body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
+    }).then(response => response.json())
+      .then(data => {
+        setAllPatients(data.patientsToSee)
+      })
+
+  };
+
+  useEffect(()=>{
+    allData()
+  }, [date] )
+
 
 
   const showPicker = (currentMode) => {
@@ -31,7 +47,6 @@ export default function TourScreen({navigation}) {
 
   const dateChange = (event, selectedDate) => {
     const currentDate = selectedDate;
-    console.log('selectedDate', selectedDate)
     setVisible(false);
     setDate(currentDate);
   };
@@ -42,110 +57,127 @@ export default function TourScreen({navigation}) {
     setDate(newDate);
   }
 
+
+
   // Progess bar
   const [progress, setProgress] = useState(0);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 1) {
-          return 0;
-        }
-        const newProgress = oldProgress + 0.1;
-        return newProgress > 1 ? 1 : newProgress;
-      });
-    }, 1000);
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setProgress((oldProgress) => {
+  //       if (oldProgress === 1) {
+  //         return 0;
+  //       }
+  //       const newProgress = oldProgress + 0.1;
+  //       return newProgress > 1 ? 1 : newProgress;
+  //     });
+  //   }, 1000);
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(timer);
+  //   };
+  // }, []);
 
-  // Switch
+
+  // Switch :
   const [isSwitchOn, setIsSwitchOn] = useState(false);
 
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
+
   // Affichage des patients 
-  useEffect(() => {
+  // useEffect(() => {
   
-    fetch('http://192.168.1.14:3000/patients/allPatientDay')
-      .then(response => response.json())
-      .then(data => {
-        console.log('Data structure:', data);
-        if (data.allPatient) {
-          // Filtrer les patients par date
-          const filteredPatients = data.allPatient.filter(patient => {
-            // Convertir la date du patient en objet Date pour la comparaison
-            const patientDate = new Date(patient.date);
-            // Comparer l'année, le mois et le jour
-            return patientDate.getFullYear() === date.getFullYear() &&
-                   patientDate.getMonth() === date.getMonth() &&
-                   patientDate.getDate() === date.getDate();
-          });
+  //   fetch('http://192.168.1.14:3000/patients/allPatientDay')
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       console.log('Data structure:', data);
+  //       if (data.allPatient) {
+  //         // Filtrer les patients par date
+  //         const filteredPatients = data.allPatient.filter(patient => {
+  //           // Convertir la date du patient en objet Date pour la comparaison
+  //           const patientDate = new Date(patient.date);
+  //           // Comparer l'année, le mois et le jour
+  //           return patientDate.getFullYear() === date.getFullYear() &&
+  //                  patientDate.getMonth() === date.getMonth() &&
+  //                  patientDate.getDate() === date.getDate();
+  //         });
   
-          // Trier les patients par date, office token et heure
-          const sortedPatients = filteredPatients.sort((a, b) => {
-            // Comparer les dates
-            const dateComparison = new Date(a.date) - new Date(b.date);
-            if (dateComparison !== 0) return dateComparison;
+  //         // Trier les patients par date, office token et heure
+  //         const sortedPatients = filteredPatients.sort((a, b) => {
+  //           // Comparer les dates
+  //           const dateComparison = new Date(a.date) - new Date(b.date);
+  //           if (dateComparison !== 0) return dateComparison;
   
-            // Si les dates sont les mêmes, comparer les office tokens
-            const officeTokenComparison = a.officeToken.localeCompare(user.officesTokens);
-            if (officeTokenComparison !== 0) return officeTokenComparison;
+  //           // Si les dates sont les mêmes, comparer les office tokens
+  //           const officeTokenComparison = a.officeToken.localeCompare(user.officesTokens);
+  //           if (officeTokenComparison !== 0) return officeTokenComparison;
   
-            // Si les office tokens sont les mêmes, comparer les heures
-            return new Date(`1970-01-01T${a.time}:00`) - new Date(`1970-01-01T${b.time}:00`);
-          });
+  //           // Si les office tokens sont les mêmes, comparer les heures
+  //           return new Date(`1970-01-01T${a.time}:00`) - new Date(`1970-01-01T${b.time}:00`);
+  //         });
   
-          setPatients(sortedPatients);
-        }
-      });
-  }, [date]);
+  //         setPatients(sortedPatients);
+  //       }
+  //     });
+  // }, [date]);
   
   
-  
-    const AfficherPatients =  patients.map((patient, i) => {
-    if (!patient.treatments) {
-      return null;
-    }
-  
+    const allPatientsInorder = allPatients.sort((a, b) => new Date(a.date) - new Date(b.date));
+    const AfficherPatients =  allPatientsInorder.map((patient, i) => {
+    // if (!patient.treatments) {
+    //   return null;
+    // }
+    let nameAll = `${patient.name} ${patient.firstname}`;
     let truncatedNom;
-    if (patient.name.length > 15) {
-      truncatedNom = `${patient.name.substring(0, 15)}...`;
+    if (nameAll.length > 15) {
+      truncatedNom = `${nameAll.substring(0, 15)}...`;
     } else {
-      truncatedNom = patient.name;
+      truncatedNom = nameAll;
     }
+    console.log(patient._id)
   
-    const sortedTreatments = patient.treatments.sort((a, b) => new Date(a.date) - new Date(b.date));
   
     return (
-      <View key={i}>
-        <Card style={styles.contentcard}>
-          <Card.Content style={styles.card}>
-            <View>
-              <Text>{new Date(sortedTreatments[0].date).toLocaleTimeString()}</Text>
-            </View>
-            <View>
-              <Text style={styles.nompatient}>{truncatedNom}</Text>
-            </View>
-            <View>
-              <TouchableOpacity>
-                <FontAwesome name={'map-pin'} size={24} color='#99BD8F' />
-              </TouchableOpacity>
-            </View>
-            <View>
-              <FontAwesome name={'user'} size={24} color='#99BD8F' onPress={() => navigation.navigate('PatientScreen', { _id: patient._id })} />
-            </View>
-            <View>
-              <FontAwesome name={'square-o'} size={24} color='#99BD8F' />
-            </View>
-          </Card.Content>
-        </Card>
-      </View>
+        <View key={i}>
+          <Card style={styles.contentcard}>
+            <Card.Content style={styles.card}>
+              <View>
+                <Paragraph >{patient.hour}</Paragraph>
+              </View>
+              <View>
+                <TouchableOpacity onPress={() => navigation.navigate('PatientScreen', { _id : patient._id})}>
+                  <Paragraph style={styles.nompatient}>{truncatedNom}</Paragraph>
+                </TouchableOpacity>
+                
+              </View>
+              <View>
+                <TouchableOpacity>
+                  <FontAwesome  name={'map-pin'} size={24} color='#99BD8F' />
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity onPress={() => navigation.navigate('ConsultationScreen', 
+                { _id : patient._id,
+                  name: patient.name,
+                  firstname: patient.firstname,
+                  address: patient.address,
+                  mobile: patient.mobile,
+                  homePhone: patient.homePhone,
+                })}>
+                  <Icon source={'medical-bag'} size={24} color='#99BD8F'/>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity>
+                  <FontAwesome name={'square-o'} size={24} color='#99BD8F' />
+                </TouchableOpacity>
+              </View>
+            </Card.Content>
+          </Card>
+        </View>
     );
   });
-  
  
 
   let [fontsLoaded] = useFonts({
@@ -154,9 +186,9 @@ export default function TourScreen({navigation}) {
   });
 
   if (!fontsLoaded) {
-    return <View />;
-  } else {
-    return (
+      return (<View />);
+    } else {
+     return (
       <>
         <SafeAreaView style={{ flex: 0, backgroundColor: '#99BD8F' }} />
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -207,8 +239,8 @@ export default function TourScreen({navigation}) {
         </SafeAreaView>
       </>
     );
-  } 
-}
+  }
+};
 
 const styles = StyleSheet.create({
   container: {
