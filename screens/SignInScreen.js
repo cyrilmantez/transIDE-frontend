@@ -18,7 +18,11 @@ export default function SignInScreen({navigation}) {
       return;
     }
 
+<<<<<<< HEAD
     fetch('http://192.168.1.14:3000/users/signin', {
+=======
+    fetch('http://192.168.1.162:3000/users/signin', {
+>>>>>>> samy
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({username: signInName, password: signInPassword})
