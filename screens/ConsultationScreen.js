@@ -12,21 +12,29 @@ export default function ConsultationScreen() {
     const dispatch = useDispatch();
     //const users = useSelector((state) => state.users.value.username);
     const [patient, setPatient]= useState(null);
-    const [soinsPrevus, setSoinsPrevus] = useState(null);
+    const [plannedTreatments, setPlannedTreatments] = useState('');
+    const [additionalTreatments, setAdditionalTreatments] = useState(null);
     const [transmission, setTransmission] = useState(null);
 
-
+    // Récupération des données du patient :
     /* ${props._id} */
     useEffect(() => {
-        fetch(`http://192.168.1.5:3000/patient/6579c5d4c2873da0530e41bf`).then(response => response.json())
+        fetch(`http://192.168.1.5:3000/patients/6579c5d4c2873da0530e41bf`).then(response => response.json())
         .then(data => {
-            setPatient(data.patient)
-        })
-      }, []);
+            console.log(data.result);
+            setPatient({firstname: data.firstname, name: data.name, address: data.address, homePhone: data.homephone, mobile: data.mobile});
+            setPlannedTreatments({treatments: {date: data.treatments.date, action: date.treatments.actions}});
+        });
+      }, [plannedTreatments]);
 
     console.log(patient);
+    console.log(plannedTreatments);
     //const patientInfo = 
 
+    // modale de confirmation de validation :
+
+
+    // Effet du clic sur "validation" :
     const handleSubmit = () => {
         
         navigation.navigate('TabNavigator');
@@ -41,8 +49,6 @@ export default function ConsultationScreen() {
         return <View />;
     } else {
         return (
-            <>
-            <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
             <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -60,8 +66,17 @@ export default function ConsultationScreen() {
                                 <View>
                                     <Text style={styles.titleSoins}>Soins prévus</Text>
                                 </View>            
-                                <View style={styles.soinsPrevus}>
-                                </View>
+                                <TextInput 
+                                    mode='outlined'
+                                    multiline
+                                    theme={{ 
+                                    colors: { 
+                                        primary: '#99BD8F', 
+                                    }
+                                    }}
+                                    style={styles.soinsPrevus} 
+                                    onChangeText={text => setPlannedTreatments(...plannedTreatments, text)} 
+                                    value={plannedTreatments}/>
                                 <View>
                                     <Text style={styles.titleSoins}>Soins supplémentaires</Text>
                                 </View>            
@@ -74,8 +89,8 @@ export default function ConsultationScreen() {
                                     }
                                     }}
                                     style={styles.soinsPrevus} 
-                                    onChangeText={text => setSoinsPrevus(text)} 
-                                    value={soinsPrevus}/>
+                                    onChangeText={text => setAdditionalTreatments(text)} 
+                                    value={additionalTreatments}/>
                                 <View>
                                     <Text style={styles.titleSoins}>Transmissions</Text>
                                 </View>            
@@ -100,7 +115,6 @@ export default function ConsultationScreen() {
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>
             </SafeAreaView>
-            </>
         );
     }
 }
