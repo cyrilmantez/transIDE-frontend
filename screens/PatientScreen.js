@@ -5,7 +5,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 
 
-export default function PatientScreen( { navigation }, props) {
+export default function PatientScreen( { navigation, route }) {
 
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
@@ -17,11 +17,11 @@ export default function PatientScreen( { navigation }, props) {
 
     //const dispatch = useDispatch();
 
-
+console.log('sur patienScreen :', route.params._id)
   // const patient = useSelector((state) => state.onePatient.value);
 
   useEffect(() => {
-    fetch(`http://192.168.1.5:3000/patients/${props._id}`).then(response => response.json())
+    fetch(`http://192.168.1.5:3000/patients/patient/${route.params._id}`).then(response => response.json())
     .then(data => {
         setPatient(data.patient)
     })
@@ -109,28 +109,29 @@ if (patient) {
             </View>
             <Text style={styles.titlePage}>Fiche Patient</Text>
             <View style={styles.infos}>
-                <Text>`${patient.firstname} ${patient.name.toUppercase()}`</Text>
+                <Text>{patient.firstname} {patient.name}</Text>
                 <View style={styles.address}>
                     <View style={styles.infosLeft}>
                         <FontAwesome name={'map-pin'} size={24} color='black' />
-                        <Text>`${patient.address.road}`</Text>
-                        <Text>`${patient.address.postalCode} - ${patient.address.city}`</Text>
+                        <Text>{patient.address}</Text>
+                        <Text>{patient.infosAddress}</Text>
+                        
                     </View>
                     <View style={styles.infosRight}>
                         <FontAwesome name={'phone'} size={24} color='black' />
-                        <Text>`portable : ${patient.phoneNumbers.mobile}`</Text>
-                        <Text>`fixe : ${patient.phoneNumbers.home}`</Text>
+                        <Text>portable : {patient.mobile}</Text>
+                        <Text>fixe : {patient.homePhone}</Text>
                     </View>
                 </View>
-                <Text>`${patient.inCaseOfEmergency.identity}: ${patient.inCaseOfEmergency.phoneNumber}`</Text>
+                <Text>{patient.ICEIdentity}: {patient.ICEPhoneNumber}</Text>
                 <View>
 
                 </View>
             </View>
             <TouchableWithoutFeedback onPress={changeDispo}>
                 <View style={[styles.buttonDispo, containerStyle]}>
-                    <Text style={[styles.text, styles.leftText, leftTextStyle]}>Disponible</Text>
-                    <Text style={[styles.text, styles.rightText, rightTextStyle]}>Indisponible</Text>
+                    <Text style={[styles.text, styles.leftText, styles.leftTextStyle]}>Disponible</Text>
+                    <Text style={[styles.text, styles.rightText, styles.rightTextStyle]}>Indisponible</Text>
                 </View>
             </TouchableWithoutFeedback>
             <View>
