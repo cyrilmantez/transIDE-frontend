@@ -128,7 +128,7 @@ export default function TransmissionScreen(navigation) {
    
   </SafeAreaView>
 );
-}
+};
 
 const styles = StyleSheet.create({
  container: {

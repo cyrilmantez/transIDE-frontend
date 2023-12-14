@@ -17,6 +17,7 @@ export default function TourScreen({navigation}) {
   const [allPatients, setAllPatients] = useState([])
 
   const user = useSelector((state) => state.users.value)
+  console.log(user.officesTokens[0].token)
 
   //const dateToday = new Date(date)
 
