@@ -16,14 +16,15 @@ export default function ConsultationScreen() {
     const [transmission, setTransmission] = useState(null);
 
 
-   /*  useEffect(() => {
-        fetch(`http://192.168.1.5:3000/patient/${props._id}`).then(response => response.json())
+    /* ${props._id} */
+    useEffect(() => {
+        fetch(`http://192.168.1.5:3000/patient/6579c5d4c2873da0530e41bf`).then(response => response.json())
         .then(data => {
             setPatient(data.patient)
         })
-      }, []); */
+      }, []);
 
-        //console.log(patient);
+    console.log(patient);
     //const patientInfo = 
 
     const handleSubmit = () => {
