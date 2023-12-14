@@ -19,20 +19,21 @@ export default function TransmissionScreen(navigation) {
   const userToken = useSelector((state) => state.users.value.officesTokens[0].token)
   const [ideVisible, setIdeVisible] = useState(false);
   const [patientsVisible, setPatientsVisible] = useState(false);
-  const [ideFiltered, setIdeFiltered] = useState('');
-  const [patientFiltered, setPatientFiltered] = useState('');
+  const [modalList, setModalList] = useState([])
+  const [ideFiltered, setIdeFiltered] = useState('Tout le cabinet');
+  const [patientFiltered, setPatientFiltered] = useState('Tous');
 
   //Open the Modal
   const openModal = (target) => {
     setModalVisible(true);
-    console.log(target)
-      target === 'IDE' ? setIdeVisible(true) : setPatientsVisible(true);
+    target === 'IDE' ? setIdeVisible(true) : setPatientsVisible(true);
   };
   //Close Modal
   const closeModal = () => {
     setModalVisible(false);
     setIdeVisible(false);
-    setPatientsVisible(true);
+    setPatientsVisible(false);
+    setModalList([]); 
   }
 
   //get 10lastDayData from dataBase, and dispatch in the reducer
@@ -55,7 +56,7 @@ export default function TransmissionScreen(navigation) {
     setMode(currentMode)
   };
   //Filter by date
-  const showDate = (target) => {
+  const showDate = () => {
     showPicker();
   };
 
@@ -63,14 +64,26 @@ export default function TransmissionScreen(navigation) {
 
   const dateChange = (event, selectedDate) => {
     const currentDate = selectedDate;
-    console.log('selectedDate', selectedDate)
     setVisible(false);
     setDate(currentDate);
   };
 
 
   //display data from the hook
-  const transmissionsToDisplay = transmissions.map((element, id) => {
+  const transmissionsToDisplay = transmissions.filter((element) => {
+  
+    const isPatientFiltered =
+      patientFiltered === 'Tous' ||
+      `${element.name} ${element.firstname}` === patientFiltered;
+  
+    const isIDEFiltered =
+      ideFiltered === 'Tout le cabinet' || element.nurse === ideFiltered;
+
+      console.log('isPatientFiltered:', isPatientFiltered);
+      console.log('isIDEFiltered:', isIDEFiltered);
+
+    return isPatientFiltered && isIDEFiltered;
+  }).map((element, id) => {
       const newDate= new Date(element.date);
       return (
       <ScrollView style={styles.transmission} key={id}>
@@ -79,17 +92,35 @@ export default function TransmissionScreen(navigation) {
         <Text style={styles.message}>{element.info} </Text>
     </ScrollView>)
     })
+
 console.log(transmissions)
+
+
  //IDE List
-  const ideListToDisplay = transmissions.map((element,index) => {
-      return (
-        <Text style={styles.modalText} key={index}>Infirmier : {element.nurse}</Text>
-      )
-  })
+  const ideListToDisplay = transmissions.filter((element, index, array) => {
+    const isUnique = array.slice(0, index).every(
+        (prevElement) => prevElement.nurse !== element.nurse);
+    return isUnique;
+  }).map((element,index) => {
+        return (<TouchableOpacity key={index} onPress={() => {setIdeFiltered(element.nurse), closeModal()}}>
+                  <Text style={styles.modalText} >{element.nurse}</Text>
+                </TouchableOpacity>
+    )
+})
   //Patients List
-  const patientsListToDisplay = transmissions.map((element,index) => {
-      return (
-      <Text style={styles.modalText} key={index}>{element.name} {element.firstname}</Text>
+  const patientsListToDisplay = transmissions.filter((element, index, array) => {
+    const isUnique = array.slice(0, index).every(
+        (prevElement) =>
+          `${prevElement.name} ${prevElement.firstname}` !==
+          `${element.name} ${element.firstname}`
+      );
+    return isUnique;
+  }).map((element,index) => {
+        return (
+          <TouchableOpacity key={index} onPress={() => {setPatientFiltered(`${element.name} ${element.firstname}`), closeModal()}}>
+             <Text style={styles.modalText}  >{element.name} {element.firstname}</Text>
+          </TouchableOpacity>
+     
     )
 })
  return (
@@ -120,8 +151,21 @@ console.log(transmissions)
                 <View style={styles.modalContainer}>
                   <View style={styles.modalContent}>
                     <ScrollView style={styles.modalList}>
-                      {ideVisible && <Text style={styles.modalText} >Tout le cabinet</Text> && ideListToDisplay}
-                      {patientsVisible && <Text style={styles.modalText} >Tout les patients</Text> && patientsListToDisplay}
+                    {ideVisible && (
+                      <>
+                        <Text
+                          style={styles.modalText}
+                          onPress={() => {
+                            setIdeFiltered('Tout le cabinet');
+                            closeModal();
+                          }}
+                        >
+                          Tout le cabinet
+                        </Text>
+                        {ideListToDisplay}
+                      </>
+                    )}
+                      {patientsVisible &&  patientsListToDisplay}
                     </ScrollView>
                     <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
                       <Text style={styles.modalButtonText}>Fermer la modale</Text>
@@ -132,7 +176,7 @@ console.log(transmissions)
             <View>
                   {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
             </View>
-            <Text style={styles.text}>Transmission non lu: 10/100</Text>
+            <Text style={styles.text}>{transmissionsToDisplay.length} transmissions depuis le {date.toISOString().slice(0,10)}</Text>
         </View>
         <ScrollView style={styles.transmissionsContainer}>
           <View style={styles.transmissions}>
