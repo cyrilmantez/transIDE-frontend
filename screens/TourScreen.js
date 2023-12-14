@@ -89,13 +89,13 @@ export default function TourScreen({navigation}) {
             // Comparer les dates
             const dateComparison = new Date(a.date) - new Date(b.date);
             if (dateComparison !== 0) return dateComparison;
-  
+            console.log(officesTokens)
             // Si les dates sont les mêmes, comparer les office tokens
-            const officeTokenComparison = a.officeToken.localeCompare(user.officesTokens);
-            if (officeTokenComparison !== 0) return officeTokenComparison;
-  
-            // Si les office tokens sont les mêmes, comparer les heures
-            return new Date(`1970-01-01T${a.time}:00`) - new Date(`1970-01-01T${b.time}:00`);
+            if (user.officesTokens.includes(a.officeToken)) {
+              
+              // Si les office tokens correspondent, comparer les heures
+              return new Date(`1970-01-01T${a.time}:00`) - new Date(`1970-01-01T${b.time}:00`);
+            }
           });
   
           setPatients(sortedPatients);
