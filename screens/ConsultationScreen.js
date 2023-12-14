@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Keyboard, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Keyboard, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
 import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
@@ -10,25 +10,49 @@ import patients from '../reducers/patients';
 
 export default function ConsultationScreen() {
     const dispatch = useDispatch();
+    
     //const users = useSelector((state) => state.users.value.username);
     const [patient, setPatient]= useState(null);
-    const [soinsPrevus, setSoinsPrevus] = useState(null);
-    const [transmission, setTransmission] = useState(null);
+    // récupère les soins prévus lors du fetch initial :
+    const [initialPlannedTreatments, setInitialPlannedTreatments] = useState('');
+    // remplacer le texte en dur par initialPlannedTreatments
+    const [plannedTreatments, setPlannedTreatments] = useState('15h00 : piqûre dans la fesse gauche');
+    const [newTreatments, setNewTreatments] = useState('');
+    const [transmission, setTransmission] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
 
+    const openModal = () => setModalVisible(true);
+    const closeModal = () => setModalVisible(false);
 
-   /*  useEffect(() => {
-        fetch(`http://192.168.1.5:3000/patient/${props._id}`).then(response => response.json())
+    // Récupération des données du patient :
+    /* ${props._id} */
+    useEffect(() => {
+        fetch(`http://192.168.1.5:3000/patients/6579c5d4c2873da0530e41bf`).then(response => response.json())
         .then(data => {
-            setPatient(data.patient)
-        })
-      }, []); */
+            console.log(data.result);
+            setPatient({firstname: data.firstname, name: data.name, address: data.address, homePhone: data.homephone, mobile: data.mobile});
+            setInitialPlannedTreatments({treatments: {date: data.treatments.date, action: date.treatments.actions}});
+        });
+    }, [plannedTreatments]);
+    
+    // Fonction pour mettre à jour la valeur des soins prévus :
+    const updatePlannedTreatments = (newText) => {
+        setPlannedTreatments(newText);
+    };
 
-        //console.log(patient);
+    console.log(patient);
+    console.log(plannedTreatments);
+    
+    // Mise en page données patient :
     //const patientInfo = 
 
+    // modale de confirmation de validation :
+
+
+    // Effet du clic sur "validation" :
     const handleSubmit = () => {
-        
-        navigation.navigate('TabNavigator');
+        {openModal}
+        /* navigation.navigate('TabNavigator'); */
       };
 
     let [fontsLoaded] = useFonts({
@@ -40,8 +64,6 @@ export default function ConsultationScreen() {
         return <View />;
     } else {
         return (
-            <>
-            <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
             <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -58,8 +80,19 @@ export default function ConsultationScreen() {
                             <View style={styles.inputContainer}>
                                 <View>
                                     <Text style={styles.titleSoins}>Soins prévus</Text>
-                                </View>            
-                                <View style={styles.soinsPrevus}>
+                                </View>      
+                                <View>    
+                                    <TextInput   
+                                        mode='outlined'
+                                        value={plannedTreatments}
+                                        multiline
+                                        theme={{ 
+                                        colors: { 
+                                            primary: '#99BD8F', 
+                                        }
+                                        }}
+                                        style={styles.soinsPrevus} 
+                                        onChangeText={updatePlannedTreatments}/>
                                 </View>
                                 <View>
                                     <Text style={styles.titleSoins}>Soins supplémentaires</Text>
@@ -73,8 +106,8 @@ export default function ConsultationScreen() {
                                     }
                                     }}
                                     style={styles.soinsPrevus} 
-                                    onChangeText={text => setSoinsPrevus(text)} 
-                                    value={soinsPrevus}/>
+                                    onChangeText={text => setNewTreatments(text)} 
+                                    value={newTreatments}/>
                                 <View>
                                     <Text style={styles.titleSoins}>Transmissions</Text>
                                 </View>            
@@ -95,11 +128,22 @@ export default function ConsultationScreen() {
                                     <Text style={styles.text}>Valider</Text>            
                                 </TouchableOpacity>
                             </View>
+                            {/* <Modal transparent visible={modalVisible} onRequestClose={closeModal}>
+                                <View style={styles.modalContainer}>
+                                <View style={styles.modalContent}>
+                                    <ScrollView style={styles.modalList}>
+                                    <Text style={styles.modalText}>Mr LEGRAND François</Text>
+                                    </ScrollView>
+                                    <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                                    <Text style={styles.modalButtonText}>Fermer la modale</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                </View>
+                            </Modal> */}
                         </ScrollView>
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>
             </SafeAreaView>
-            </>
         );
     }
 }
