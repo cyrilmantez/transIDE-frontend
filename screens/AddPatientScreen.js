@@ -71,7 +71,9 @@ export default function AddPatientScreen({navigation}) {
             homePhone : homePhone,
             mobile: phoneNumber, 
             treatments:[{
-              state: false,
+              isVisited : false,
+              isOk: false,
+              isOkWithModification: false,
               date: addRdv, 
               actions: addTreatment, 
               nurse: '',

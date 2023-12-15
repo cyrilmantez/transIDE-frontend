@@ -3,8 +3,8 @@ import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoid
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
 //import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPhone, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
+//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+//import { faPhone, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 //import { useDispatch, useSelector } from 'react-redux';
 //import PatientScreen from './screens/PatientScreen';
 //import users from '../reducers/users';
