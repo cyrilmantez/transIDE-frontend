@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 
  
 
-export default function TransmissionScreen(navigation) {
+export default function TransmissionScreen({navigation}) {
   const initialDate = new Date();
   initialDate.setDate(initialDate.getDate() - 10);
   const [date, setDate] = useState (initialDate)
@@ -75,21 +75,20 @@ export default function TransmissionScreen(navigation) {
     const isPatientFiltered =
       patientFiltered === 'Tous les patients' ||
       `${element.name} ${element.firstname}` === patientFiltered;
-  
+
     const isIDEFiltered =
       ideFiltered === 'Tout le cabinet' || element.nurse === ideFiltered;
-
-      console.log('isPatientFiltered:', isPatientFiltered);
-      console.log('isIDEFiltered:', isIDEFiltered);
 
     return isPatientFiltered && isIDEFiltered;
   }).map((element, id) => {
       const newDate= new Date(element.date);
       return (
       <ScrollView style={styles.transmission} key={id}>
-        <Text style={styles.personAbout}>Pour {element.name} {element.firstname}</Text>
-        <Text style={styles.publicationDate}>Publié le {newDate.getDate()}/{newDate.getMonth() + 1}/{newDate.getFullYear()} à {newDate.getHours()}h{newDate.getMinutes()}, par {element.nurse}.</Text>
-        <Text style={styles.message}>{element.info} </Text>
+        <View style={styles.innerContainer}>
+           <Text style={styles.personAbout}>Pour {element.name} {element.firstname}</Text>
+          <Text style={styles.publicationDate}>Publié le {newDate.getDate()}/{newDate.getMonth() + 1}/{newDate.getFullYear()} à {newDate.getHours()}h{newDate.getMinutes()}, par {element.nurse}.</Text>
+          <Text style={styles.message}>{element.info} </Text>
+        </View>
     </ScrollView>)
     })
 
@@ -135,7 +134,7 @@ console.log(transmissions)
         </View>
         <Text style={styles.journal} >Journal</Text>
         <View style={styles.filterContainer}>
-            <Text style={styles.text}>Filtrer par :</Text>
+            <Text style={styles.textFilter}>Filtrer par :</Text>
             <View style={styles.buttonContainer}>
                   <TouchableOpacity style={styles.button} onPress={() => openModal('IDE')}>
                       <Text style={styles.textButton} >{ideFiltered}</Text>
@@ -185,7 +184,7 @@ console.log(transmissions)
                     )}
                     </ScrollView>
                     <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-                      <Text style={styles.modalButtonText}>Fermer la modale</Text>
+                      <Text style={styles.modalButtonText}>Fermer</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -194,8 +193,11 @@ console.log(transmissions)
                   {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
             </View>
             <View style={styles.navigation_infos} >
-              <Text style={styles.transmissionText}>{transmissionsToDisplay.length} transmssions</Text>
-              <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' />
+              <Text style={styles.transmissionText}>{transmissionsToDisplay.length} transmissions</Text>
+              <TouchableOpacity>
+                <FontAwesome name={'plus-circle'} size={50} color='#99BD8F'  onPress={() => navigation.navigate('AddTransmissionScreen')}/>
+              </TouchableOpacity>
+              
             </View>
         </View>
         <ScrollView style={styles.transmissionsContainer}>
@@ -246,6 +248,11 @@ journal: {
   marginTop: -20,
   marginBottom: 10,
  },
+ textFilter : {
+  fontSize: 14,
+  fontFamily: 'Poppins_600SemiBold',
+  
+ },
  text : {
   fontSize: 14,
   fontFamily: 'Poppins_600SemiBold',
@@ -256,6 +263,7 @@ journal: {
   flexDirection:'row',
   justifyContent: 'space-around',
   marginLeft: 0,
+  marginTop: 10,
  },
  button : {
   backgroundColor: '#99BD8F',
@@ -279,7 +287,10 @@ navigation_infos : {
   display : 'flex',
   flexDirection : 'row',
   justifyContent: 'space-between',
+  marginTop: 30,
 },
+
+
 modalContainer: {
   flex: 1,
   justifyContent: 'center',
@@ -338,11 +349,10 @@ modalButtonText:{
   textAlign: 'center',
   color: 'white',
  },
-
-
 transmissionsContainer:{
   flex:1,
   width: '95%',
+  marginTop: 30,
   display: 'flex',
 },
 transmissions : {
@@ -350,11 +360,13 @@ transmissions : {
   width: '100%',
   display: 'flex',
   justifyContent: 'center',
-  alignContent: 'center',
+  alignContent: 'center', 
+  
 },
 transmission :{
   width: '100%',
- 
+  height: 150,
+  marginBottom: 10,
   ...Platform.select({
     ios: {
       shadowColor: 'black',
@@ -363,11 +375,14 @@ transmission :{
       shadowRadius: 3,
     },
     android: {
-      elevation: 5,
-    },
-  }),
-  height: 150,
-  marginTop: 10,
+      elevation: 2,
+    }, }),
+    borderColor: 'blue',
+},
+innerContainer: {
+  margin : 10,
+  backgroundColor: 'white', // Assurez-vous que le fond de l'élément à l'intérieur est blanc
+  borderColor : 'red',
 },
 personAbout: {
   color: '#99BD8F',
@@ -385,7 +400,7 @@ publicationDate :{
 message : {
   fontSize: 12,
   fontFamily: 'Poppins_600SemiBold',
-  marginTop:2,
+  marginTop:10,
   paddingLeft: 5,
   paddingRight: 8,
   paddingBottom: 5,

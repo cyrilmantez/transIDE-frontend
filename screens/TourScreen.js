@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-//import * as React from 'react';
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native';
 import Dropdown from './Dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -17,7 +16,10 @@ export default function TourScreen({navigation}) {
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
   const [allPatients, setAllPatients] = useState([])
+  const [patientModal, setPatientModal] = useState({})
+  const [modalVisible, setModalVisible] = useState(false);
 
+console.log('date :',date)
   const allData =()=> {
     fetch('http://192.168.1.14:3000/patients/allPatients', {
       method: 'POST',
@@ -25,6 +27,7 @@ export default function TourScreen({navigation}) {
       body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
     }).then(response => response.json())
       .then(data => {
+       // console.log(date, data)
         setAllPatients(data.patientsToSee)
       })
 
@@ -32,7 +35,7 @@ export default function TourScreen({navigation}) {
 
   useEffect(()=>{
     allData()
-  }, [date] )
+  }, [date, modalVisible])
 
 
 
@@ -124,9 +127,75 @@ export default function TourScreen({navigation}) {
   // }, [date]);
 
   ////////////////  modal:
-  const [modalVisible, setModalVisible] = useState(false);
-  const [actionsState, setActionsState] = useState();
+  
+  const [isVisited, setIsVisited] = useState(false);
+  const [isOk, setIsOk] = useState(false);
+  const [isOkWithModification, setIsOkWithModification] = useState(false);
+  //const [finishStateColor, setFinishStateColor] = useState('#CADDC5')
 
+
+/////////////: fetch de mise à jour treatment in DB:
+
+const updateTreatmentInDB = () => {
+  fetch('http://192.168.1.5:3000/patients/allPatients', {
+    method: 'PUT',
+    headers: {'Content-Type' : 'application/json'},
+    body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
+  }).then(response => response.json())
+  .then(data => {
+    setIsVisited(false);
+    setIsOk(false);
+    setIsOkWithModification(false);
+  }
+    )
+}
+
+
+      
+  const validation = () => {
+    setIsVisited(true)
+    setIsOk(true)
+    setIsOkWithModification(false)
+    updateTreatmentInDB()
+   // setFinishStateColor('#99BD8F')
+    setModalVisible(!modalVisible);
+  }
+
+  const annulation = () => {
+    setIsVisited(true)
+    setIsOk(false)
+    setIsOkWithModification(false)
+    updateTreatmentInDB()
+    //setFinishStateColor('#FF0000')
+    setModalVisible(!modalVisible);
+  }
+
+  const modification = (data) =>{
+    setIsVisited(true)
+    setIsOk(true)
+    setIsOkWithModification(true)
+    //setFinishStateColor('#FF9900')     
+    // navigation.navigate('ConsultationScreen', 
+    //             { _id : data._id,
+    //               name: data.name,
+    //               firstname: data.firstname,
+    //               address: data.address,
+    //               mobile: data.mobile,
+    //               homePhone: data.homePhone,
+    //               actions: data.actions,
+    //               date : data.date,
+    //               isVisited: isVisited,
+    //               isOk: isOk,
+    //               isOkWithModification: data.isOkWithModification,
+    //               _idTreatment: data._idTreatment,
+
+    //             });
+      setIsVisited(false)
+      setIsOk(false)
+      setIsOkWithModification(false)
+      setModalVisible(!modalVisible);            
+     
+  }
 
   const modalContent = (
     <Modal
@@ -140,44 +209,50 @@ export default function TourScreen({navigation}) {
     <View style={styles.centeredView}>
       <View style={styles.modalView}>
         <Text style={styles.modalText}>validation des soins réalisés</Text>
-        <Button
-          title="Retour"
+        {/* <Button
+          title="Tout est bon !"
           onPress={() => {
             setModalVisible(!modalVisible);
-            navigation.navigate('TabNavigator');
+            
+            setIsVisited(false);
+            setIsOk(false);
+            setIsOkWithModification(false)
+            navigation.navigate('TabNavigator')
           }}
-        />
-      </View>
-      <View>
-        <TouchableOpacity onPress={()=> setModalVisible(true)}>
-          <Text>soins validés</Text>
-          <FontAwesome name={'square-o'} size={24} color='#99BD8F' />
+        /> */}
+        <TouchableOpacity onPress={()=> validation(patientModal)} style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+          <Text style={{marginTop : 12, marginRight: 30, fontFamily: 'Poppins_400Regular', fontSize: 14,}}>soins validés</Text>
+          <Icon source={'checkbox-blank-circle'} size={42} color='#99BD8F' />
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=> setModalVisible(true)}>
-          <Text>soins à modifier</Text>
-          <FontAwesome name={'draw-pen'} size={24} color='#99BD8F' />
+        <TouchableOpacity onPress={() => modification(patientModal)} style={{flexDirection: 'row', justifyContent: 'flex-end', marginRight: 20}}>
+          <Text style={{marginTop : 12, marginRight: 30, fontFamily: 'Poppins_400Regular', fontSize: 14, }}>soins à modifier</Text>
+          <Icon source={'checkbox-blank-circle'} size={42} color='orange' />
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=> setModalVisible(true)}>
-          <Text>soins annulés</Text>
-          <FontAwesome name={'alpha-x-box-outline'} size={24} color='#99BD8F' />
+        <TouchableOpacity onPress={() => annulation(patientModal)} style={{flexDirection: 'row', justifyContent: 'flex-end', marginRight: 6}}>
+          <Text style={{marginTop : 12, marginRight: 30, fontFamily: 'Poppins_400Regular',fontSize: 14, }}>soins annulés</Text>
+          <Icon source={'checkbox-blank-circle'} size={42} color='#FF0000' />
         </TouchableOpacity>
 
-      </View>e
+      </View>
     </View>
   </Modal>
   )
 
-  const changeState = () => {
-    setActionsState()
+  const changeState = (data) => {
     setModalVisible(true)
+    setPatientModal(data)
 
   }
+
+
+
   /////////////////
   
   
    
   
-// Afficher les patients
+///////////////// Afficher les patients :
+
   const toMinutes = (time) => {
     const [hours, minutes] = time.split(':');
     return Number(hours) * 60 + Number(minutes);
@@ -193,6 +268,16 @@ export default function TourScreen({navigation}) {
     } else {
       truncatedNom = nameAll;
     }
+
+    ///////////////// gestion de la couleur du bouton validé :
+    let finishColor = '#CADDC5'
+    if (patient.isVisited && patient.isOk && !patient.isOkWithModification) {
+      finishColor = '#52B339';
+    } else if (patient.isVisited && patient.isOk && patient.isOkWithModification) {
+      finishColor = '#FF9900';
+    } else if (patient.isVisited && !patient.isOk) {
+      finishColor = '#FF0000';
+    }
  
     return (
         <View key={i}>
@@ -205,7 +290,6 @@ export default function TourScreen({navigation}) {
                 <TouchableOpacity onPress={() => navigation.navigate('PatientScreen', { _id : patient._id})}>
                   <Paragraph style={styles.nompatient}>{truncatedNom}</Paragraph>
                 </TouchableOpacity>
-                
               </View>
               <View>
                 <TouchableOpacity>
@@ -221,17 +305,19 @@ export default function TourScreen({navigation}) {
                   mobile: patient.mobile,
                   homePhone: patient.homePhone,
                   actions: patient.actions,
-                  date : patient.date
+                  date : patient.date,
+                  isOk: patient.isOk,
+                  isOkWithModification: patient.isOkWithModification,
+                  _idTreatment: patient._idTreatment,
 
                 })}>
                   <Icon source={'medical-bag'} size={24} color='#99BD8F'/>
                 </TouchableOpacity>
               </View>
               <View>
-                <TouchableOpacity onPress={()=> changeState()}>
-                  <FontAwesome name={'square-o'} size={24} color='#99BD8F'/>
+                <TouchableOpacity onPress={()=> changeState(patient)}>
+                  <Icon source={'checkbox-blank-circle'} size={24} color={finishColor}/>
                 </TouchableOpacity>
-                {modalContent}
               </View>
             </Card.Content>
           </Card>
@@ -251,33 +337,36 @@ export default function TourScreen({navigation}) {
      return (
       <>
         <SafeAreaView style={{ flex: 0, backgroundColor: '#99BD8F' }} />
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-            <KeyboardAwareScrollView contentContainerStyle={styles.scrollView} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} enableOnAndroid={true}>
-              <ScrollView contentContainerStyle={styles.scrollView}>
-                <View style={styles.container}>
-                  <View style={styles.header}>
-                    <Dropdown style={styles.dropdown} navigation={navigation} />
-                    <Image
-                      style={styles.image}
-                      source={require('../assets/logo.png')}
-                    />
-                  </View>
-                  <View style={styles.calendarContain}>
-                    <View style={styles.previous}>
-                      <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' onPress={() => changeDate(-1)} />
-                    </View>
-                    <View style={styles.calendar}>
-                      <Text style={styles.text} onPress={showDate}>
-                        {`${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`}
-                      </Text>
-                    </View>
-                    <View style={styles.next}>
-                      <FontAwesome name={'chevron-right'} size={24} color='#99BD8F' onPress={() => changeDate(+1)} />
-                    </View>
-                    <View>
-                      {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
-                    </View>
-                  </View>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} >
+            <View style={styles.container}>
+                <View style={styles.containerHeader}>
+                        <View style={styles.header}>
+                          <Dropdown style={styles.dropdown} navigation={navigation} />
+                          <Image
+                            style={styles.image}
+                            source={require('../assets/logo.png')}
+                          />
+                        </View>
+                        <View style={styles.calendarContain}>
+                          <View style={styles.previous}>
+                            <TouchableOpacity>
+                              <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' onPress={() => changeDate(-1)} />
+                            </TouchableOpacity>
+                          </View>
+                          <View style={styles.calendar}>
+                            <Text style={styles.text} onPress={showDate}>
+                              {`${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`}
+                            </Text>
+                          </View>
+                          <View style={styles.next}>
+                            <TouchableOpacity>
+                              <FontAwesome name={'chevron-right'} size={24} color='#99BD8F' onPress={() => changeDate(+1)} />
+                            </TouchableOpacity>
+                          </View>
+                          <View>
+                            {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
+                          </View>
+                        </View>
                 </View>
                 <View style={styles.nbrpatient}>
                   <Text style={styles.textnbrpatient}>Patients visités 3/5</Text>
@@ -296,8 +385,8 @@ export default function TourScreen({navigation}) {
                 <ScrollView contentContainerStyle={styles.allcards}>
                 {AfficherPatients}
               </ScrollView>
-            </ScrollView>
-          </KeyboardAwareScrollView>
+              {modalContent}
+           </View>    
         </SafeAreaView>
       </>
     );
@@ -307,11 +396,20 @@ export default function TourScreen({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 30,
+    display: 'flex',
+    borderColor : 'blue',
+    borderWidth : 2,
+  },
+  containerHeader: {
+    height: '25%',
     backgroundColor: '#fff',
     alignItems: 'center',
-    marginTop: 0,
-    marginLeft: 0,
-    marginRight: 15,
+    // marginTop: 0,
+    // marginLeft: 0,
+    // marginRight: 15,
+    borderColor : 'green',
+    borderWidth : 2,
   },
   dropdown: {
     top: 0,
@@ -376,6 +474,8 @@ const styles = StyleSheet.create({
   allcards: {
     width: '95%',
     marginLeft: 10,
+    borderColor : 'red',
+    borderWidth : 2
   },
   progressBar: {
     marginTop: 20,
@@ -401,4 +501,35 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    backgroundColor: "rgba(0,0,0,0,0.5)",
+  },
+  modalView: {
+    //margin: 20,
+    height: 400,
+    width: '95%',
+    backgroundColor: "#F0F0F0",
+    borderRadius: 20,
+    padding: 35,
+    justifyContent: 'space-between',
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  modalText: {
+    marginTop: 10,
+    color: '#99BD8F',
+    fontSize: 20,   
+    fontFamily: 'Poppins_400Regular',
+  }
 });
