@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native';
 import Dropdown from './Dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -16,7 +17,6 @@ export default function TourScreen({navigation}) {
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
   const [allPatients, setAllPatients] = useState([])
-
 
   const allData =()=> {
     fetch('http://192.168.1.14:3000/patients/allPatients', {
@@ -84,6 +84,98 @@ export default function TourScreen({navigation}) {
   const [isSwitchOn, setIsSwitchOn] = useState(false);
 
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+
+  // Affichage des patients 
+  // useEffect(() => {
+  
+  //   fetch('http://192.168.1.14:3000/patients/allPatientDay')
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       console.log('Data structure:', data);
+  //       if (data.allPatient) {
+  //         // Filtrer les patients par date
+  //         const filteredPatients = data.allPatient.filter(patient => {
+  //           // Convertir la date du patient en objet Date pour la comparaison
+  //           const patientDate = new Date(patient.date);
+  //           // Comparer l'année, le mois et le jour
+  //           return patientDate.getFullYear() === date.getFullYear() &&
+  //                  patientDate.getMonth() === date.getMonth() &&
+  //                  patientDate.getDate() === date.getDate();
+  //         });
+  
+  //         // Trier les patients par date, office token et heure
+  //         const sortedPatients = filteredPatients.sort((a, b) => {
+  //           // Comparer les dates
+  //           const dateComparison = new Date(a.date) - new Date(b.date);
+  //           if (dateComparison !== 0) return dateComparison;
+  
+  //           // Si les dates sont les mêmes, comparer les office tokens
+  //           const officeTokenComparison = a.officeToken.localeCompare(user.officesTokens);
+  //           if (officeTokenComparison !== 0) return officeTokenComparison;
+  
+  //           // Si les office tokens sont les mêmes, comparer les heures
+  //           return new Date(`1970-01-01T${a.time}:00`) - new Date(`1970-01-01T${b.time}:00`);
+  //         });
+  
+  //         setPatients(sortedPatients);
+  //       }
+  //     });
+  // }, [date]);
+
+  ////////////////  modal:
+  const [modalVisible, setModalVisible] = useState(false);
+  const [actionsState, setActionsState] = useState();
+
+
+  const modalContent = (
+    <Modal
+    animationType="slide"
+    transparent={true}
+    visible={modalVisible}
+    onRequestClose={() => {
+      setModalVisible(!modalVisible);
+    }}
+  >
+    <View style={styles.centeredView}>
+      <View style={styles.modalView}>
+        <Text style={styles.modalText}>validation des soins réalisés</Text>
+        <Button
+          title="Retour"
+          onPress={() => {
+            setModalVisible(!modalVisible);
+            navigation.navigate('TabNavigator');
+          }}
+        />
+      </View>
+      <View>
+        <TouchableOpacity onPress={()=> setModalVisible(true)}>
+          <Text>soins validés</Text>
+          <FontAwesome name={'square-o'} size={24} color='#99BD8F' />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=> setModalVisible(true)}>
+          <Text>soins à modifier</Text>
+          <FontAwesome name={'draw-pen'} size={24} color='#99BD8F' />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=> setModalVisible(true)}>
+          <Text>soins annulés</Text>
+          <FontAwesome name={'alpha-x-box-outline'} size={24} color='#99BD8F' />
+        </TouchableOpacity>
+
+      </View>e
+    </View>
+  </Modal>
+  )
+
+  const changeState = () => {
+    setActionsState()
+    setModalVisible(true)
+
+  }
+  /////////////////
+  
+  
+   
   
 // Afficher les patients
   const toMinutes = (time) => {
@@ -129,14 +221,17 @@ export default function TourScreen({navigation}) {
                   mobile: patient.mobile,
                   homePhone: patient.homePhone,
                   actions: patient.actions,
+                  date : patient.date
+
                 })}>
                   <Icon source={'medical-bag'} size={24} color='#99BD8F'/>
                 </TouchableOpacity>
               </View>
               <View>
-                <TouchableOpacity>
-                  <FontAwesome name={'square-o'} size={24} color='#99BD8F' />
+                <TouchableOpacity onPress={()=> changeState()}>
+                  <FontAwesome name={'square-o'} size={24} color='#99BD8F'/>
                 </TouchableOpacity>
+                {modalContent}
               </View>
             </Card.Content>
           </Card>
