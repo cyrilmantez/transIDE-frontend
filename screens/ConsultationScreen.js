@@ -3,8 +3,7 @@ import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoid
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
 //import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPhone, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { useDispatch, useSelector } from 'react-redux';
 //import PatientScreen from './screens/PatientScreen';
 //import users from '../reducers/users';
@@ -32,11 +31,11 @@ export default function ConsultationScreen({ navigation, route }) {
             <View style={styles.patientName}>{[patient.firstname, patient.name.toUpperCase()]}</View>
             <View style={styles.patientData}>
                 <View>
-                    <FontAwesomeIcon icon={faMapLocationDot} size={24} color='#99BD8F'/>
+                    <FontAwesome icon={user} size={24} color='#99BD8F'/>
                     <View>{patient.address}</View>
                 </View>
                 <View>
-                    <FontAwesomeIcon icon={faPhone} size={24} color='#99BD8F'/>
+                    <FontAwesome icon={uer} size={24} color='#99BD8F'/>
                     <View>{[patient.mobile, patient.homePhone]}</View>
                 </View>
             </View>
