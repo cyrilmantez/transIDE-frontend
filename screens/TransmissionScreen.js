@@ -21,7 +21,7 @@ export default function TransmissionScreen(navigation) {
   const [patientsVisible, setPatientsVisible] = useState(false);
   const [modalList, setModalList] = useState([])
   const [ideFiltered, setIdeFiltered] = useState('Tout le cabinet');
-  const [patientFiltered, setPatientFiltered] = useState('Tous');
+  const [patientFiltered, setPatientFiltered] = useState('Tous les patients');
 
   //Open the Modal
   const openModal = (target) => {
@@ -73,7 +73,7 @@ export default function TransmissionScreen(navigation) {
   const transmissionsToDisplay = transmissions.filter((element) => {
   
     const isPatientFiltered =
-      patientFiltered === 'Tous' ||
+      patientFiltered === 'Tous les patients' ||
       `${element.name} ${element.firstname}` === patientFiltered;
   
     const isIDEFiltered =
@@ -102,7 +102,7 @@ console.log(transmissions)
         (prevElement) => prevElement.nurse !== element.nurse);
     return isUnique;
   }).map((element,index) => {
-        return (<TouchableOpacity key={index} onPress={() => {setIdeFiltered(element.nurse), closeModal()}}>
+        return (<TouchableOpacity key={index} style={styles.modalTextButton} onPress={() => {setIdeFiltered(element.nurse), closeModal()}}>
                   <Text style={styles.modalText} >{element.nurse}</Text>
                 </TouchableOpacity>
     )
@@ -117,7 +117,7 @@ console.log(transmissions)
     return isUnique;
   }).map((element,index) => {
         return (
-          <TouchableOpacity key={index} onPress={() => {setPatientFiltered(`${element.name} ${element.firstname}`), closeModal()}}>
+          <TouchableOpacity key={index} style={styles.modalTextButton} onPress={() => {setPatientFiltered(`${element.name} ${element.firstname}`), closeModal()}}>
              <Text style={styles.modalText}  >{element.name} {element.firstname}</Text>
           </TouchableOpacity>
      
@@ -138,13 +138,13 @@ console.log(transmissions)
             <Text style={styles.text}>Filtrer par :</Text>
             <View style={styles.buttonContainer}>
                   <TouchableOpacity style={styles.button} onPress={() => openModal('IDE')}>
-                      <Text style={styles.text} >IDE</Text>
+                      <Text style={styles.textButton} >{ideFiltered}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={showDate}>
-                      <Text style={styles.text} >Date</Text>
+                      <Text style={styles.textButton} >{`${(date.getDate().toString()).length<2?'0'+date.getDate().toString():date.getDate().toString()}-${date.getMonth()+1}-${date.getFullYear()}`}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={() => openModal('Patients')}>
-                      <Text style={styles.text} >Patient</Text>
+                      <Text style={styles.textButton} >{patientFiltered}</Text>
                   </TouchableOpacity>
             </View>
             <Modal transparent visible={modalVisible} onRequestClose={closeModal}>
@@ -153,19 +153,36 @@ console.log(transmissions)
                     <ScrollView style={styles.modalList}>
                     {ideVisible && (
                       <>
-                        <Text
-                          style={styles.modalText}
+                      <TouchableOpacity style={styles.modalTextButton}
                           onPress={() => {
                             setIdeFiltered('Tout le cabinet');
                             closeModal();
-                          }}
+                          }}>
+                         <Text style={styles.modalText}
                         >
                           Tout le cabinet
                         </Text>
+                      </TouchableOpacity>
+                       
                         {ideListToDisplay}
                       </>
                     )}
-                      {patientsVisible &&  patientsListToDisplay}
+                      {patientsVisible &&  (
+                      <>
+                      <TouchableOpacity style={styles.modalTextButton}
+                          onPress={() => {
+                            setPatientFiltered('Tous les patients');
+                            closeModal();
+                          }}>
+                        <Text
+                          style={styles.modalText}
+                        >
+                          Tous les patients
+                        </Text>
+                      </TouchableOpacity>
+                        {patientsListToDisplay}
+                      </>
+                    )}
                     </ScrollView>
                     <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
                       <Text style={styles.modalButtonText}>Fermer la modale</Text>
@@ -176,7 +193,10 @@ console.log(transmissions)
             <View>
                   {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
             </View>
-            <Text style={styles.text}>{transmissionsToDisplay.length} transmissions depuis le {date.toISOString().slice(0,10)}</Text>
+            <View style={styles.navigation_infos} >
+              <Text style={styles.transmissionText}>{transmissionsToDisplay.length} transmssions</Text>
+              <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' />
+            </View>
         </View>
         <ScrollView style={styles.transmissionsContainer}>
           <View style={styles.transmissions}>
@@ -219,7 +239,7 @@ journal: {
  },
  filterContainer:{
   width : '90%',
-  height: '15%',
+  height: '20%',
   display: 'flex',
   justifyContent: 'space-between',
   alignContent: 'space-between',
@@ -239,12 +259,27 @@ journal: {
  },
  button : {
   backgroundColor: '#99BD8F',
-  width: 70,
-  height: 30,
+  width: 90,
+  height: 40,
   borderRadius: 10,
   justifyContent: 'center',
   alignItems: 'center',
 }, 
+textButton : {
+  fontSize: 14,
+  fontFamily: 'Poppins_600SemiBold',
+  textAlign : 'center'
+},
+transmissionText:{
+  fontSize: 14,
+  fontFamily: 'Poppins_600SemiBold',
+  paddingTop: 17,
+},
+navigation_infos : {
+  display : 'flex',
+  flexDirection : 'row',
+  justifyContent: 'space-between',
+},
 modalContainer: {
   flex: 1,
   justifyContent: 'center',
@@ -269,10 +304,25 @@ modalList:{
  borderColor: '#99BD8F',
  borderWidth: 1,
 },
-modalText:{
+modalTextButton:{
  textAlign: 'center',
- paddingTop: 10,
  backgroundColor: 'white',
+ marginTop: 10,
+ height: 30,
+ ...Platform.select({
+  ios: {
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 3,
+  },
+  android: {
+    elevation: 5,
+  },
+}),
+},
+modalText:{
+ textAlign: 'center'
 },
 closeButton : {
   borderColor: 'white',
