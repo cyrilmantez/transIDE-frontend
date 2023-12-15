@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native';
 import Dropdown from './Dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
-import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { Avatar, Button, Card, Title, Paragraph, FAB, Portal, PaperProvider  } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { ProgressBar, Switch, Icon } from 'react-native-paper';
 
@@ -15,7 +16,6 @@ export default function TourScreen({navigation}) {
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
   const [allPatients, setAllPatients] = useState([])
-
 
   const allData =()=> {
     fetch('http://192.168.1.5:3000/patients/allPatients', {
@@ -121,6 +121,57 @@ export default function TourScreen({navigation}) {
   //       }
   //     });
   // }, [date]);
+
+  ////////////////  modal:
+  const [modalVisible, setModalVisible] = useState(false);
+  const [actionsState, setActionsState] = useState();
+
+
+  const modalContent = (
+    <Modal
+    animationType="slide"
+    transparent={true}
+    visible={modalVisible}
+    onRequestClose={() => {
+      setModalVisible(!modalVisible);
+    }}
+  >
+    <View style={styles.centeredView}>
+      <View style={styles.modalView}>
+        <Text style={styles.modalText}>validation des soins réalisés</Text>
+        <Button
+          title="Retour"
+          onPress={() => {
+            setModalVisible(!modalVisible);
+            navigation.navigate('TabNavigator');
+          }}
+        />
+      </View>
+      <View>
+        <TouchableOpacity onPress={()=> setModalVisible(true)}>
+          <Text>soins validés</Text>
+          <FontAwesome name={'square-o'} size={24} color='#99BD8F' />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=> setModalVisible(true)}>
+          <Text>soins à modifier</Text>
+          <FontAwesome name={'draw-pen'} size={24} color='#99BD8F' />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=> setModalVisible(true)}>
+          <Text>soins annulés</Text>
+          <FontAwesome name={'alpha-x-box-outline'} size={24} color='#99BD8F' />
+        </TouchableOpacity>
+
+      </View>e
+    </View>
+  </Modal>
+  )
+
+  const changeState = () => {
+    setActionsState()
+    setModalVisible(true)
+
+  }
+  /////////////////
   
   
     const allPatientsInorder = allPatients.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -136,6 +187,8 @@ export default function TourScreen({navigation}) {
       truncatedNom = nameAll;
     }
     console.log(patient._id)
+
+
   
   
     return (
@@ -165,14 +218,17 @@ export default function TourScreen({navigation}) {
                   mobile: patient.mobile,
                   homePhone: patient.homePhone,
                   actions: patient.actions,
+                  date : patient.date
+
                 })}>
                   <Icon source={'medical-bag'} size={24} color='#99BD8F'/>
                 </TouchableOpacity>
               </View>
               <View>
-                <TouchableOpacity>
-                  <FontAwesome name={'square-o'} size={24} color='#99BD8F' />
+                <TouchableOpacity onPress={()=> changeState()}>
+                  <FontAwesome name={'square-o'} size={24} color='#99BD8F'/>
                 </TouchableOpacity>
+                {modalContent}
               </View>
             </Card.Content>
           </Card>
@@ -195,6 +251,7 @@ export default function TourScreen({navigation}) {
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
           <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.container}>
+            
               <View style={styles.header}>
                 <Dropdown style={styles.dropdown} navigation={navigation} />
                 <Image
