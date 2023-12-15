@@ -8,7 +8,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 =======
 //import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
->>>>>>> samy
 //import { faPhone, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 //import { useDispatch, useSelector } from 'react-redux';
 //import PatientScreen from './screens/PatientScreen';
