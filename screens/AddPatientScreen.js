@@ -22,13 +22,12 @@ export default function AddPatientScreen({navigation}) {
     const [homePhone, setHomePhone] = useState('');
     const [personToContact, setPersonToContact] = useState('');
     const [phonePersonToContact, setPhonePersonToContact] = useState('');
-    const [addRdv, setAddRdv] = useState(Date());
+    const [addRdv, setAddRdv] = useState('');
     const [addTreatment, setAddTreatment] = useState('');
     const [dobPatient, setdobPatient] = useState('');
     const [results, setResults] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [displayDate, setDisplayDate] = useState('');
-    const [isoDate, setIsoDate] = useState('');
 
     // Hook Add RDV
     const handleDateChange = (event, selectedDate) => {
@@ -37,11 +36,13 @@ export default function AddPatientScreen({navigation}) {
       
       const formattedDate = currentDate.toLocaleDateString('fr-FR');
       const formattedTime = currentDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-      setDisplayDate(`${formattedDate} ${formattedTime}`);
+      setAddRdv(`${formattedDate} ${formattedTime}`);
       
-      const localFormat = currentDate.toISOString();
-      setIsoDate(localFormat);
-    };
+      // Convertir la date en UTC avant de l'appeler toISOString()
+      const utcDate = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours(), currentDate.getMinutes()));
+      const utcFormat = utcDate.toISOString();
+      setAddRdv(utcFormat);
+  };
     
     const user = useSelector((state) => state.users.value)
     
@@ -62,17 +63,17 @@ export default function AddPatientScreen({navigation}) {
           headers: {'Content-Type' : 'application/json'},
           body: JSON.stringify({
             officeToken: user.officesTokens,
-            name: lastnamePatient,
+            name: lastnamePatient.toUpperCase(),
             firstname: firstnamePatient,
-            dateOfBirthday : dobPatient, 
+            yearOfBirthday : dobPatient, 
             address: addressPatient,
             infosAddress : additionalAddress,
             homePhone : homePhone,
             mobile: phoneNumber, 
             treatments:[{
               state: false,
-              treatmentDate: addRdv, 
-              actions: [addTreatment], 
+              date: addRdv, 
+              actions: addTreatment, 
               nurse: '',
               documentsOfTreatment: [{
                 creationDate: Date,
@@ -93,8 +94,12 @@ export default function AddPatientScreen({navigation}) {
             ICEIdentity: personToContact,
             ICEPhoneNumber: phonePersonToContact, 
           })
-        }).then(response => response.json())
-          .then(data => {
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        }).then(data => {
             if (data.result){
               dispatch(addPatient());
               setFirstnamePatient('');
@@ -105,7 +110,7 @@ export default function AddPatientScreen({navigation}) {
               setHomePhone('');
               setPersonToContact('');
               setPhonePersonToContact('');
-              setAddRdv(new Date());
+              setAddRdv('');
               setAddTreatment('');
               setdobPatient('');
               setModalVisible(true);
@@ -333,44 +338,36 @@ export default function AddPatientScreen({navigation}) {
                                     display="default"
                                     onChange={handleDateChange}
                                 />
-                                    <TouchableWithoutFeedback onPress={() => {}}>
-                                    <View>
-                                        <TextInput
-                                            label='Date et Heure du rendez-vous'
-                                            mode='outlined'
-                                            theme={{ 
-                                                colors: { 
-                                                    primary: '#99BD8F', 
-                                                }
-                                            }}
-                                            style={{ width: 350, marginTop: 15 }} 
-                                            value={displayDate}
-                                            onChangeText={text => setDisplayDate(text)}
-                                            editable={false} 
-                                        />
-                                    </View>
-                                    </TouchableWithoutFeedback>
-                                </View>
-                            <View>
-                        </View>
-                            <TextInput 
-                                label="Soin(s)"
-                                mode='outlined'
-                                multiline
-                                theme={{ 
-                                    colors: { 
-                                        primary: '#99BD8F', 
-                                    }
-                                }}
-                                value={addTreatment}
-                                onChangeText={text => setAddTreatment(text)}
-                                style={{ width: 350, marginTop: 15}} 
-                            />
-                            <View>
-                            <TouchableOpacity style={styles.button} onPress={() => handleRegister()}>
-                                <Text style={styles.text} >Valider</Text>
-                            </TouchableOpacity>
-                            </View>
+                                <TextInput
+                                    label='Date et Heure du rendez-vous'
+                                    mode='outlined'
+                                    theme={{ 
+                                        colors: { 
+                                            primary: '#99BD8F', 
+                                        }
+                                    }}
+                                    style={{ width: 350, marginTop: 15 }} 
+                                    value={addRdv}
+                                    onChangeText={text => setAddRdv(text)}
+                                    editable={false} 
+                                />
+                                <TextInput 
+                                    label="Soin(s)"
+                                    mode='outlined'
+                                    multiline
+                                    theme={{ 
+                                        colors: { 
+                                            primary: '#99BD8F', 
+                                        }
+                                    }}
+                                    value={addTreatment}
+                                    onChangeText={text => setAddTreatment(text)}
+                                    style={{ width: 350, marginTop: 15}} 
+                                />
+                                <TouchableOpacity style={styles.button} onPress={() => handleRegister()}>
+                                    <Text style={styles.text} >Valider</Text>
+                                </TouchableOpacity>
+                              </View>
                             </View>
                         </View>
                     </ScrollView>
@@ -404,6 +401,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 20,
   },
   text: {
     fontFamily: 'Poppins_600SemiBold', 

@@ -4,9 +4,10 @@ import Dropdown from './Dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
-import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { Card, Paragraph, ProgressBar, Switch, Icon } from 'react-native-paper';
 import { useSelector } from 'react-redux';
-import { ProgressBar, Switch, Icon } from 'react-native-paper';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 export default function TourScreen({navigation}) {
   const user = useSelector((state) => state.users.value)
@@ -18,7 +19,7 @@ export default function TourScreen({navigation}) {
 
 
   const allData =()=> {
-    fetch('http://192.168.1.5:3000/patients/allPatients', {
+    fetch('http://192.168.1.14:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
@@ -83,51 +84,16 @@ export default function TourScreen({navigation}) {
   const [isSwitchOn, setIsSwitchOn] = useState(false);
 
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
-
-
-  // Affichage des patients 
-  // useEffect(() => {
   
-  //   fetch('http://192.168.1.14:3000/patients/allPatientDay')
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       console.log('Data structure:', data);
-  //       if (data.allPatient) {
-  //         // Filtrer les patients par date
-  //         const filteredPatients = data.allPatient.filter(patient => {
-  //           // Convertir la date du patient en objet Date pour la comparaison
-  //           const patientDate = new Date(patient.date);
-  //           // Comparer l'année, le mois et le jour
-  //           return patientDate.getFullYear() === date.getFullYear() &&
-  //                  patientDate.getMonth() === date.getMonth() &&
-  //                  patientDate.getDate() === date.getDate();
-  //         });
+// Afficher les patients
+  const toMinutes = (time) => {
+    const [hours, minutes] = time.split(':');
+    return Number(hours) * 60 + Number(minutes);
+  };
+    const allPatientsInorder = allPatients.sort((a, b) => toMinutes(a.hour) - toMinutes(b.hour));
   
-  //         // Trier les patients par date, office token et heure
-  //         const sortedPatients = filteredPatients.sort((a, b) => {
-  //           // Comparer les dates
-  //           const dateComparison = new Date(a.date) - new Date(b.date);
-  //           if (dateComparison !== 0) return dateComparison;
-  
-  //           // Si les dates sont les mêmes, comparer les office tokens
-  //           const officeTokenComparison = a.officeToken.localeCompare(user.officesTokens);
-  //           if (officeTokenComparison !== 0) return officeTokenComparison;
-  
-  //           // Si les office tokens sont les mêmes, comparer les heures
-  //           return new Date(`1970-01-01T${a.time}:00`) - new Date(`1970-01-01T${b.time}:00`);
-  //         });
-  
-  //         setPatients(sortedPatients);
-  //       }
-  //     });
-  // }, [date]);
-  
-  
-    const allPatientsInorder = allPatients.sort((a, b) => new Date(a.date) - new Date(b.date));
     const AfficherPatients =  allPatientsInorder.map((patient, i) => {
-    // if (!patient.treatments) {
-    //   return null;
-    // }
+
     let nameAll = `${patient.name} ${patient.firstname}`;
     let truncatedNom;
     if (nameAll.length > 15) {
@@ -135,9 +101,7 @@ export default function TourScreen({navigation}) {
     } else {
       truncatedNom = nameAll;
     }
-    console.log(patient._id)
-  
-  
+ 
     return (
         <View key={i}>
           <Card style={styles.contentcard}>
@@ -192,50 +156,52 @@ export default function TourScreen({navigation}) {
       <>
         <SafeAreaView style={{ flex: 0, backgroundColor: '#99BD8F' }} />
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-          <ScrollView contentContainerStyle={styles.scrollView}>
-            <View style={styles.container}>
-              <View style={styles.header}>
-                <Dropdown style={styles.dropdown} navigation={navigation} />
-                <Image
-                  style={styles.image}
-                  source={require('../assets/logo.png')}
-                />
-              </View>
-              <View style={styles.calendarContain}>
-                <View style={styles.previous}>
-                  <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' onPress={() => changeDate(-1)} />
+            <KeyboardAwareScrollView contentContainerStyle={styles.scrollView} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} enableOnAndroid={true}>
+              <ScrollView contentContainerStyle={styles.scrollView}>
+                <View style={styles.container}>
+                  <View style={styles.header}>
+                    <Dropdown style={styles.dropdown} navigation={navigation} />
+                    <Image
+                      style={styles.image}
+                      source={require('../assets/logo.png')}
+                    />
+                  </View>
+                  <View style={styles.calendarContain}>
+                    <View style={styles.previous}>
+                      <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' onPress={() => changeDate(-1)} />
+                    </View>
+                    <View style={styles.calendar}>
+                      <Text style={styles.text} onPress={showDate}>
+                        {`${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`}
+                      </Text>
+                    </View>
+                    <View style={styles.next}>
+                      <FontAwesome name={'chevron-right'} size={24} color='#99BD8F' onPress={() => changeDate(+1)} />
+                    </View>
+                    <View>
+                      {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
+                    </View>
+                  </View>
                 </View>
-                <View style={styles.calendar}>
-                  <Text style={styles.text} onPress={showDate}>
-                    {`${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`}
-                  </Text>
+                <View style={styles.nbrpatient}>
+                  <Text style={styles.textnbrpatient}>Patients visités 3/5</Text>
                 </View>
-                <View style={styles.next}>
-                  <FontAwesome name={'chevron-right'} size={24} color='#99BD8F' onPress={() => changeDate(+1)} />
+                <View style={styles.progressBar}>
+                  <ProgressBar progress={progress} style={{width: 200}} theme={{ colors: { primary: '#99BD8F' } }}   />
                 </View>
-                <View>
-                  {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
+                <View style={styles.pluscircle}>
+                    <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' onPress={() => navigation.navigate('AddPatientScreen')}/>
                 </View>
-              </View>
-            </View>
-            <View style={styles.nbrpatient}>
-              <Text style={styles.textnbrpatient}>Patients visités 3/5</Text>
-            </View>
-            <View style={styles.progressBar}>
-              <ProgressBar progress={progress} style={{width: 200}} theme={{ colors: { primary: '#99BD8F' } }}   />
-            </View>
-            <View style={styles.pluscircle}>
-                <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' onPress={() => navigation.navigate('AddPatientScreen')}/>
-            </View>
-            <View style={styles.switchitem}>
-              <Text style={styles.switchitemtext}>Tout</Text>
-              <Switch value={isSwitchOn} theme={{ colors: { primary: '#99BD8F' } }}  onValueChange={onToggleSwitch}/>
-              <Text style={styles.switchitemtext}>Restant</Text>
-            </View>
-            <ScrollView contentContainerStyle={styles.allcards}>
-            {AfficherPatients}
-          </ScrollView>
-          </ScrollView>
+                <View style={styles.switchitem}>
+                  <Text style={styles.switchitemtext}>Tout</Text>
+                  <Switch value={isSwitchOn} theme={{ colors: { primary: '#99BD8F' } }}  onValueChange={onToggleSwitch}/>
+                  <Text style={styles.switchitemtext}>Restant</Text>
+                </View>
+                <ScrollView contentContainerStyle={styles.allcards}>
+                {AfficherPatients}
+              </ScrollView>
+            </ScrollView>
+          </KeyboardAwareScrollView>
         </SafeAreaView>
       </>
     );

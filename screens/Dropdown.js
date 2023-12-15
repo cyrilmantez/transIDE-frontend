@@ -23,7 +23,7 @@ export default function Dropdown({navigation}) {
     <View style={styles.container}>
         <View style={[styles.dropdown, {backgroundColor: isVisible ? '#99BD8F' : 'transparent'}]}>
         <TouchableOpacity style={styles.bars} onPress={toggleVisibility}>
-            <FontAwesome name={'bars'} size={35} color={iconColor} />
+            
         </TouchableOpacity>
 
         {isVisible && (
