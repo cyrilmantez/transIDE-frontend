@@ -128,6 +128,7 @@ export default function TourScreen({navigation}) {
                   address: patient.address,
                   mobile: patient.mobile,
                   homePhone: patient.homePhone,
+                  actions: patient.actions,
                 })}>
                   <Icon source={'medical-bag'} size={24} color='#99BD8F'/>
                 </TouchableOpacity>

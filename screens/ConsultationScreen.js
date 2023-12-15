@@ -1,48 +1,70 @@
-import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Keyboard, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
-import { TextInput} from 'react-native-paper';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Keyboard, TouchableOpacity, SafeAreaView, Modal, TextInput } from 'react-native';
+//import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { useDispatch, useSelector } from 'react-redux';
+//import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPhone, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
+//import { useDispatch, useSelector } from 'react-redux';
 //import PatientScreen from './screens/PatientScreen';
 //import users from '../reducers/users';
 import patients from '../reducers/patients';
 
-export default function ConsultationScreen() {
-    const dispatch = useDispatch();
+export default function ConsultationScreen({ navigation, route }) {
     
-    //const users = useSelector((state) => state.users.value.username);
-    const [patient, setPatient]= useState(null);
-    // récupère les soins prévus lors du fetch initial :
-    const [initialPlannedTreatments, setInitialPlannedTreatments] = useState('');
-    // remplacer le texte en dur par initialPlannedTreatments
-    const [plannedTreatments, setPlannedTreatments] = useState('15h00 : piqûre dans la fesse gauche');
-    const [newTreatments, setNewTreatments] = useState('');
-    const [transmission, setTransmission] = useState('');
+    // Récupération des données du patient de TourScreen :
+    const [patient, setPatient]= useState({firstname: route.params.firstname, name: route.params.name, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone});
+    // Récupération des soins prévus de TourScreen (tableau de strings):
+    const [plannedTreatments, setPlannedTreatments] = useState(route.params.actions);
+    // Soins supplémentaires :
+    const [newTreatments, setNewTreatments] = useState(' ');
+    // Transmission :
+    const [transmission, setTransmission] = useState(' ');
+    // Appel à la modale de validation :
     const [modalVisible, setModalVisible] = useState(false);
 
     const openModal = () => setModalVisible(true);
     const closeModal = () => setModalVisible(false);
 
-    // Récupération des données du patient :
-    /* ${props._id} */
-    useEffect(() => {
-        fetch(`http://192.168.1.5:3000/patients/6579c5d4c2873da0530e41bf`).then(response => response.json())
+    // Traitement des données du patient :
+    const patientInfo = () => {
+        return <View style={styles.patientInfo}>
+            <View style={styles.patientName}>{[patient.firstname, patient.name.toUpperCase()]}</View>
+            <View style={styles.patientData}>
+                <View>
+                    <FontAwesomeIcon icon={faMapLocationDot} size={24} color='#99BD8F'/>
+                    <View>{patient.address}</View>
+                </View>
+                <View>
+                    <FontAwesomeIcon icon={faPhone} size={24} color='#99BD8F'/>
+                    <View>{[patient.mobile, patient.homePhone]}</View>
+                </View>
+            </View>
+
+        </View>
+    };
+
+    /* useEffect(() => {
+        fetch(`http://192.168.0.25:3000/patients/patient/6579c5d4c2873da0530e41bf`).then(response => response.json())
         .then(data => {
-            console.log(data.result);
-            setPatient({firstname: data.firstname, name: data.name, address: data.address, homePhone: data.homephone, mobile: data.mobile});
-            setInitialPlannedTreatments({treatments: {date: data.treatments.date, action: date.treatments.actions}});
+            //console.log('retour du back', data.result);
+            setPatient({firstname: data.patient.firstname, name: data.patient.name, address: data.patient.address, homePhone: data.patient.homephone, mobile: data.patient.mobile});
+            for(const treatments of data.patient.treatments) {
+                setPlannedTreatments(treatments.actions.join('\n'));                        
+            }
         });
-    }, [plannedTreatments]);
+    }, []); */
     
+    console.log('soinsprévus', plannedTreatments)
+
     // Fonction pour mettre à jour la valeur des soins prévus :
     const updatePlannedTreatments = (newText) => {
         setPlannedTreatments(newText);
     };
 
-    console.log(patient);
-    console.log(plannedTreatments);
-    
+    // Flèche de navigation Retour :
+    /* navigation.navigate('TabNavigator'); */
+
     // Mise en page données patient :
     //const patientInfo = 
 
@@ -52,7 +74,6 @@ export default function ConsultationScreen() {
     // Effet du clic sur "validation" :
     const handleSubmit = () => {
         {openModal}
-        /* navigation.navigate('TabNavigator'); */
       };
 
     let [fontsLoaded] = useFonts({
@@ -72,10 +93,7 @@ export default function ConsultationScreen() {
                                 <Text style={styles.titlePage}>Consultation</Text>
                             </View>
                             <View style={styles.patient}>
-                                <View>
-                                    <View style={styles.name}>{/* {patientInfo} */}</View>
-                                    <View></View>
-                                </View>
+                                {patientInfo}
                             </View>
                             <View style={styles.inputContainer}>
                                 <View>
@@ -85,35 +103,40 @@ export default function ConsultationScreen() {
                                     <TextInput   
                                         mode='outlined'
                                         value={plannedTreatments}
-                                        multiline
+                                        multiline={true}
+                                        textAlignVertical= 'top'
                                         theme={{ 
                                         colors: { 
                                             primary: '#99BD8F', 
                                         }
                                         }}
                                         style={styles.soinsPrevus} 
-                                        onChangeText={updatePlannedTreatments}/>
+                                        onChangeText={text => setPlannedTreatments(text)}/>
                                 </View>
                                 <View>
                                     <Text style={styles.titleSoins}>Soins supplémentaires</Text>
-                                </View>            
-                                <TextInput 
-                                    mode='outlined'
-                                    multiline
-                                    theme={{ 
-                                    colors: { 
-                                        primary: '#99BD8F', 
-                                    }
-                                    }}
-                                    style={styles.soinsPrevus} 
-                                    onChangeText={text => setNewTreatments(text)} 
-                                    value={newTreatments}/>
+                                </View>
+                                <View>      
+                                    <TextInput 
+                                        mode='outlined'
+                                        multiline={true}
+                                        textAlignVertical= 'top'
+                                        theme={{ 
+                                        colors: { 
+                                            primary: '#99BD8F', 
+                                        }
+                                        }}
+                                        style={styles.soinsPrevus} 
+                                        onChangeText={text => setNewTreatments(text)} 
+                                        value={newTreatments}/>
+                                </View> 
                                 <View>
-                                    <Text style={styles.titleSoins}>Transmissions</Text>
+                                    <Text style={styles.titleSoins}>Transmission</Text>
                                 </View>            
                                 <TextInput 
                                     mode='outlined'
-                                    multiline
+                                    multiline={true}
+                                    textAlignVertical= 'top'
                                     theme={{ 
                                     colors: { 
                                         primary: '#99BD8F', 
@@ -205,8 +228,9 @@ const styles = StyleSheet.create({
     soinsPrevus:{
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
+        textAlign: 'left',
         width: 340,
-        height: 180,
+        height: 100,
         backgroundColor: '#F0F0F0',
         borderRadius: 10,
         marginLeft: 10,
@@ -216,5 +240,20 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
-      },     
+      },
+    patientInfo : {
+        backgroundColor: '#99BD8F',
+        textAlign: 'center',
+        //flex
+        //justifyContent
+        //alignItems
+        //fontFamily
+        //
+    },
+    patientName: {
+
+    },
+    patientData: {
+        flexDirection: 'row',
+    },
    });
