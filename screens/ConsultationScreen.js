@@ -12,19 +12,34 @@ import patients from '../reducers/patients';
 
 export default function ConsultationScreen({ navigation, route }) {
     
+    
     // Récupération des données du patient de TourScreen :
     const [patient, setPatient]= useState({firstname: route.params.firstname, name: route.params.name, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone});
     // Récupération des soins prévus de TourScreen (tableau de strings):
-    const [plannedTreatments, setPlannedTreatments] = useState(route.params.actions);
-    // Soins supplémentaires :
-    const [newTreatments, setNewTreatments] = useState(' ');
+    const [plannedTreatments, setPlannedTreatments] = useState('');
+    //  Enregistrement des inputs :
+    const [textInputValue, setTextInputValue] = useState('');
     // Transmission :
     const [transmission, setTransmission] = useState(' ');
     // Appel à la modale de validation :
     const [modalVisible, setModalVisible] = useState(false);
-
+    
     const openModal = () => setModalVisible(true);
     const closeModal = () => setModalVisible(false);
+    
+    // Transformation des soins récupérés du tourScreen :
+    // '\n'
+    useEffect(() => {
+        let treatments = '';
+        for( const treatment of route.params.actions) {
+            treatments = `${treatments} ${treatment}`;
+        }
+        setPlannedTreatments(treatments);
+    }, []);
+
+    //console.log('soinsprévus', plannedTreatments)
+    //console.log('patient', patient);
+    //console.log('firstname', patient.firstname);
 
     // Traitement des données du patient :
     const patientInfo = () => {
@@ -32,15 +47,21 @@ export default function ConsultationScreen({ navigation, route }) {
         const patientPhones = `${patient.mobile} ${patient.homePhone}`;
         return (
             <View style={styles.patientInfo}>
-                <View style={styles.patientName}>{patientName}</View>
+                <View>
+                    <Text style={styles.patientName}>{patientName}</Text>
+                </View>
                 <View style={styles.patientData}>
-                    <View>
+                    <View style={styles.dataLeft}>
                         <FontAwesome name={'map-pin'} size={24} color='black' />
-                        <View>{patient.address}</View>
+                        <View>
+                            <Text>{patient.address}</Text>
+                        </View>
                     </View>
-                    <View>
+                    <View style={styles.dataRight}>
                         <FontAwesome name={'phone'} size={24} color='black' />
-                        <View>{patientPhones}</View>
+                        <View>
+                            <Text>{patientPhones}</Text>
+                        </View>
                     </View>
                 </View>
             </View>
@@ -57,15 +78,6 @@ export default function ConsultationScreen({ navigation, route }) {
             }
         });
     }, []); */
-    
-    //console.log('soinsprévus', plannedTreatments)
-    //console.log('patient', patient);
-    //console.log('firstname', patient.firstname);
-
-    // Fonction pour mettre à jour la valeur des soins prévus :
-    const updatePlannedTreatments = (newText) => {
-        setPlannedTreatments(newText);
-    };
 
     // modale de confirmation de validation :
 
@@ -96,17 +108,17 @@ export default function ConsultationScreen({ navigation, route }) {
                             <View styles={styles.titleContainer}>
                                 <Text style={styles.titlePage}>Consultation</Text>
                             </View>
-                            {/* <View style={styles.patient}> */}
-                            {patientInfo}
-                            {/* </View> */}
+                            <View style={styles.patient}>
+                                {patientInfo()}
+                            </View>
                             <View style={styles.inputContainer}>
                                 <View>
-                                    <Text style={styles.titleSoins}>Soins prévus</Text>
+                                    <Text style={styles.titleSoins}>Soins réalisés</Text>
                                 </View>      
                                 <View>    
                                     <TextInput   
                                         mode='outlined'
-                                        value={[plannedTreatments]}
+                                        value={plannedTreatments}
                                         multiline={true}
                                         textAlignVertical= 'top'
                                         theme={{ 
@@ -115,9 +127,9 @@ export default function ConsultationScreen({ navigation, route }) {
                                         }
                                         }}
                                         style={styles.soinsPrevus} 
-                                        onChangeText={text => updatePlannedTreatments(text)}/>
+                                        onChangeText={text => setPlannedTreatments(text)}/>
                                 </View>
-                                <View>
+                                {/* <View>
                                     <Text style={styles.titleSoins}>Soins supplémentaires</Text>
                                 </View>
                                 <View>      
@@ -133,7 +145,7 @@ export default function ConsultationScreen({ navigation, route }) {
                                         style={styles.soinsPrevus} 
                                         onChangeText={text => setNewTreatments(text)} 
                                         value={newTreatments}/>
-                                </View> 
+                                </View>  */}
                                 <View>
                                     <Text style={styles.titleSoins}>Transmission</Text>
                                 </View>            
@@ -187,7 +199,6 @@ const styles = StyleSheet.create({
     titlePage: {
        color: '#99BD8F',
        fontSize: 30,
-       marginBottom: 30,
        fontFamily: 'Poppins_600SemiBold',
    },
     chevron: {
@@ -196,13 +207,13 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start', */
     },
     patient: {
-        backgroundColor: '#99BD8F',
+        //backgroundColor: '#99BD8F',
    },
     titleSoins: {
        color: '#99BD8F',
        fontSize: 22,
        marginBottom: 0,
-       marginTop: 20,
+       //marginTop: 20,
        fontFamily: 'Poppins_400Regular',
    },
     text:{
@@ -252,17 +263,25 @@ const styles = StyleSheet.create({
       },
     patientInfo : {
         backgroundColor: '#99BD8F',
-        textAlign: 'center',
-        //flex
-        //justifyContent
-        //alignItems
-        //fontFamily
-        //
+        alignItems: 'center',
+        width: 340,
+        height: 100,
+        borderRadius: 10,
     },
     patientName: {
-
+        //alignItems: 'center',
+        //justifyContent: 'center',
+        //textAlign: 'center',
+        fontSize: 20,
+        fontWeight: '600',
     },
     patientData: {
+        justifyContent: 'center',
+    },
+    dataLeft: {
+        flexDirection: 'row',
+    },
+    dataRight: {
         flexDirection: 'row',
     },
    });
