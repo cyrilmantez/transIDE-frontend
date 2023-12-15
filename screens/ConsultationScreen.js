@@ -2,7 +2,7 @@ import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoid
 //import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
-//import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
 //import { faPhone, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 //import { useDispatch, useSelector } from 'react-redux';
@@ -28,20 +28,23 @@ export default function ConsultationScreen({ navigation, route }) {
 
     // Traitement des données du patient :
     const patientInfo = () => {
-        return <View style={styles.patientInfo}>
-            <View style={styles.patientName}>{[patient.firstname, patient.name.toUpperCase()]}</View>
-            <View style={styles.patientData}>
-                <View>
-                    {/* <FontAwesomeIcon icon={faMapLocationDot} size={24} color='#99BD8F'/> */}
-                    <View>{patient.address}</View>
-                </View>
-                <View>
-                   {/*  <FontAwesomeIcon icon={faPhone} size={24} color='#99BD8F'/> */}
-                    <View>{[patient.mobile, patient.homePhone]}</View>
+        const patientName = `${patient.firstname} ${patient.name.toUpperCase()}`;
+        const patientPhones = `${patient.mobile} ${patient.homePhone}`;
+        return (
+            <View style={styles.patientInfo}>
+                <View style={styles.patientName}>{patientName}</View>
+                <View style={styles.patientData}>
+                    <View>
+                        <FontAwesome name={'map-pin'} size={24} color='black' />
+                        <View>{patient.address}</View>
+                    </View>
+                    <View>
+                        <FontAwesome name={'phone'} size={24} color='black' />
+                        <View>{patientPhones}</View>
+                    </View>
                 </View>
             </View>
-
-        </View>
+        );
     };
 
     /* useEffect(() => {
@@ -55,18 +58,14 @@ export default function ConsultationScreen({ navigation, route }) {
         });
     }, []); */
     
-    console.log('soinsprévus', plannedTreatments)
+    //console.log('soinsprévus', plannedTreatments)
+    //console.log('patient', patient);
+    //console.log('firstname', patient.firstname);
 
     // Fonction pour mettre à jour la valeur des soins prévus :
     const updatePlannedTreatments = (newText) => {
         setPlannedTreatments(newText);
     };
-
-    // Flèche de navigation Retour :
-    /* navigation.navigate('TabNavigator'); */
-
-    // Mise en page données patient :
-    //const patientInfo = 
 
     // modale de confirmation de validation :
 
@@ -89,12 +88,17 @@ export default function ConsultationScreen({ navigation, route }) {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                         <ScrollView contentContainerStyle={styles.scrollView}>
+                            <View style={styles.chevron}> 
+                                <TouchableOpacity onPress={() => {navigation.navigate('TabNavigator')}}>
+                                    <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' />
+                                </TouchableOpacity>
+                            </View>
                             <View styles={styles.titleContainer}>
                                 <Text style={styles.titlePage}>Consultation</Text>
                             </View>
-                            <View style={styles.patient}>
-                                {patientInfo}
-                            </View>
+                            {/* <View style={styles.patient}> */}
+                            {patientInfo}
+                            {/* </View> */}
                             <View style={styles.inputContainer}>
                                 <View>
                                     <Text style={styles.titleSoins}>Soins prévus</Text>
@@ -102,7 +106,7 @@ export default function ConsultationScreen({ navigation, route }) {
                                 <View>    
                                     <TextInput   
                                         mode='outlined'
-                                        value={plannedTreatments}
+                                        value={[plannedTreatments]}
                                         multiline={true}
                                         textAlignVertical= 'top'
                                         theme={{ 
@@ -111,7 +115,7 @@ export default function ConsultationScreen({ navigation, route }) {
                                         }
                                         }}
                                         style={styles.soinsPrevus} 
-                                        onChangeText={text => setPlannedTreatments(text)}/>
+                                        onChangeText={text => updatePlannedTreatments(text)}/>
                                 </View>
                                 <View>
                                     <Text style={styles.titleSoins}>Soins supplémentaires</Text>
@@ -186,6 +190,11 @@ const styles = StyleSheet.create({
        marginBottom: 30,
        fontFamily: 'Poppins_600SemiBold',
    },
+    chevron: {
+        /* justifyContent: 'flex-start',
+        alignContent: 'flex-start',
+        alignItems: 'flex-start', */
+    },
     patient: {
         backgroundColor: '#99BD8F',
    },
