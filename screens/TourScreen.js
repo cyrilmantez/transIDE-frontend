@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import * as React from 'react';
+//import * as React from 'react';
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native';
 import Dropdown from './Dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
-import { Card, Paragraph, ProgressBar, Switch, Icon } from 'react-native-paper';
+import { Card, Paragraph, ProgressBar, Switch, Icon, Modal, Button } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
@@ -19,7 +19,7 @@ export default function TourScreen({navigation}) {
   const [allPatients, setAllPatients] = useState([])
 
   const allData =()=> {
-    fetch('http://192.168.1.14:3000/patients/allPatients', {
+    fetch('http://192.168.0.25:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
