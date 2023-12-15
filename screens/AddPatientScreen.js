@@ -9,6 +9,7 @@ import { addPatient } from '../reducers/patients';
 import { useDispatch, useSelector } from 'react-redux';
 import { Camera, FlashMode} from 'expo-camera';
 import { addPhoto } from '../reducers/users';
+
 export default function AddPatientScreen({navigation}) {
     const dispatch = useDispatch();
     
