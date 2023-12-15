@@ -64,14 +64,16 @@ export default function AddPatientScreen({navigation}) {
           body: JSON.stringify({
             officeToken: user.officesTokens,
             name: lastnamePatient.toUpperCase(),
-            firstname: firstnamePatient,
+            firstname: firstnamePatient.charAt(0).toUpperCase() + firstnamePatient.slice(1).toLowerCase(),
             yearOfBirthday : dobPatient, 
             address: addressPatient,
             infosAddress : additionalAddress,
             homePhone : homePhone,
             mobile: phoneNumber, 
             treatments:[{
-              state: false,
+              isVisited : false,
+              isOk: false,
+              isOkWithModification: false,
               date: addRdv, 
               actions: addTreatment, 
               nurse: '',

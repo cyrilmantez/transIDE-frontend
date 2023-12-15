@@ -2,14 +2,9 @@ import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoid
 //import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
-<<<<<<< HEAD
-//import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-=======
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
 //import { faPhone, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
->>>>>>> 529378c6f789f58f6ad67de12ecf657af8486270
 //import { useDispatch, useSelector } from 'react-redux';
 //import PatientScreen from './screens/PatientScreen';
 //import users from '../reducers/users';
@@ -33,18 +28,6 @@ export default function ConsultationScreen({ navigation, route }) {
 
     // Traitement des données du patient :
     const patientInfo = () => {
-<<<<<<< HEAD
-        return <View style={styles.patientInfo}>
-            <View style={styles.patientName}>{[patient.firstname, patient.name.toUpperCase()]}</View>
-            <View style={styles.patientData}>
-                <View>
-                    <FontAwesome icon={user} size={24} color='#99BD8F'/>
-                    <View>{patient.address}</View>
-                </View>
-                <View>
-                    <FontAwesome icon={uer} size={24} color='#99BD8F'/>
-                    <View>{[patient.mobile, patient.homePhone]}</View>
-=======
         const patientName = `${patient.firstname} ${patient.name.toUpperCase()}`;
         const patientPhones = `${patient.mobile} ${patient.homePhone}`;
         return (
@@ -59,7 +42,6 @@ export default function ConsultationScreen({ navigation, route }) {
                         <FontAwesome name={'phone'} size={24} color='black' />
                         <View>{patientPhones}</View>
                     </View>
->>>>>>> 529378c6f789f58f6ad67de12ecf657af8486270
                 </View>
             </View>
         );
