@@ -1,95 +1,122 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, SafeAreaView, Animated, TouchableOpacity } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
-import { Icon } from 'react-native-paper';
+import { Icon, Button, Portal, Modal } from 'react-native-paper';
+
 
 export default function App({ navigation, route }) {
+  const [patient, setPatient] = useState(null);
+  const [value, setValue] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
 
-  const toggleDrawer = () => {
-    setIsDrawerOpen(!isDrawerOpen);
+  // bouton disponible
+  const handleValueChange = (newValue) => {
+    setValue(newValue);
   };
 
-  const [isDisponible, setIsDisponible] = useState(true)
-      const [patient, setPatient]= useState(null)
-  
-  
-    useEffect(() => {
-      fetch(`http://192.168.1.14:3000/patients/patient/${route.params._id}`).then(response => response.json())
-      .then(data => {console.log(data.patient.firstname);
-          setPatient(data.patient)
-      })
-    }, []);
 
+  // Modal déroulant
+  const drawerHeight = 450; // Hauteur du tiroir ouvert
+  const peekHeight = 310; // Hauteur du tiroir fermé qui dépasse
 
-//   let [fontsLoaded] = useFonts({
-//     Poppins_400Regular,
-//     Poppins_600SemiBold,
-//   });
+  const [drawerPosition, setDrawerPosition] = useState(new Animated.Value(-drawerHeight + peekHeight));
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+    Animated.timing(drawerPosition, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const openDrawer = () => {
+    setIsDrawerOpen(true);
+    Animated.timing(drawerPosition, {
+      toValue: -drawerHeight + peekHeight,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  useEffect(() => {
+    fetch(`http://192.168.1.14:3000/patients/patient/${route.params._id}`).then(response => response.json())
+    .then(data => {
+        console.log(data.patient.firstname);
+        setPatient(data.patient)
+    });
+    closeDrawer();
+  }, []);
 
   if (!patient) {
-      return (<View />);
-    } else {
-  return (
-    <>
-        <SafeAreaView style={{ flex: 0, backgroundColor: '#99BD8F' }} />
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-            <View style={styles.container}>
-                <View style={styles.headcontent}>
-                    <Text style={styles.title}>FICHE PATIENT</Text>
-                </View>
-                <ScrollView
-                onScrollBeginDrag={toggleDrawer}
-                contentContainerStyle={styles.scrollView}
-                >
-                {isDrawerOpen && (
-                    <View>                   
-                    <View style={styles.drawer}>
-                        <Text>{patient.infosAddress}</Text>
-                        <View style={styles.drawercontent1}>
-                        <Text style={styles.pac}>Personne à contacter en cas d'urgence</Text>
+    return (<View />);
+  } else {
+    return (
+      <>
+          <SafeAreaView style={{ flex: 0, backgroundColor: '#99BD8F' }} />
+          <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+              <View style={styles.container}>
+                           
+                  <View style={styles.headcontent}>
+                      <Text style={styles.title}>FICHE PATIENT</Text>
+                  </View>
+                  <ScrollView
+                  onScrollBeginDrag={closeDrawer}
+                  contentContainerStyle={styles.scrollView}
+                  >
+                  <Animated.View style={[styles.drawer, { bottom: drawerPosition, zIndex: isDrawerOpen ? 1 : 0 }]}>
+                      <Text style={styles.infosAddress}>{patient.infosAddress}</Text>
+                      <View style={styles.drawercontent1}>
+                      <Text style={styles.pac}>Personne à contacter en cas d'urgence</Text>
+                      </View>
+                      <View style={styles.drawercontent2}>
+                        <View style={{flexDirection: 'row', alignContent: 'center'}}>
+                          <Icon source={'account-supervisor'} size={24} color='black'/>
+                          <Text>{patient.ICEIdentity}</Text>
                         </View>
-                        <View style={styles.drawercontent2}>
-                        <Icon source={'account-supervisor'} size={24} color='black'/>
-                        <Text>{patient.ICEIdentity}</Text>
+                        <View style={{flexDirection: 'row', alignContent: 'center'}}>
+                          <Icon source={'cellphone'} size={24} color='black'/>
+                          <Text>{patient.ICEPhoneNumber}</Text>
+                        </View>                
+                      </View>
+                      <View style={{marginTop: 30}}>
+                          <TouchableOpacity style={styles.buttonmodify}>
+                            <Text style={{fontFamily: 'Poppins_600SemiBold'}}>Modifier</Text>
+                          </TouchableOpacity>
                         </View>
-                        <View style={styles.drawercontent3}>
-                        <Icon source={'cellphone'} size={24} color='black'/>
-                        <Text>{patient.ICEPhoneNumber}</Text>
-                        </View>
+                      <TouchableOpacity style={{width: 100, height: 25}} onPress={openDrawer}>
                         <View style={styles.handle} />
-                    </View>         
-                    </View>
-                )}
-                <View style={styles.visiblepart}>
-                    <Text style={styles.namefirstname}>{patient.firstname} {patient.name}</Text>
-                <View style={styles.phonehome}>
-                <View style={styles.icone}>
-                    <Icon source={'home-circle-outline'} size={24} color='black'/>
-                    <Icon source={'phone-classic'} size={24} color='black'/>
-                </View>
-                <View>
-                    <View style={styles.info}>
-                        <View style={styles.address}>
-                            <Text>{patient.address}</Text>
-                        </View>
-                        <View style={styles.mobile}>
-                            <Text>{patient.mobile}</Text>
-                            <Text>{patient.homePhone}</Text>
-                        </View>
-                    </View>
-                </View>
-                </View>
-                </View>
-                </ScrollView>
-                <View style={styles.content}>
-                    <Text>TEST</Text>
-                </View>
-            </View>
-    </SafeAreaView>
-    </>
-  );
-}
+                      </TouchableOpacity>
+                    </Animated.View>
+                  <View style={styles.visiblepart}>
+                      <Text style={styles.namefirstname}>{patient.firstname} {patient.name}</Text>
+                  <View style={styles.phonehome}>
+                  <View style={styles.icone}>
+                      <Icon source={'home-circle-outline'} size={24} color='black'/>
+                      <Icon source={'phone-classic'} size={24} color='black'/>
+                  </View>
+                  <View>
+                      <View style={styles.info}>
+                          <View style={styles.address}>
+                              <Text>{patient.address}</Text>
+                          </View>
+                          <View style={styles.mobile}>
+                              <Text>{patient.mobile}</Text>
+                              <Text>{patient.homePhone}</Text>
+                          </View>
+                      </View>
+                  </View>
+                  </View>
+                  </View>
+                  </ScrollView>
+                  <View style={[styles.content, {zIndex: isDrawerOpen ? -1 : 0 }]}>                                
+                  </View>
+              </View>
+          </SafeAreaView>
+      </>
+    );
+  }
 }
 const styles = StyleSheet.create({
   container: {
@@ -99,11 +126,12 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     height: 200,
+    marginTop: 10
   },
   drawer: {
     position: 'absolute',
     bottom: -300,
-    height: 300,
+    height: 195,
     width: '100%',
     backgroundColor: '#99BD8F',
     justifyContent: 'center',
@@ -124,18 +152,22 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     width: '100%',
+    marginTop: -420,
+    alignItems: 'center'
+    
   },
   headcontent: {
     width: '100%',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   visiblepart: {
     width: 360,
+    height: 176,
     backgroundColor: '#99BD8F',
     borderRadius: 10,
     paddingTop: 10,
     alignItems: 'center',
-    paddingBottom: 10,
+    marginTop: 2,
   },
   namefirstname: {
     fontFamily: 'Poppins_600SemiBold',
@@ -144,64 +176,82 @@ const styles = StyleSheet.create({
   phonehome: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 15,
+    marginTop: 35,
     width: 200,
 },
-icone: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+  icone: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
 },
-info: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
+  info: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: 10,
+},
+  address: {
+      width: 150,
+      alignItems: 'center',
+      marginRight: 10,
+      fontFamily: 'Poppins_400Regular',
+},
+  mobile: {
+      width: 150,
+      alignItems: 'center',
+      marginLeft: 20,
+      marginRight: -5,
+      fontFamily: 'Poppins_400Regular',
+},
+  handle: {
+      width: 40,
+      height: 5,
+      backgroundColor: 'gray',
+      borderRadius: 5,
+      alignSelf: 'center',
+      justifyContent:'flex-end',
+      marginTop: 10,
+},
+  pac: {
+      fontFamily: 'Poppins_600SemiBold',
+},
+  drawercontent1: {
+      marginTop: 20,
+      flexDirection: 'row',
+},
+  drawercontent2 : {
+      marginTop: 20,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: 300,
+},
+  drawercontent3: {
+      borderColor: 'red',
+      borderWidth: 2,
+      marginTop: 20,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+},
+  infosAddress: {
     marginTop: 10,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
 },
-address: {
-    width: 150,
-    alignItems: 'center',
-    marginRight: 10,
-    fontFamily: 'Poppins_400Regular',
-},
-mobile: {
-    width: 150,
-    alignItems: 'center',
-    marginLeft: 15,
-    marginRight: -5,
-    fontFamily: 'Poppins_400Regular',
-},
-handle: {
-    width: 40,
-    height: 5,
-    backgroundColor: 'gray',
+  buttonmodify: {
+    backgroundColor: '#CADDC5',
+    width: 300,
+    height: 40,
     borderRadius: 5,
-    alignSelf: 'center',
-    justifyContent:'flex-end',
-},
-pac: {
-    fontFamily: 'Poppins_600SemiBold',
-},
-drawercontent1: {
-    marginTop: 20,
-    flexDirection: 'row',
-    marginTop: 62,
-},
-drawercontent2 : {
-    borderColor: 'red',
-    borderWidth: 2,
-    marginTop: 20,
-    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: -15,
 },
-drawercontent3: {
-    borderColor: 'red',
-    borderWidth: 2,
-    marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
+doublebtn: {
+  width: '90%',
 },
+
 });
 
 
