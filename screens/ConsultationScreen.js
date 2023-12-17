@@ -77,7 +77,7 @@ export default function ConsultationScreen({ navigation, route }) {
         );
     };
 
-    const modalContent = (
+    /* const modalContent = (
         <Modal
         animationType="slide"
         transparent={true}
@@ -111,10 +111,10 @@ export default function ConsultationScreen({ navigation, route }) {
               <FontAwesome name={'alpha-x-box-outline'} size={24} color='#99BD8F' />
             </TouchableOpacity>
     
-          </View>e
+          </View>
         </View>
       </Modal>
-      )
+      ) */
 
     {/* <Modal transparent visible={modalVisible} onRequestClose={closeModal}>
             <View style={styles.modalContainer}>
