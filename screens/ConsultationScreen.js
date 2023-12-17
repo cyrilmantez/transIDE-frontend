@@ -40,27 +40,35 @@ export default function ConsultationScreen({ navigation, route }) {
     //console.log('soinsprévus', plannedTreatments)
     //console.log('patient', patient);
     //console.log('firstname', patient.firstname);
-
+/*  */
     // Traitement des données du patient :
     const patientInfo = () => {
-        const patientName = `${patient.firstname} ${patient.name.toUpperCase()}`;
+        let patientName = `${patient.firstname} ${patient.name.toUpperCase()}`;
         const patientPhones = `${patient.mobile} ${patient.homePhone}`;
+        let truncatedName;
+        
+        if (patientName.length > 20) {
+            truncatedName = `${patientName.substring(0, 20)}...`;
+        } else {
+            truncatedName = patientName;
+        }
+
         return (
             <View style={styles.patientInfo}>
-                <View>
-                    <Text style={styles.patientName}>{patientName}</Text>
+                <View style={styles.patientName}>
+                    <Text>{truncatedName}</Text>
                 </View>
-                <View style={styles.patientData}>
-                    <View style={styles.dataLeft}>
+                <View>
+                    <View style={styles.dataTop}>
                         <FontAwesome name={'map-pin'} size={24} color='black' />
                         <View>
-                            <Text>{patient.address}</Text>
+                            <Text>  {patient.address}</Text>
                         </View>
                     </View>
-                    <View style={styles.dataRight}>
+                    <View style={styles.dataBottom}>
                         <FontAwesome name={'phone'} size={24} color='black' />
                         <View>
-                            <Text>{patientPhones}</Text>
+                            <Text>  {patientPhones}</Text>
                         </View>
                     </View>
                 </View>
@@ -240,17 +248,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
      },
-     /* soinsPrevusContainer: {
-         //marginTop: 0,
-         //marginLeft: 10,
-         //marginRight: 10,
-        }, */
     soinsPrevus:{
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         textAlign: 'left',
         width: 340,
-        height: 100,
+        height: 130,
         backgroundColor: '#F0F0F0',
         borderRadius: 10,
         marginLeft: 10,
@@ -263,25 +266,30 @@ const styles = StyleSheet.create({
       },
     patientInfo : {
         backgroundColor: '#99BD8F',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         width: 340,
-        height: 100,
+        height: 140,
         borderRadius: 10,
-    },
+    },  
     patientName: {
-        //alignItems: 'center',
-        //justifyContent: 'center',
-        //textAlign: 'center',
+        alignSelf: 'center',
+        marginBottom: 10,
+        marginTop: 10,
         fontSize: 20,
-        fontWeight: '600',
+        fontWeight: 'bold',
     },
-    patientData: {
-        justifyContent: 'center',
-    },
-    dataLeft: {
+    dataTop: {
         flexDirection: 'row',
+        marginTop: 15,
+        marginBottom: 10,
+        alignItems: 'flex-start',
+        paddingLeft: 10,
     },
-    dataRight: {
+    dataBottom: {
         flexDirection: 'row',
+        marginTop: 10,
+        marginBottom: 10,
+        alignItems: 'flex-start',
+        paddingLeft: 10,
     },
    });
