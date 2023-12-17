@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, SafeAreaView, Animated, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, Alert, StyleSheet, SafeAreaView, Animated, TouchableOpacity } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
-import { Icon, Button, Portal, Modal } from 'react-native-paper';
-
+import { Icon } from 'react-native-paper';
+import moment from 'moment';
+import 'moment/locale/fr';
+import { Card } from 'react-native-paper';
 
 export default function App({ navigation, route }) {
+  const { _id: currentPatientId } = route.params;
   const [patient, setPatient] = useState(null);
   const [value, setValue] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [visible, setVisible] = useState(false);
-
-  // bouton disponible
-  const handleValueChange = (newValue) => {
-    setValue(newValue);
-  };
-
 
   // Modal déroulant
   const drawerHeight = 450; // Hauteur du tiroir ouvert
@@ -48,6 +45,127 @@ export default function App({ navigation, route }) {
     });
     closeDrawer();
   }, []);
+
+    // bouton disponible
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [disponibility, setDisponibility] = useState(patient ? patient.disponibility : false);
+    const [refresh, setRefresh] = useState(false);
+
+    const buttons = ['DISPONIBLE', 'INDISPONIBLE'];
+    const buttonColors = patient && patient.disponibility ? ['#99BD8F', 'transparent'] : ['transparent', '#99BD8F'];
+    
+
+    const handleButtonPress = (index) => {
+      const newDisponibility = index === 0 ? true : false; 
+      
+      Alert.alert(
+        'Confirmation',
+        `Confirmez-vous que ${patient.name} ${patient.firstname} sera ${buttons[index]}?`,
+        [
+          {
+            text: 'Annuler',
+            style: 'cancel',
+          },
+          { 
+            text: 'Oui', 
+            onPress: () => {
+              if (patient) {
+                fetch('http://192.168.1.14:3000/patients/updatePatientById', {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    _id: patient._id,
+                    newObject: {
+                      disponibility: newDisponibility 
+                    }
+                  }),
+                })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error('Server error');
+                  }
+                  return response.json();
+                })
+                .then(data => {
+                  if (data.result) {
+                    setDisponibility(newDisponibility); 
+                    setRefresh(!refresh);
+                  }
+                })
+                .catch(error => {
+                  console.error('Une erreur s\'est produite:', error);
+                });
+              }
+            } 
+          },
+        ],
+        { cancelable: false },
+      );
+    };
+
+    useEffect(() => {
+      console.log(`La disponibilité a changé, la nouvelle valeur est ${disponibility}`);
+    }, [disponibility]);
+
+    // Affichage des soins
+    const [treatments, setTreatments] = useState([]);
+
+    useEffect(() => {
+      fetch('http://192.168.1.14:3000/patients/allPatientDay')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          const currentPatient = data.allPatient.find(patient => patient._id === currentPatientId);
+
+      if (currentPatient) {
+        console.log('current patient treatments', currentPatient.treatments);
+        setTreatments(currentPatient.treatments);
+      } else {
+        console.log('Patient not found');
+      }
+        })
+        
+    }, []);
+    
+    
+    const TreatmentList = () => {
+      const now = moment();  
+      return (
+        <View style={styles.treatmentAffichage}>
+          {treatments && treatments.map((treatment, index) => {
+            const treatmentDate = moment(treatment.date);
+            const isFuture = treatmentDate.isAfter(now);
+            return (
+              <Card style={{width: 350, marginBottom: 10}}>
+              <Card.Content>
+              <View key={index}>
+              <Text style={isFuture ? { fontStyle: 'italic', fontWeight: 'bold', marginBottom: 5 } : {fontWeight: 'bold', marginBottom: 5}}>
+                {treatmentDate.format('DD/MM/YYYY - HH:mm')}
+              </Text>
+              {treatment.actions.map((action, actionIndex) => (
+                <Text key={actionIndex} style={isFuture ? { fontStyle: 'italic', fontWeight: 'bold' } : {}}>
+                  Action: {action}
+                </Text>
+              ))}
+            </View>
+              </Card.Content>
+              </Card>
+            );
+          })}
+        </View>
+      );
+
+    };
+
+
+
+
 
   if (!patient) {
     return (<View />);
@@ -110,7 +228,40 @@ export default function App({ navigation, route }) {
                   </View>
                   </View>
                   </ScrollView>
-                  <View style={[styles.content, {zIndex: isDrawerOpen ? -1 : 0 }]}>                                
+                  <View style={[styles.content, {zIndex: isDrawerOpen ? -1 : 0 }]}> 
+                  <View style={styles.buttoncontain}>
+                    {buttons.map((button, index) => (
+                      <TouchableOpacity
+                        key={`${index}-${refresh}`}
+                        onPress={() => handleButtonPress(index)}
+                        style={[
+                            styles.button,
+                            index === selectedIndex ? styles.selected : null,
+                            { backgroundColor: buttonColors[index] }
+                          ]}
+                        
+                      >
+                        <Text style={styles.text}>{button}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View> 
+                  <View style={styles.journalContainer}>
+                    <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10,}}>
+                      <Text style={styles.journalTitle}>Journal des soins</Text>
+                    </View>
+                    <View style={styles.journalContent}>
+                      <ScrollView>
+                        <View>
+                        <TreatmentList />
+                        </View>
+                      </ScrollView>
+                    </View>
+                    <View>
+                      <TouchableOpacity style={styles.journalBtn}>
+                        <Text style={styles.textBtn}>Ajouter un consultation</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>                              
                   </View>
               </View>
           </SafeAreaView>
@@ -239,271 +390,65 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
 },
-  buttonmodify: {
-    backgroundColor: '#CADDC5',
-    width: 300,
-    height: 40,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: -15,
+buttonmodify: {
+  backgroundColor: '#CADDC5',
+  width: 300,
+  height: 40,
+  borderRadius: 5,
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: -15,
 },
-doublebtn: {
-  width: '90%',
+buttoncontain: {
+  flexDirection: 'row',
+  borderRadius: 5,
+  borderWidth: 1,
+  borderColor: '#99BD8F',
+  overflow: 'hidden',
 },
-
+button: {
+  flexDirection: 'column',
+  padding: 10,
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: 178,
+},
+selected: {
+  backgroundColor: '#99BD8F',
+},
+text: {
+  color: '#000',
+  fontSize: 16,
+},
+journalTitle: {
+  fontFamily: 'Poppins_400Regular',
+  color: '#99BD8F',
+  fontSize: 20,
+  marginTop: 15,
+},
+journalContent: {
+  backgroundColor: '#F0F0F0',
+  height: 260,
+  width: 360,
+  borderRadius: 10,
+},
+journalBtn: {
+  backgroundColor: '#99BD8F',
+  width: 360,
+  height: 50,
+  borderRadius: 10,
+  marginTop: 20,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+textBtn: {
+  fontFamily: 'Poppins_600SemiBold', 
+  fontSize: 17,
+},
+treatmentAffichage: {
+  marginTop: 10,
+  marginLeft: 10,
+  marginRight: 10,
+  alignItems: 'center',
+}
 });
-
-
-
-    
-    
-//     let [fontsLoaded] = useFonts({
-//         Poppins_400Regular,
-//         Poppins_600SemiBold,
-//       });
-
-//     const [isDisponible, setIsDisponible] = useState(true)
-//     const [patient, setPatient]= useState(null)
-
-  
-
-// //console.log('sur patienScreen :', route.params._id)
-  
-
-//   useEffect(() => {
-//     fetch(`http://192.168.1.14:3000/patients/patient/${route.params._id}`).then(response => response.json())
-//     .then(data => {
-//         setPatient(data.patient)
-//     })
-//   }, []);
-
-
-    
-
-// ///////////// création date du jour en MS :    
-//     const today = new Date();
-//     const timestamp = today.getTime()
-    
-    
-// ////////////// 10 prochain jours à afficher dans les prochains rdv :
-// let rdv;
-// if (patient) {
-//     rdv = patient.treatments.map((data) => {
-//         const tenDaysLaterInMS = timestamp + (10 * 24 * 60 * 60 * 1000);
-//         if (data.date <= tenDaysLaterInMS)
-//         return (
-//             <Text>`${data.date}: ${data.actions}`</Text>
-//         )
-//     })
-// }
-     
-//  ///////////////////// 90 jours passés à afficher dans l'historique : 
-//  let oldRdv;
-//  if (patient) {
-//     oldRdv = patient.treatments.map((data) => {
-//         const ninetyDaysBeforeInMS = timestamp - (90 * 24 * 60 * 60 * 1000);
-//         if (data.date >= ninetyDaysBeforeInMS)
-//         return (
-//             <Text>`${data.date}: ${data.actions}`</Text>
-//         )
-//     })
-//  }
-    
-
-// /////////////////////: bouton dispo/indispo :
-
-//     const changeDispo = () =>{
-//         setIsDisponible(!isDisponible)
-//     }
-
-//     const containerStyle = {
-//         backgroundColor: isDisponible ? '#CADDC5' : '99BD8F',
-//       };
-
-///////////////////////////////////////////////////////////////
-//  if (!patient){
-//     return(
-//         <SafeAreaView  style={styles.container}>
-//         <View style={styles.noPatient}>
-//                 <TouchableOpacity 
-//                     onPress={() => {
-//                         navigation.navigate('TabNavigator')
-//                         setPatient(null)}}>
-//                     <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' />
-//                 </TouchableOpacity>
-//             <Text>Data not found</Text>
-//             <Image
-//                   style={styles.image}
-//                   source={require('../assets/logo.png')}
-//             />
-//         </View>
-//         </SafeAreaView >
-
-        
-//     )
-//     }  else {
-
-//     return (
-//     <SafeAreaView  style={styles.container}>
-//             <View styles={styles.titleContainer}>
-//                 <TouchableOpacity 
-//                     onPress={() => {
-//                         navigation.navigate('TabNavigator')
-//                         setPatient(null)}}>
-//                     <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' />
-//                 </TouchableOpacity>
-//                 <Image
-//                   style={styles.image}
-//                   source={require('../assets/logo.png')}
-//                 />   
-//             </View>
-//             <Text style={styles.titlePage}>Fiche Patient</Text>
-//             <View style={styles.infos}>
-//                 <Text>{patient.firstname} {patient.name}</Text>
-//                 <View style={styles.address}>
-//                     <View style={styles.infosLeft}>
-//                         <FontAwesome name={'map-pin'} size={24} color='black' />
-//                         <Text>{patient.address}</Text>
-//                         <Text>{patient.infosAddress}</Text>
-                        
-//                     </View>
-//                     <View style={styles.infosRight}>
-//                         <FontAwesome name={'phone'} size={24} color='black' />
-//                         <Text>portable : {patient.mobile}</Text>
-//                         <Text>fixe : {patient.homePhone}</Text>
-//                     </View>
-//                 </View>
-//                 <Text>{patient.ICEIdentity}: {patient.ICEPhoneNumber}</Text>
-//                 <View>
-
-//                 </View>
-//             </View>
-//             <TouchableWithoutFeedback onPress={changeDispo}>
-//                 <View style={[styles.buttonDispo, containerStyle]}>
-//                     <Text style={[styles.text, styles.leftText, styles.leftTextStyle]}>Disponible</Text>
-//                     <Text style={[styles.text, styles.rightText, styles.rightTextStyle]}>Indisponible</Text>
-//                 </View>
-//             </TouchableWithoutFeedback>
-//             <View>
-//             <Text style={styles.titleJournal}>Journal des soins</Text>
-//             <ScrollView style={styles.journalContainer}>
-//                 <View style={styles.rdv}>
-//                     <View style={styles.previousRdv}>
-//                         <Text>Historique des RDV:</Text>
-//                         {oldRdv}
-//                     </View>
-//                     <View style={styles.nextRdv}>
-//                         <Text>Prochains RDV:</Text>
-//                         {rdv}
-//                     </View>
-//                 </View> 
-//             </ScrollView>
-//             </View>
-//             <View>
-//                 <TouchableOpacity  style={styles.button}>  
-//                 <Text style={styles.text}>AJOUTER UNE CONSULTATION</Text>            
-//                 </TouchableOpacity>
-//             </View>
-//     </SafeAreaView >
-//     );
-//     };
-
-
-////////////////// style :
-
-// const styles = StyleSheet.create({
-//  container: {
-//    marginTop: 35, 
-//    marginBottom: 10,
-//    flex: 1,
-//    backgroundColor: '#fff',
-//    alignItems: 'center',
-//    justifyContent: 'space-between',
-//  },
-//  noPatient: {
-//     flexDirection: 'row',
-//     justifyContent: 'center',
-
-//  },
-//  image: {
-//     width: 60,
-//     height: 60,
-//   },
-// titlePage: {
-//     color: '#99BD8F',
-//     fontSize: 30,
-//     marginBottom: 50,
-//     fontFamily: 'Poppins_600SemiBold',
-// },
-// infos: {
-//     backgroundColor: '#99BD8F',
-//     alignItems: 'center',
-//     width: 350,
-//     height: 200,
-//     borderRadius: 10,
-// },
-
-// titleJournal: {
-//     color: '#99BD8F',
-//     fontSize: 30,
-//     marginBottom: 50,
-//     fontFamily: 'Poppins_400Regular',
-// },
-// text:{
-//     fontSize: 17,
-//     fontFamily: 'Poppins_400Regular', 
-// },
-// button : {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     backgroundColor: '#99BD8F',
-//     width: 350,
-//     height: 50,
-//     borderRadius: 10,
-//     marginTop: 25,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   buttonDispo:{
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     padding: 10,
-//     borderRadius: 8,
-//   },
-//   leftText: {
-//     flex: 1,
-//     textAlign: 'center',
-//     borderTopLeftRadius: 8,
-//     borderBottomLeftRadius: 8,
-//     paddingVertical: 10,
-//     fontSize: 16,
-
-//   },
-//   rightText: {
-//     flex: 1,
-//     textAlign: 'center',
-//     borderTopRightRadius: 8,
-//     borderBottomRightRadius: 8,
-//     paddingVertical: 10,
-//   },
-//   rdv:{
-//     justifyContent: 'flex-start',
-//     alignItems: 'flex-start',
-//     width: 350,
-//     height: 400,
-//     backgroundColor: '#F0F0F0',
-//     borderRadius: 10,
-//     fontSize: 16,
-//   },
-//   journalContainer: {
-//     // marginTop: 5,
-//     // marginLeft: 5,
-//     width: 350,
-//     height: 400,
-//   },
-//   previousRdv:{},
-//   nextRdv: {
-//     color: 'lightgray'
-//   },
-
