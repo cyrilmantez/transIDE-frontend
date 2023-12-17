@@ -24,15 +24,13 @@ export default function ConsultationScreen({ navigation, route }) {
     // Appel à la modale de validation :
     const [modalVisible, setModalVisible] = useState(false);
     
-    const openModal = () => setModalVisible(true);
-    const closeModal = () => setModalVisible(false);
-    
     // Transformation des soins récupérés du tourScreen :
     // '\n'
     useEffect(() => {
         let treatments = '';
         for( const treatment of route.params.actions) {
-            treatments = `${treatments} ${treatment}`;
+            treatments = `${treatments} 
+            ${treatment} `;
         }
         setPlannedTreatments(treatments);
     }, []);
@@ -40,11 +38,11 @@ export default function ConsultationScreen({ navigation, route }) {
     //console.log('soinsprévus', plannedTreatments)
     //console.log('patient', patient);
     //console.log('firstname', patient.firstname);
-/*  */
+
     // Traitement des données du patient :
     const patientInfo = () => {
         let patientName = `${patient.firstname} ${patient.name.toUpperCase()}`;
-        const patientPhones = `${patient.mobile} ${patient.homePhone}`;
+        const patientPhones = `${patient.mobile}   ${patient.homePhone}`;
         let truncatedName;
         
         if (patientName.length > 20) {
@@ -55,26 +53,81 @@ export default function ConsultationScreen({ navigation, route }) {
 
         return (
             <View style={styles.patientInfo}>
-                <View style={styles.patientName}>
-                    <Text>{truncatedName}</Text>
-                </View>
-                <View>
-                    <View style={styles.dataTop}>
-                        <FontAwesome name={'map-pin'} size={24} color='black' />
-                        <View>
-                            <Text>  {patient.address}</Text>
+                <TouchableOpacity 
+                    onPress={() => navigation.navigate('PatientScreen', { _id : patient._id})}>
+                    <View style={styles.patientName}>
+                        <Text style={styles.patientName}>{truncatedName}</Text>
+                    </View>
+                    <View>
+                        <View style={styles.dataTop}>
+                            <FontAwesome name={'map-pin'} size={24} color='black' />
+                            <View>
+                                <Text>  {patient.address}</Text>
+                            </View>
+                        </View>
+                        <View style={styles.dataBottom}>
+                            <FontAwesome name={'phone'} size={24} color='black' />
+                            <View>
+                                <Text>  {patientPhones}</Text>
+                            </View>
                         </View>
                     </View>
-                    <View style={styles.dataBottom}>
-                        <FontAwesome name={'phone'} size={24} color='black' />
-                        <View>
-                            <Text>  {patientPhones}</Text>
-                        </View>
-                    </View>
-                </View>
+                </TouchableOpacity>
             </View>
         );
     };
+
+    const modalContent = (
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>validation des soins réalisés</Text>
+            <Button
+              title="Retour"
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                navigation.navigate('TabNavigator');
+              }}
+            />
+          </View>
+          <View>
+            <TouchableOpacity onPress={()=> setModalVisible(true)}>
+              <Text>soins validés</Text>
+              <FontAwesome name={'square-o'} size={24} color='#99BD8F' />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=> setModalVisible(true)}>
+              <Text>soins à modifier</Text>
+              <FontAwesome name={'draw-pen'} size={24} color='#99BD8F' />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=> setModalVisible(true)}>
+              <Text>soins annulés</Text>
+              <FontAwesome name={'alpha-x-box-outline'} size={24} color='#99BD8F' />
+            </TouchableOpacity>
+    
+          </View>e
+        </View>
+      </Modal>
+      )
+
+    {/* <Modal transparent visible={modalVisible} onRequestClose={closeModal}>
+            <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+                <ScrollView style={styles.modalList}>
+                <Text style={styles.modalText}>Mr LEGRAND François</Text>
+                </ScrollView>
+                <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                <Text style={styles.modalButtonText}>Fermer la modale</Text>
+                </TouchableOpacity>
+            </View>
+            </View>
+        </Modal> */}
 
     /* useEffect(() => {
         fetch(`http://192.168.0.25:3000/patients/patient/6579c5d4c2873da0530e41bf`).then(response => response.json())
@@ -92,7 +145,7 @@ export default function ConsultationScreen({ navigation, route }) {
 
     // Effet du clic sur "validation" :
     const handleSubmit = () => {
-        {openModal}
+        setModalVisible(true);
       };
 
     let [fontsLoaded] = useFonts({
@@ -116,7 +169,7 @@ export default function ConsultationScreen({ navigation, route }) {
                             <View styles={styles.titleContainer}>
                                 <Text style={styles.titlePage}>Consultation</Text>
                             </View>
-                            <View style={styles.patient}>
+                            <View>
                                 {patientInfo()}
                             </View>
                             <View style={styles.inputContainer}>
@@ -174,19 +227,8 @@ export default function ConsultationScreen({ navigation, route }) {
                                 <TouchableOpacity onPress={() => handleSubmit()} style={styles.button} activeOpacity={0.8}>  
                                     <Text style={styles.text}>Valider</Text>            
                                 </TouchableOpacity>
+                                {/* {modalContent} */}
                             </View>
-                            {/* <Modal transparent visible={modalVisible} onRequestClose={closeModal}>
-                                <View style={styles.modalContainer}>
-                                <View style={styles.modalContent}>
-                                    <ScrollView style={styles.modalList}>
-                                    <Text style={styles.modalText}>Mr LEGRAND François</Text>
-                                    </ScrollView>
-                                    <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-                                    <Text style={styles.modalButtonText}>Fermer la modale</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                </View>
-                            </Modal> */}
                         </ScrollView>
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>
@@ -210,18 +252,14 @@ const styles = StyleSheet.create({
        fontFamily: 'Poppins_600SemiBold',
    },
     chevron: {
-        /* justifyContent: 'flex-start',
-        alignContent: 'flex-start',
-        alignItems: 'flex-start', */
+       alignSelf: 'flex-start',
+       marginLeft: 20,
     },
-    patient: {
-        //backgroundColor: '#99BD8F',
-   },
     titleSoins: {
        color: '#99BD8F',
        fontSize: 22,
        marginBottom: 0,
-       //marginTop: 20,
+       marginTop: 10,
        fontFamily: 'Poppins_400Regular',
    },
     text:{
@@ -268,19 +306,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#99BD8F',
         alignItems: 'flex-start',
         width: 340,
-        height: 140,
+        height: 150,
         borderRadius: 10,
     },  
     patientName: {
         alignSelf: 'center',
-        marginBottom: 10,
-        marginTop: 10,
+        marginTop: 5,
+        marginBottom: 5,
         fontSize: 20,
-        fontWeight: 'bold',
+        fontWeight: '600',
     },
     dataTop: {
         flexDirection: 'row',
-        marginTop: 15,
+        marginTop: 10,
         marginBottom: 10,
         alignItems: 'flex-start',
         paddingLeft: 10,
