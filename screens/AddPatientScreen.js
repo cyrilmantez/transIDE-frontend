@@ -37,12 +37,15 @@ export default function AddPatientScreen({navigation}) {
     const [results, setResults] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [displayDate, setDisplayDate] = useState('');
-    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [mode, setMode] = useState('');
 
     // Hook Add RDV
+    const showPicker = (currentMode) => {
+      setMode(currentMode)
+    };
     const handleDateChange = (event, selectedDate) => {
       
-      setShowDatePicker(Platform.OS === 'ios');
+      showPicker();
   
       const currentDate = selectedDate || dateHeure;
       setDateHeure(currentDate);
@@ -350,8 +353,8 @@ export default function AddPatientScreen({navigation}) {
                                 <DateTimePicker
                                     style={{ marginTop: 15, backgroundColor: 'white' }}
                                     value={dateHeure}
-                                    mode="datetime"
-                                    display="spinner"
+                                    mode={mode}
+                                    display="default"
                                     locale="fr-FR"
                                     onChange={handleDateChange}
                                 />
