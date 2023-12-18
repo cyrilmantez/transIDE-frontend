@@ -59,7 +59,7 @@ export default function ConnectionScreen({ navigation }) {
                   <Button
                     title="Lien temporaire vers la fiche consultation"
                     onPress={() => navigation.navigate('ConsultationScreen')}
-                  />
+                  /> */}
                 </View>
               </KeyboardAwareScrollView>
             </SafeAreaView>
