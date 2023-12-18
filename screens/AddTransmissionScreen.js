@@ -25,7 +25,7 @@ export default function AddTransmissionScreen({navigation}) {
     const [suggestions, setSuggestions] = useState([])
 
     useEffect (() => {
-      fetch(`http://192.168.1.162:3000/patients/allPatientDay/${officeToken}`).then(
+      fetch(`http://192.168.0.25:3000/patients/allPatientDay/${officeToken}`).then(
         response => response.json())
         .then(data => setAllPatients(data.Patients))
     }, [])
