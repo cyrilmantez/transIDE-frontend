@@ -57,7 +57,6 @@ export default function App({ navigation, route }) {
 
     const handleButtonPress = (index) => {
       const newDisponibility = index === 0 ? true : false; 
-      
       Alert.alert(
         'Confirmation',
         `Confirmez-vous que ${patient.name} ${patient.firstname} sera ${buttons[index]}?`,
@@ -70,7 +69,7 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http://192.168.1.14:3000/patients/updatePatientById', {
+                fetch('http:192.168.1.14:3000/patients/updatePatientById', {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',

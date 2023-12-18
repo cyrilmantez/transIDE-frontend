@@ -56,7 +56,7 @@ export default function ConnectionScreen({ navigation }) {
                     title="Lien temporaire vers la fiche patient"
                     onPress={() => navigation.navigate('PatientScreen')}
                   /> */}
-                  <Button
+                  {/* <Button
                     title="Lien temporaire vers la fiche consultation"
                     onPress={() => navigation.navigate('ConsultationScreen')}
                   /> */}

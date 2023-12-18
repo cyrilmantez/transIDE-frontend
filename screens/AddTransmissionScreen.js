@@ -25,7 +25,7 @@ export default function AddTransmissionScreen({navigation}) {
     const [suggestions, setSuggestions] = useState([])
 
     useEffect (() => {
-      fetch(`http://192.168.1.162:3000/patients/allPatientDay/${officeToken}`).then(
+      fetch(`http://192.168.0.25:3000/patients/allPatientDay/${officeToken}`).then(
         response => response.json())
         .then(data => setAllPatients(data.Patients))
     }, [])
@@ -69,12 +69,12 @@ export default function AddTransmissionScreen({navigation}) {
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
             <View style={styles.header}>
-              <Dropdown style={styles.dropdown} navigation={navigation} />
-              <TouchableOpacity onPress={() => navigation.navigate('TabNavigator')}>
+              <TouchableOpacity>
+                  <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' marginTop={20} marginLeft={15} onPress={() => navigation.navigate('TabNavigator')} />
+              </TouchableOpacity>
                  <Image 
               style={styles.image}
               source={require('../assets/logo.png')} />
-              </TouchableOpacity>
             </View>
             <View style={styles.content}>
                 <Text style={styles.transmission} >Nouvelle transmission</Text>
@@ -169,6 +169,7 @@ export default function AddTransmissionScreen({navigation}) {
        },
      header: {
        height: '10%',
+       width : '100%',
        justifyContent: 'space-between',
        flexDirection: 'row',
 
@@ -207,7 +208,7 @@ export default function AddTransmissionScreen({navigation}) {
         borderWidth: 1
       },
       button: {
-        backgroundColor: '#99BD8F',
+        backgroundColor: '#CADDC5',
         width: 80,
         height: 40,
         borderRadius: 10,

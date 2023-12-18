@@ -1,3 +1,11 @@
+import { Platform, UIManager } from 'react-native';
+
+if (Platform.OS === 'android') {
+    if (UIManager.setLayoutAnimationEnabledExperimental) {
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+}
+
 import { Button, TouchableWithoutFeedback, ScrollView, Modal, Keyboard, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity, View,  } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { TextInput, List} from 'react-native-paper';
@@ -29,6 +37,7 @@ export default function AddPatientScreen({navigation}) {
     const [results, setResults] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [displayDate, setDisplayDate] = useState('');
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     
@@ -41,11 +50,28 @@ export default function AddPatientScreen({navigation}) {
     };
   
     const handleDateChange = (event, selectedDate) => {
+      
+      setShowDatePicker(Platform.OS === 'ios');
+  
       const currentDate = selectedDate || dateHeure;
       setDateHeure(currentDate);
+<<<<<<< HEAD
       setAddRdv(currentDate.toString());
     };
     
+=======
+  
+      const formattedDate = currentDate.toLocaleDateString('fr-FR');
+      const formattedTime = currentDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      setAddRdv(`${formattedDate} ${formattedTime}`);
+  
+      // Convertir la date en UTC avant de l'appeler toISOString()
+      const utcDate = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours(), currentDate.getMinutes()));
+      const utcFormat = utcDate.toISOString();
+      setAddRdv(utcFormat);
+  };
+  
+>>>>>>> 3fff871b334f944a1b4b3098d4c8f5bf55787d6d
     
     const user = useSelector((state) => state.users.value)
     
@@ -61,7 +87,7 @@ export default function AddPatientScreen({navigation}) {
       };
 
   const handleRegister = () => {      
-        fetch('http://192.168.1.14:3000/patients/addPatient', {
+        fetch('http://192.168.0.25:3000/patients/addPatient', {
           method: 'POST',
           headers: {'Content-Type' : 'application/json'},
           body: JSON.stringify({
@@ -336,12 +362,22 @@ export default function AddPatientScreen({navigation}) {
                             />
                             <View style={styles.rdv}>
                                 <Text style={styles.textrdv}>Prochain rendez-vous</Text>
+<<<<<<< HEAD
                                 <Button title="Sélectionner la date et l'heure" onPress={showDatePicker} />
                                 <DateTimePickerModal
                                   isVisible={isDatePickerVisible}
                                   mode="datetime"
                                   onConfirm={handleDateChange}
                                   onCancel={hideDatePicker}
+=======
+                                <DateTimePicker
+                                    style={{ marginTop: 15, backgroundColor: 'white' }}
+                                    value={dateHeure}
+                                    mode="datetime"
+                                    display="spinner"
+                                    locale="fr-FR"
+                                    onChange={handleDateChange}
+>>>>>>> 3fff871b334f944a1b4b3098d4c8f5bf55787d6d
                                 />
                                 <TextInput
                                   label='Date et Heure du rendez-vous'

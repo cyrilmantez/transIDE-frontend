@@ -2,7 +2,7 @@ import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoid
 //import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
-
+import moment from 'moment'; 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
 
@@ -12,13 +12,13 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { useDispatch, useSelector } from 'react-redux';
 //import PatientScreen from './screens/PatientScreen';
 //import users from '../reducers/users';
-import patients from '../reducers/patients';
+//import patients from '../reducers/patients';
 
 export default function ConsultationScreen({ navigation, route }) {
     
     
     // Récupération des données du patient de TourScreen :
-    const [patient, setPatient]= useState({firstname: route.params.firstname, name: route.params.name, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone});
+    const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone, isOk: route.params.isOk, isOkWithModification: route.params.isOkWithModification, _idTreatment: route.params._idTreatment});
     // Récupération des soins prévus de TourScreen (tableau de strings):
     const [plannedTreatments, setPlannedTreatments] = useState('');
     // Enregistrement des inputs :
@@ -27,6 +27,7 @@ export default function ConsultationScreen({ navigation, route }) {
     const [transmission, setTransmission] = useState(' ');
     // Appel à la modale de validation :
     const [modalVisible, setModalVisible] = useState(false);
+
     
     // Transformation des soins récupérés du tourScreen :
     // '\n'
@@ -38,11 +39,14 @@ export default function ConsultationScreen({ navigation, route }) {
         }
         setPlannedTreatments(treatments);
     }, []);
-
+    
     //console.log('soinsprévus', plannedTreatments)
     //console.log('patient', patient);
     //console.log('firstname', patient.firstname);
-
+    
+    // Formatage de la date de la consultation :
+    const date = moment(route.params.date).format('L');
+    
     // Traitement des données du patient :
     const patientInfo = () => {
         let patientName = `${patient.firstname} ${patient.name.toUpperCase()}`;
@@ -81,15 +85,15 @@ export default function ConsultationScreen({ navigation, route }) {
         );
     };
 
-    /* const modalContent = (
+    const modalContent = (
         <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+            setModalVisible(!modalVisible);
+            }}
+        >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>validation des soins réalisés</Text>
@@ -117,8 +121,8 @@ export default function ConsultationScreen({ navigation, route }) {
     
           </View>
         </View>
-      </Modal>
-      ) */
+        </Modal>
+    )
 
     {/* <Modal transparent visible={modalVisible} onRequestClose={closeModal}>
             <View style={styles.modalContainer}>
@@ -172,6 +176,7 @@ export default function ConsultationScreen({ navigation, route }) {
                             </View>
                             <View styles={styles.titleContainer}>
                                 <Text style={styles.titlePage}>Consultation</Text>
+                                <Text style={styles.day}>{`du ${date}`}</Text>
                             </View>
                             <View>
                                 {patientInfo()}
@@ -251,10 +256,18 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     titlePage: {
-       color: '#99BD8F',
-       fontSize: 30,
-       fontFamily: 'Poppins_600SemiBold',
-   },
+        color: '#99BD8F',
+        fontSize: 30,
+        fontFamily: 'Poppins_600SemiBold',
+        textAlign: 'center',
+    },
+    day: {
+        color: '#99BD8F',
+        fontSize: 15,
+        fontFamily: 'Poppins_600SemiBold',
+        textAlign: 'center',
+        marginTop: 0,
+    },
     chevron: {
        alignSelf: 'flex-start',
        marginLeft: 20,
@@ -295,7 +308,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         textAlign: 'left',
         width: 340,
-        height: 130,
+        height: 120,
         backgroundColor: '#F0F0F0',
         borderRadius: 10,
         marginLeft: 10,
@@ -308,7 +321,6 @@ const styles = StyleSheet.create({
       },
     patientInfo : {
         backgroundColor: '#99BD8F',
-        alignItems: 'flex-start',
         width: 340,
         height: 150,
         borderRadius: 10,
