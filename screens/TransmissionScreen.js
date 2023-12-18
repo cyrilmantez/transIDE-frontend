@@ -276,7 +276,8 @@ journal: {
 textButton : {
   fontSize: 14,
   fontFamily: 'Poppins_600SemiBold',
-  textAlign : 'center'
+  textAlign : 'center',
+  color: 'white',
 },
 transmissionText:{
   fontSize: 14,
