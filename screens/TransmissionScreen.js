@@ -38,7 +38,7 @@ export default function TransmissionScreen({navigation}) {
 
   //get 10lastDayData from dataBase, and dispatch in the reducer
   useEffect(() => {
-    fetch(`http://192.168.1.5:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
+    fetch(`http://192.168.1.162:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
     .then((data) => {
       if(data.result){
         const compareDates = (a, b) => new Date(b.date) - new Date(a.date);
@@ -157,9 +157,9 @@ console.log(transmissions)
                             setIdeFiltered('Tout le cabinet');
                             closeModal();
                           }}>
-                         <Text style={styles.modalText}
+                         <Text style={{ textAlign: 'center', fontWeight: 'bold'}}
                         >
-                          Tout le cabinet
+                          TOUT LE CABINET
                         </Text>
                       </TouchableOpacity>
                        
@@ -174,9 +174,9 @@ console.log(transmissions)
                             closeModal();
                           }}>
                         <Text
-                          style={styles.modalText}
+                          style={{ textAlign: 'center', fontWeight: 'bold'}}
                         >
-                          Tous les patients
+                          TOUS LES PATIENTS
                         </Text>
                       </TouchableOpacity>
                         {patientsListToDisplay}
@@ -290,8 +290,6 @@ navigation_infos : {
   justifyContent: 'space-between',
   marginTop: 30,
 },
-
-
 modalContainer: {
   flex: 1,
   justifyContent: 'center',

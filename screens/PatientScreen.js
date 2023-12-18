@@ -38,7 +38,7 @@ export default function App({ navigation, route }) {
   };
 
   useEffect(() => {
-    fetch(`http://192.168.0.25:3000/patients/patient/${route.params._id}`).then(response => response.json())
+    fetch(`http://192.168.1.162:3000/patients/patient/${route.params._id}`).then(response => response.json())
     .then(data => {
         console.log(data.patient.firstname);
         setPatient(data.patient)
@@ -57,7 +57,6 @@ export default function App({ navigation, route }) {
 
     const handleButtonPress = (index) => {
       const newDisponibility = index === 0 ? true : false; 
-      
       Alert.alert(
         'Confirmation',
         `Confirmez-vous que ${patient.name} ${patient.firstname} sera ${buttons[index]}?`,
@@ -70,7 +69,7 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http://192.168.0.25:3000/patients/updatePatientById', {
+                fetch('http://192.168.1.162:3000/patients/updatePatientById', {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -113,7 +112,7 @@ export default function App({ navigation, route }) {
     const [treatments, setTreatments] = useState([]);
 
     useEffect(() => {
-      fetch('http://192.168.0.25:3000/patients/allPatientDay')
+      fetch('http://192.168.1.162:3000/patients/allPatientDay')
         .then(response => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
