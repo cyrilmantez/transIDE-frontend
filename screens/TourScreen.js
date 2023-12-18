@@ -19,7 +19,7 @@ export default function TourScreen({navigation}) {
   const [patientModal, setPatientModal] = useState({})
   const [modalVisible, setModalVisible] = useState(false);
 
-console.log('date :',date)
+//console.log('date :',date)
   const allData =()=> {
     fetch('http://192.168.0.25:3000/patients/allPatients', {
       method: 'POST',
