@@ -26,24 +26,24 @@ export default function ConsultationScreen({ navigation, route }) {
     const [transmission, setTransmission] = useState(' ');
     // Appel à la modale de validation :
     const [modalVisible, setModalVisible] = useState(false);
+    // Validation des modifications effectuées :
     const validation = () => {
         updateTreatmentInDB();
         setModalVisible(!modalVisible);
       }
 
-      const updateTreatmentInDB = () => {
+    const updateTreatmentInDB = () => {
         fetch('http://192.168.0.25:3000/patients/allPatients', {
-          method: 'PUT',
-          headers: {'Content-Type' : 'application/json'},
-          body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
+            method: 'PUT',
+            headers: {'Content-Type' : 'application/json'},
+            body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
         }).then(response => response.json())
         .then(data => {
-          setIsVisited(false);
-          setIsOk(false);
-          setIsOkWithModification(false);
-        }
-          )
-      }
+            setIsVisited(false);
+            setIsOk(false);
+            setIsOkWithModification(false);
+        })
+    }
     
     // Transformation des soins récupérés du tourScreen '\n' :
     useEffect(() => {
@@ -77,7 +77,7 @@ export default function ConsultationScreen({ navigation, route }) {
         return (
             <View style={styles.patientInfo}>
                 <TouchableOpacity 
-                    onPress={() => navigation.navigate('PatientScreen', { _id : patient._idnavigate})}>
+                    onPress={() => navigation.navigate('PatientScreen', { _id : patient._id})}>
                     <View style={styles.patientName}>
                         <Text style={styles.patientName}>{truncatedName}</Text>
                     </View>
@@ -120,7 +120,7 @@ export default function ConsultationScreen({ navigation, route }) {
                         navigation.navigate('TabNavigator');
                         setModalVisible(!modalVisible);
                     }}>
-                        <Text>Retour</Text>
+                        <Text>Non</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=> {
                         validation();
@@ -149,7 +149,7 @@ export default function ConsultationScreen({ navigation, route }) {
                         navigation.navigate('TabNavigator');
                         setModalVisible(!modalVisible);
                     }}>
-                        <Text>Retour</Text>
+                        <Text>Non</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=> {
                         validation();
@@ -162,19 +162,6 @@ export default function ConsultationScreen({ navigation, route }) {
         </Modal>
         }
     }
-
-    {/* <Modal transparent visible={modalVisible} onRequestClose={closeModal}>
-            <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-                <ScrollView style={styles.modalList}>
-                <Text style={styles.modalText}>Mr LEGRAND François</Text>
-                </ScrollView>
-                <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-                <Text style={styles.modalButtonText}>Fermer la modale</Text>
-                </TouchableOpacity>
-            </View>
-            </View>
-        </Modal> */}
 
     /* useEffect(() => {
         fetch(`http://192.168.0.25:3000/patients/patient/6579c5d4c2873da0530e41bf`).then(response => response.json())
@@ -395,7 +382,7 @@ const styles = StyleSheet.create({
     modalView: {
         //margin: 20,
         height: 400,
-        width: '95%',
+        width: '80%',
         backgroundColor: "#F0F0F0",
         borderRadius: 20,
         padding: 35,
