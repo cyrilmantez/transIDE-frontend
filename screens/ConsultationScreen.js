@@ -2,10 +2,10 @@ import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoid
 //import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
-<<<<<<< HEAD
+
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
-=======
+
 //import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //import { faPhone, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
