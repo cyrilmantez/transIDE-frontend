@@ -1,3 +1,11 @@
+import { Platform, UIManager } from 'react-native';
+
+if (Platform.OS === 'android') {
+    if (UIManager.setLayoutAnimationEnabledExperimental) {
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+}
+
 import { Button, TouchableWithoutFeedback, ScrollView, Modal, Keyboard, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity, View,  } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { TextInput, List} from 'react-native-paper';
@@ -29,21 +37,26 @@ export default function AddPatientScreen({navigation}) {
     const [results, setResults] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [displayDate, setDisplayDate] = useState('');
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
     // Hook Add RDV
     const handleDateChange = (event, selectedDate) => {
+      
+      setShowDatePicker(Platform.OS === 'ios');
+  
       const currentDate = selectedDate || dateHeure;
       setDateHeure(currentDate);
-      
+  
       const formattedDate = currentDate.toLocaleDateString('fr-FR');
       const formattedTime = currentDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
       setAddRdv(`${formattedDate} ${formattedTime}`);
-      
+  
       // Convertir la date en UTC avant de l'appeler toISOString()
       const utcDate = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours(), currentDate.getMinutes()));
       const utcFormat = utcDate.toISOString();
       setAddRdv(utcFormat);
   };
+  
     
     const user = useSelector((state) => state.users.value)
     
@@ -338,7 +351,8 @@ export default function AddPatientScreen({navigation}) {
                                     style={{ marginTop: 15, backgroundColor: 'white' }}
                                     value={dateHeure}
                                     mode="datetime"
-                                    display="default"
+                                    display="spinner"
+                                    locale="fr-FR"
                                     onChange={handleDateChange}
                                 />
                                 <TextInput

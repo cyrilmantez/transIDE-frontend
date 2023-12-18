@@ -23,10 +23,10 @@ export default function TourScreen({navigation}) {
 //console.log('date :',date)
 
   const allData =()=> {
-    fetch('http://192.168.1.162:3000/patients/allPatients', {
+    fetch('http://192.168.1.14:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
-      body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
+      body: JSON.stringify({officeToken: user.officesTokens[0].token, dateOfToday : date })
     }).then(response => response.json())
       .then(data => {
         setAllPatients(data.patientsToSee)
@@ -34,11 +34,17 @@ export default function TourScreen({navigation}) {
 
   };
 
-  useEffect(()=>{
-    allData()
-  }, [date, modalVisible])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      allData()
+    }, [date, modalVisible])
+  );
 
 
+  // useEffect(()=>{
+  //   allData()
+  // }, [date, modalVisible])
 
   const showPicker = (currentMode) => {
     setVisible(true);
@@ -89,84 +95,76 @@ export default function TourScreen({navigation}) {
 
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
-  ////////////////  modal:
+
+  ////////////// gestion des tous/restants :
+  const [seeAll, setSeeAll] = useState(true)
+
+
+  /////////////////////////////////////////////////  modal:
   
-  const [isVisited, setIsVisited] = useState(false);
-  const [isOk, setIsOk] = useState(false);
-  const [isOkWithModification, setIsOkWithModification] = useState(false);
-  //const [finishStateColor, setFinishStateColor] = useState('#CADDC5')
-
-
+  // const [isVisited, setIsVisited] = useState(false);
+  // const [isOk, setIsOk] = useState(false);
+  // const [isOkWithModification, setIsOkWithModification] = useState(false);
+ 
+  
 /////////////: fetch de mise à jour treatment in DB:
 
-const updateTreatmentInDB = () => {
-  fetch('http://192.168.0.25:3000/patients/allPatients', {
+const updateTreatmentInDB = (a, b, c) => {
+  fetch('http://192.168.1.5:3000/patients/updateTreatment', {
     method: 'PUT',
     headers: {'Content-Type' : 'application/json'},
     body: JSON.stringify({
       _id: patientModal._id,
-      isVisited: isVisited,
-      isOk: isOk,
-      isOkWithModification: isOkWithModification,
+      _idTreatment: patientModal._idTreatment,
+      isVisited: a,
+      isOk: b,
+      isOkWithModification: c,
       actions: patientModal.actions,
       nurse: user.username,
+      date: patientModal.date,
+      documentsOfTreatment: patientModal.documentsOfTreatment,
     })
   }).then(response => response.json())
   .then(data => {
     setIsVisited(false);
     setIsOk(false);
     setIsOkWithModification(false);
-  }
-    )
-}
+  });
+};
 
 
-      
+ ///////////validation du soin :     
   const validation = () => {
-    setIsVisited(true)
-    setIsOk(true)
-    setIsOkWithModification(false)
-    updateTreatmentInDB()
-   // setFinishStateColor('#99BD8F')
+    updateTreatmentInDB(true, true, false)
     setModalVisible(!modalVisible);
   }
 
+///////////////// annulation du soin :
   const annulation = () => {
-    setIsVisited(true)
-    setIsOk(false)
-    setIsOkWithModification(false)
-    updateTreatmentInDB()
-    //setFinishStateColor('#FF0000')
+    updateTreatmentInDB(true, false, false)
     setModalVisible(!modalVisible);
   }
 
-  const modification = () =>{
-    setIsVisited(true)
-    setIsOk(true)
-    setIsOkWithModification(true)
-    //setFinishStateColor('#FF9900')     
+  ////////////////modification du soin via redirection vers consultationScreen :
+  const modification = () =>{  
+    setModalVisible(!modalVisible);   
     navigation.navigate('ConsultationScreen', 
-            { name: patientModal.name,
-              firstname: patientModal.firstname,
-              address: patientModal.address,
-              mobile: patientModal.mobile,
-              homePhone: patientModal.homePhone,
-              _idTreatment: patientModal._idTreatment,
-              _id: patientModal._id,
-              isVisited: isVisited,
-              isOk: isOk,
-              isOkWithModification: isOkWithModification,
-              actions: patientModal.actions,
-              nurse: user.username,
-              date: patientModal.date,
-
-                });
-      setIsVisited(false)
-      setIsOk(false)
-      setIsOkWithModification(false)
-      setModalVisible(!modalVisible);            
-     
-  }
+      { name: patientModal.name,
+        firstname: patientModal.firstname,
+        address: patientModal.address,
+        mobile: patientModal.mobile,
+        homePhone: patientModal.homePhone,
+        _idTreatment: patientModal._idTreatment,
+        _id: patientModal._id,
+        isVisited: patientModal.isVisited,
+        isOk: patientModal.isOk,
+        isOkWithModification: patientModal.isOkWithModification,
+        actions: patientModal.actions,
+        nurse: user.username,
+        date: patientModal.date,
+        documentsOfTreatment: patientModal.documentsOfTreatment,
+          });          
+  };
 
   const modalContent = (
     <Modal
@@ -342,7 +340,7 @@ const updateTreatmentInDB = () => {
                         </View>
                 </View>
                 <View style={styles.nbrpatient}>
-                  <Text style={styles.textnbrpatient}>Patients visités 3/5</Text>
+                  <Text style={styles.textnbrpatient}>Patients visités {}/{AfficherPatients.length}</Text>
                 </View>
                 <View style={styles.progressBar}>
                   <ProgressBar progress={progress} style={{width: 200}} theme={{ colors: { primary: '#99BD8F' } }}   />
@@ -351,9 +349,9 @@ const updateTreatmentInDB = () => {
                     <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' onPress={() => navigation.navigate('AddPatientScreen')}/>
                 </View>
                 <View style={styles.switchitem}>
-                  <Text style={styles.switchitemtext}>Tout</Text>
+                  <Text style={styles.switchitemtext}>Tous</Text>
                   <Switch value={isSwitchOn} theme={{ colors: { primary: '#99BD8F' } }}  onValueChange={onToggleSwitch}/>
-                  <Text style={styles.switchitemtext}>Restant</Text>
+                  <Text style={styles.switchitemtext}>Restants</Text>
                 </View>
                 <ScrollView contentContainerStyle={styles.allcards}>
                 {AfficherPatients}
@@ -375,7 +373,7 @@ const styles = StyleSheet.create({
     borderWidth : 2,
   },
   containerHeader: {
-    height: '25%',
+    height: '15%',
     backgroundColor: '#fff',
     alignItems: 'center',
     // marginTop: 0,

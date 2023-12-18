@@ -2,7 +2,7 @@ import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoid
 //import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
-
+import moment from 'moment'; 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
 
@@ -12,24 +12,40 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { useDispatch, useSelector } from 'react-redux';
 //import PatientScreen from './screens/PatientScreen';
 //import users from '../reducers/users';
-import patients from '../reducers/patients';
+//import patients from '../reducers/patients';
 
 export default function ConsultationScreen({ navigation, route }) {
     
-    
     // Récupération des données du patient de TourScreen :
-    const [patient, setPatient]= useState({firstname: route.params.firstname, name: route.params.name, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone});
+    const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone, isOk: route.params.isOk, isOkWithModification: route.params.isOkWithModification, _idTreatment: route.params._idTreatment});
     // Récupération des soins prévus de TourScreen (tableau de strings):
     const [plannedTreatments, setPlannedTreatments] = useState('');
-    // Enregistrement des inputs :
-    const [textInputValue, setTextInputValue] = useState('');
+    // Enregistrement des inputs :r
+    //const [textInputValue, setTextInputValue] = useState('');
     // Transmission :
     const [transmission, setTransmission] = useState(' ');
     // Appel à la modale de validation :
     const [modalVisible, setModalVisible] = useState(false);
+    // Validation des modifications effectuées :
+    const validation = () => {
+        updateTreatmentInDB();
+        setModalVisible(!modalVisible);
+      }
+
+    const updateTreatmentInDB = () => {
+        fetch('http://192.168.0.25:3000/patients/allPatients', {
+            method: 'PUT',
+            headers: {'Content-Type' : 'application/json'},
+            body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
+        }).then(response => response.json())
+        .then(data => {
+            setIsVisited(false);
+            setIsOk(false);
+            setIsOkWithModification(false);
+        })
+    }
     
-    // Transformation des soins récupérés du tourScreen :
-    // '\n'
+    // Transformation des soins récupérés du tourScreen '\n' :
     useEffect(() => {
         let treatments = '';
         for( const treatment of route.params.actions) {
@@ -38,11 +54,14 @@ export default function ConsultationScreen({ navigation, route }) {
         }
         setPlannedTreatments(treatments);
     }, []);
-
+    
     //console.log('soinsprévus', plannedTreatments)
     //console.log('patient', patient);
     //console.log('firstname', patient.firstname);
-
+    
+    // Formatage de la date de la consultation :
+    const date = moment(route.params.date).format('L');
+    
     // Traitement des données du patient :
     const patientInfo = () => {
         let patientName = `${patient.firstname} ${patient.name.toUpperCase()}`;
@@ -81,57 +100,68 @@ export default function ConsultationScreen({ navigation, route }) {
         );
     };
 
-    /* const modalContent = (
-        <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>validation des soins réalisés</Text>
-            <Button
-              title="Retour"
-              onPress={() => {
+    const modalContent = () => {
+        if(transmission.length > 0) {
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
                 setModalVisible(!modalVisible);
-                navigation.navigate('TabNavigator');
-              }}
-            />
-          </View>
-          <View>
-            <TouchableOpacity onPress={()=> setModalVisible(true)}>
-              <Text>soins validés</Text>
-              <FontAwesome name={'square-o'} size={24} color='#99BD8F' />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=> setModalVisible(true)}>
-              <Text>soins à modifier</Text>
-              <FontAwesome name={'draw-pen'} size={24} color='#99BD8F' />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=> setModalVisible(true)}>
-              <Text>soins annulés</Text>
-              <FontAwesome name={'alpha-x-box-outline'} size={24} color='#99BD8F' />
-            </TouchableOpacity>
-    
-          </View>
-        </View>
-      </Modal>
-      ) */
-
-    {/* <Modal transparent visible={modalVisible} onRequestClose={closeModal}>
-            <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-                <ScrollView style={styles.modalList}>
-                <Text style={styles.modalText}>Mr LEGRAND François</Text>
-                </ScrollView>
-                <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-                <Text style={styles.modalButtonText}>Fermer la modale</Text>
-                </TouchableOpacity>
+                }}
+            >
+            <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    <Text style={styles.modalText}>`Souhaites-tu valider tes modifications
+                    et envoyer la transmission ?`</Text>
+                </View>
+                <View>
+                    <TouchableOpacity onPress={()=> {
+                        navigation.navigate('TabNavigator');
+                        setModalVisible(!modalVisible);
+                    }}>
+                        <Text>Non</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=> {
+                        validation();
+                        navigation.navigate('TourScreen',/*  { _id : patient._idnavigate} */);
+                    }}>
+                        <Text>OK</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
+        </Modal>
+        } else {
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                setModalVisible(!modalVisible);
+                }}
+            >
+            <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    <Text style={styles.modalText}>`Souhaites-tu valider tes modifications ?`</Text>
+                </View>
+                <View>
+                    <TouchableOpacity onPress={()=> {
+                        navigation.navigate('TabNavigator');
+                        setModalVisible(!modalVisible);
+                    }}>
+                        <Text>Non</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=> {
+                        validation();
+                        navigation.navigate('TourScreen',/*  { _id : patient._idnavigate} */);
+                    }}>
+                        <Text>OK</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </Modal> */}
+        </Modal>
+        }
+    }
 
     /* useEffect(() => {
         fetch(`http://192.168.0.25:3000/patients/patient/6579c5d4c2873da0530e41bf`).then(response => response.json())
@@ -172,6 +202,7 @@ export default function ConsultationScreen({ navigation, route }) {
                             </View>
                             <View styles={styles.titleContainer}>
                                 <Text style={styles.titlePage}>Consultation</Text>
+                                <Text style={styles.day}>{`du ${date}`}</Text>
                             </View>
                             <View>
                                 {patientInfo()}
@@ -231,9 +262,9 @@ export default function ConsultationScreen({ navigation, route }) {
                                 <TouchableOpacity onPress={() => handleSubmit()} style={styles.button} activeOpacity={0.8}>  
                                     <Text style={styles.text}>Valider</Text>            
                                 </TouchableOpacity>
-                                {/* {modalContent} */}
                             </View>
                         </ScrollView>
+                        {modalContent()}
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>
             </SafeAreaView>
@@ -251,10 +282,18 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     titlePage: {
-       color: '#99BD8F',
-       fontSize: 30,
-       fontFamily: 'Poppins_600SemiBold',
-   },
+        color: '#99BD8F',
+        fontSize: 30,
+        fontFamily: 'Poppins_600SemiBold',
+        textAlign: 'center',
+    },
+    day: {
+        color: '#99BD8F',
+        fontSize: 15,
+        fontFamily: 'Poppins_600SemiBold',
+        textAlign: 'center',
+        marginTop: 0,
+    },
     chevron: {
        alignSelf: 'flex-start',
        marginLeft: 20,
@@ -295,7 +334,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         textAlign: 'left',
         width: 340,
-        height: 130,
+        height: 120,
         backgroundColor: '#F0F0F0',
         borderRadius: 10,
         marginLeft: 10,
@@ -333,4 +372,35 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         paddingLeft: 10,
     },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22,
+        backgroundColor: "rgba(0,0,0,0,0.5)",
+      },
+    modalView: {
+        //margin: 20,
+        height: 400,
+        width: '80%',
+        backgroundColor: "#F0F0F0",
+        borderRadius: 20,
+        padding: 35,
+        justifyContent: 'space-between',
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+      },
+    modalText: {
+        marginTop: 10,
+        color: '#99BD8F',
+        fontSize: 20,   
+        fontFamily: 'Poppins_400Regular',
+      }
    });
