@@ -18,7 +18,7 @@ export default function ConsultationScreen({ navigation, route }) {
     
     
     // Récupération des données du patient de TourScreen :
-    const [patient, setPatient]= useState({firstname: route.params.firstname, name: route.params.name, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone});
+    const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone});
     // Récupération des soins prévus de TourScreen (tableau de strings):
     const [plannedTreatments, setPlannedTreatments] = useState('');
     // Enregistrement des inputs :
@@ -27,6 +27,8 @@ export default function ConsultationScreen({ navigation, route }) {
     const [transmission, setTransmission] = useState(' ');
     // Appel à la modale de validation :
     const [modalVisible, setModalVisible] = useState(false);
+
+    console.log(route.params.date);
     
     // Transformation des soins récupérés du tourScreen :
     // '\n'
@@ -81,15 +83,15 @@ export default function ConsultationScreen({ navigation, route }) {
         );
     };
 
-    /* const modalContent = (
+    const modalContent = (
         <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+            setModalVisible(!modalVisible);
+            }}
+        >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>validation des soins réalisés</Text>
@@ -117,8 +119,8 @@ export default function ConsultationScreen({ navigation, route }) {
     
           </View>
         </View>
-      </Modal>
-      ) */
+        </Modal>
+    )
 
     {/* <Modal transparent visible={modalVisible} onRequestClose={closeModal}>
             <View style={styles.modalContainer}>
@@ -172,6 +174,7 @@ export default function ConsultationScreen({ navigation, route }) {
                             </View>
                             <View styles={styles.titleContainer}>
                                 <Text style={styles.titlePage}>Consultation</Text>
+                                <Text style={styles.date}>{`du ${patient.date}`}</Text>
                             </View>
                             <View>
                                 {patientInfo()}
@@ -254,6 +257,11 @@ const styles = StyleSheet.create({
        color: '#99BD8F',
        fontSize: 30,
        fontFamily: 'Poppins_600SemiBold',
+    date: {
+        color: '#99BD8F',
+        fontSize: 10,
+        fontFamily: 'Poppins_600SemiBold',
+    },
    },
     chevron: {
        alignSelf: 'flex-start',
