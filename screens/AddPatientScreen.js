@@ -65,7 +65,7 @@ export default function AddPatientScreen({navigation}) {
           body: JSON.stringify({
             officeToken: user.officesTokens,
             name: lastnamePatient.toUpperCase(),
-            firstname: firstnamePatient,
+            firstname: firstnamePatient.charAt(0).toUpperCase() + firstnamePatient.slice(1).toLowerCase(),
             yearOfBirthday : dobPatient, 
             address: addressPatient,
             infosAddress : additionalAddress,

@@ -21,7 +21,7 @@ export default function TourScreen({navigation}) {
 
 console.log('date :',date)
   const allData =()=> {
-    fetch('http://192.168.1.5:3000/patients/allPatients', {
+    fetch('http://192.168.1.14:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
