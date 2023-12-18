@@ -1,22 +1,36 @@
-import { Button, TouchableWithoutFeedback, ScrollView, Modal, KeyboardAvoidingView, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity, View, Platform, Keyboard} from 'react-native';
+import { Button, TouchableWithoutFeedback, ScrollView, Modal, KeyboardAvoidingView, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { TextInput, List} from 'react-native-paper';
 import { useEffect, useState } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Dropdown from './Dropdown';
+
+import { addPatient } from '../reducers/patients';
 import { useDispatch, useSelector } from 'react-redux';
-import * as DocumentPicker from 'expo-document-picker'; 
+import { Camera, FlashMode} from 'expo-camera';
+import { addPhoto } from '../reducers/users';
+//mport * as DocumentPicker from 'expo-document-picker';
 
 
 export default function AddTransmissionScreen({navigation}) {
     //const dispatch = useDispatch();
-    const officeToken = useSelector((state) => state.users.value.officesTokens[0].token)
+    const officeToken = useSelector((state) => state.users.value.officesTokens[0].token);
+    const user = useSelector((state) => state.users.value.username);
     const [isPatient, setIsPatient] = useState(false)
     const [isGeneral, setIsGeneral] = useState(true)
-    const [patientName, setPatientName] = useState('');
-    const [message, setMessage] = useState('');
-    const [document, setDocument] = useState(null);
+
+    const [text, setText] = useState('');
+    const [patient , setPatient] = useState({name : '', firstname: '', yearOfBirthday : ''})
+    const [transmission, setTransmission] = useState({info : '', UrlDocument: ''})
+
     const [allPatients, setAllPatients] = useState([]);
-    const [suggestions, setSuggestions] = useState([]);
+    const [suggestions, setSuggestions] = useState([])
+    const [modalMessage, setModalMessage] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false)
+
+    console.log('patient :',patient);
 
     useEffect (() => {
       fetch(`http://192.168.1.162:3000/patients/allPatients/${officeToken}`).then(
@@ -24,143 +38,219 @@ export default function AddTransmissionScreen({navigation}) {
         .then(data => setAllPatients(data.Patients))
     }, [])
     console.log('allPatients :', allPatients);
-    console.log('suggestions :',suggestions)
 
-    const handleIsGeneral = (state) => {
-      setIsGeneral(state);
-      setIsPatient(false);
+    const handleIsGeneral = () => {
+      setIsGeneral(!isGeneral);
+      setIsPatient(!isPatient);
+      setPatient({name : 'Général', firstname: '', yearOfBirthday : ''})
+      setTransmission({info : '', UrlDocument: ''})
     }
-    const handleIsPatient = (state) => {
-      setIsPatient(state);
-      setIsGeneral(false);
+    const handleIsPatient = () => {
+      setIsPatient(!isPatient);
+      setIsGeneral(!isGeneral);
+      setText('');
+      setTransmission({info : '', UrlDocument: ''})
+      handlePatientNameChange('')
     }
 
     const handlePatientNameChange = (text => {
-      setPatientName(text);
+      setText(text);
     const filteredSuggestions = allPatients.filter((item) =>
-    `${item.name} ${item.firstname}`.toLowerCase().includes(text.toLowerCase())
+    item.name.toLowerCase().includes(text.toLowerCase())
   );
     setSuggestions(filteredSuggestions);
     })
 
+    const handlePatientChoice = (name, firstname, yearOfBirthday) => {
+      setText(`${name} ${firstname}`);
+      setPatient({...patient, name , firstname, yearOfBirthday})
+    }
     const suggestionsToDisplay = suggestions.map((item, index) => {
        return (
        
-          <TouchableOpacity key={index} onPress={()=>setPatientName(`${item.name} ${item.firstname}`)}>
-          <Text >{`${item.name} ${item.firstname}`} </Text>
+          <TouchableOpacity key={index} onPress={()=>{handlePatientChoice (item.name, item.firstname, item.yearOfBirthday)}}>
+          <Text >{`${item.name} ${item.firstname} - ${item.yearOfBirthday}`} </Text>
         </TouchableOpacity>
-       
-        
        )
        
     })
 
-    /*const handleDocumentPick = async () => {
+    /*const pickDocument = async () => {
       try {
-        const result = await DocumentPicker.pick({
-          type: [DocumentPicker.types.allFiles],
-        });
-  
-        // Traitez le document sélectionné ici, par exemple, stockez-le dans l'état
-        setDocument(result);
-  
-        console.log(result);
-      } catch (error) {
-        if (DocumentPicker.isCancel(error)) {
-          // L'utilisateur a annulé le choix du document
+        const result = await DocumentPicker.getDocumentAsync();
+        console.log(result.type)
+        if (result.type === 'success') {
+          console.log(result.uri, result.name, result.type, result.size);
+          // Traitez le document sélectionné ici
+          setDocuments(result);
         } else {
-          console.error('Erreur lors du choix du document', error);
+          console.log('L\'utilisateur a annulé le choix du document');
+        }
+      } catch (err) {
+        console.log('Erreur lors du choix du document', err);
+      }
+    };*/
+
+    const handleRegister = () => {
+      if(transmission.info.length===0){
+          setModalMessage('Pas de message, pas de transmission !');
+          setIsModalVisible(true);;
+      }else if(!isPatient){
+        const newTransmission = {
+          ...transmission,
+          date : new Date(),
+          nurse : user,
+         }
+         const data = {
+          patient : patient,
+          transmission : newTransmission,
+          token : officeToken,
+        }
+        fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if(data.result){
+            setModalMessage('transmission générale enregistrée !');
+            setIsModalVisible(true);
+          }
+        });
+      }else{
+        const isExisting = allPatients.filter((item) =>{
+        return `${item.name} ${item.firstname} ${item.yearOfBirthday}`.toLowerCase() === `${patient.name} ${patient.firstname} ${patient.yearOfBirthday}`.toLowerCase()
+        });
+     
+        if(isExisting.length === 1){
+                const newTransmission = {
+                  ...transmission,
+                  date : new Date(),
+                  nurse : user,
+                };
+                console.log('transmission pour :', newTransmission);
+                const data = {
+                  patient : patient,
+                  transmission : newTransmission,
+                  token : officeToken,
+                }
+                fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then((data)=> {
+                  if(data.result){
+                       setModalMessage('transmission patient enregistrée !');
+                       setIsModalVisible(true);
+                  }
+                 
+                });
+        }else{
+          setModalMessage('Le patient n\'existe pas !');
+          setIsModalVisible(true);;
         }
       }
-    };
-  */
+      }
+
+      //Close Modal
+  const closeModal = () => {
+    setIsModalVisible(false);
+    setModalMessage('');
+  }
 
         return (
     <>
       <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' :'height'} style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollView}>
-              <View>
-                <View style={styles.header}>
-                      <TouchableOpacity>
-                          <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' marginTop={20} marginLeft={15} onPress={() => navigation.navigate('TabNavigator')} />
-                      </TouchableOpacity>
-                        <Image 
-                      style={styles.image}
-                      source={require('../assets/logo.png')} />
-                  </View>
-              <View style={styles.content}>
-                  <Text style={styles.transmission} >Nouvelle transmission</Text>
-                  <View style={styles.buttonContainer}>
-                      {!isGeneral && <TouchableOpacity style={styles.button} onPress={() => handleIsGeneral(true)}>
-                          <Text style={styles.textButton} >Général</Text>
-                      </TouchableOpacity>}
-                      {isGeneral && <TouchableOpacity style={{backgroundColor: '#99BD8F',width: 90,height: 50,borderRadius: 10,justifyContent: 'center',alignItems: 'center'}} >
-                          <Text style={styles.textButton} >Général</Text>
-                      </TouchableOpacity>}
-                    {!isPatient &&  <TouchableOpacity style={styles.button} onPress={() => handleIsPatient(true)}>
-                          <Text style={styles.textButton} >Patient</Text>
-                      </TouchableOpacity>}
-                      {isPatient &&  <TouchableOpacity style={{backgroundColor: '#99BD8F',width: 90,height: 50,borderRadius: 10,justifyContent: 'center',alignItems: 'center'}}>
-                          <Text style={styles.textButton} >Patient</Text>
-                      </TouchableOpacity>}
-                  </View>
-                  {isPatient && (<>
-                        <TextInput style={styles.patientInput}
-                            label='Nom du patient' 
-                            mode='outlined'
-                            theme={{ 
-                              colors: { 
-                                primary: '#99BD8F', 
-                              }
-                        }}
-                          onChangeText={text => handlePatientNameChange(text)} 
-                          value={patientName}/>
-                          {/**/}
-                      {suggestions.length >0 && <ScrollView style={styles.suggestionsContainer}>
-                            <View style={styles.suggestionList}> 
-                              {suggestionsToDisplay}
-                            </View>
-                      </ScrollView>}
-                     
-                    </> )}
-                  
-                  
-                  
-                      {isPatient &&  <Text style={{color: '#99BD8F',
-              fontSize: 20,
-              fontFamily: 'Poppins_600SemiBold',borderColor: 'green',
-              borderWidth: 5,textAlign : 'center',height:'20%'}} >Message</Text>}
-                  {!isPatient &&  <Text style={styles.message} >Message</Text>}
-                      <TextInput 
-                          label='Message' 
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+            <View style={styles.header}>
+              <TouchableOpacity>
+                  <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' marginTop={20} marginLeft={15} onPress={() => navigation.navigate('TabNavigator')} />
+              </TouchableOpacity>
+                 <Image 
+              style={styles.image}
+              source={require('../assets/logo.png')} />
+            </View>
+            <View style={styles.content}>
+                <Text style={styles.transmission} >Nouvelle transmission</Text>
+                <View style={styles.buttonContainer}>
+                    {!isGeneral && <TouchableOpacity style={styles.button} onPress={() => handleIsGeneral()}>
+                        <Text style={styles.textButton} >Général</Text>
+                    </TouchableOpacity>}
+                    {isGeneral && <TouchableOpacity style={{backgroundColor: '#99BD8F',width: 90,height: 50,borderRadius: 10,justifyContent: 'center',alignItems: 'center'}} >
+                        <Text style={styles.textButton} >Général</Text>
+                    </TouchableOpacity>}
+                  {!isPatient &&  <TouchableOpacity style={styles.button} onPress={() => handleIsPatient()}>
+                        <Text style={styles.textButton} >Patient</Text>
+                    </TouchableOpacity>}
+                    {isPatient &&  <TouchableOpacity style={{backgroundColor: '#99BD8F',width: 90,height: 50,borderRadius: 10,justifyContent: 'center',alignItems: 'center'}}>
+                        <Text style={styles.textButton} >Patient</Text>
+                    </TouchableOpacity>}
+                </View>
+                
+                {isPatient && (<>
+                      <TextInput style={styles.patientInput}
+                          label='Nom du patient' 
                           mode='outlined'
                           theme={{ 
                             colors: { 
                               primary: '#99BD8F', 
                             }
-                          }}
-                          style={styles.transmissionInput}
-                          onChangeText={text => setMessage(text)} 
-                          value={message}/>
-                  <View>
-                      <Text >Documents associés</Text>
-                      <TouchableOpacity >
-                          <Text>Ajouter un document</Text>
-                      </TouchableOpacity>
-                  </View>
-                  
-                  <TouchableOpacity style={styles.buttonValidate} onPress={() => 'handleConnexion()'}>
-                        <Text style={styles.textButton}>Valider</Text>
+                      }}
+                        onChangeText={text => handlePatientNameChange(text)} 
+                        value={text}/>
+                        {text && <ScrollView style={styles.suggestionsContainer}>
+                          <View style={styles.suggestionList}> 
+                            {suggestionsToDisplay}
+                          </View>
+                    </ScrollView>}
                         
-                  </TouchableOpacity>
-              </View>
-              </View>
-              </ScrollView>
-            </KeyboardAvoidingView>
-          </TouchableWithoutFeedback>
+                  </> )}
+                
+                
+                <View style={styles.messageContainer}>
+                    {isPatient &&  <Text style={{color: '#99BD8F',
+            fontSize: 20,
+            fontFamily: 'Poppins_600SemiBold',borderColor: 'green',
+            borderWidth: 5,textAlign : 'center',height:'20%'}} >Message</Text>}
+                {!isPatient &&  <Text style={styles.message} >Message</Text>}
+                    <TextInput 
+                        label='Message' 
+                        mode='outlined'
+                        theme={{ 
+                          colors: { 
+                            primary: '#99BD8F', 
+                          }
+                        }}
+                        style={styles.transmissionInput}
+                        onChangeText={text => setTransmission({...transmission, info:text})} 
+                        value={transmission.info}/>
+                   
+                </View>
+                <TouchableOpacity onPress={console.log('pick document')}>
+                    <Text>Choisir un document</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonValidate} onPress={() => handleRegister()}>
+                      <Text style={styles.textButton} >Valider</Text>
+                </TouchableOpacity>
+                <Modal transparent visible={isModalVisible} onRequestClose={closeModal}>
+                      <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <Text>{modalMessage}</Text>
+                            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                              <Text style={styles.modalButtonText}>Fermer</Text>
+                            </TouchableOpacity>
+                        </View>
+                      </View>
+                </Modal>
+            </View>
+           
+               </KeyboardAvoidingView>
+          </ScrollView>
         </SafeAreaView>
     </>
         );
@@ -178,21 +268,26 @@ export default function AddTransmissionScreen({navigation}) {
        alignItems: 'center',
        justifyContent: 'center',
       },
+      dropdown: {
+       top: 0,
+       left: 0,
+       },
      header: {
-        height: '10%',
+       height: '10%',
+       width : '100%',
        justifyContent: 'space-between',
        flexDirection: 'row',
-       borderColor: 'green',
-       borderWidth: 1
 
      },
      image: {
        width: 60,
        height: 60,
+      
      },
 
      content : {
-       flex:1,
+        height: '90%',
+        width: '100%',
         borderColor: 'purple',
         borderWidth: 2,
         justifyContent: 'space-around',
@@ -208,10 +303,12 @@ export default function AddTransmissionScreen({navigation}) {
        borderWidth: 1
       },
       buttonContainer:{
-        width: 250,
+        width: 300,
+        height:70,
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
+        
         borderColor: 'blue',
         borderWidth: 1
       },
@@ -232,15 +329,31 @@ export default function AddTransmissionScreen({navigation}) {
         width: 350,
       },
       suggestionsContainer:{
-        flex:1,
+        width: '70%',
+        maxHeight: '20%',
         borderColor: 'red',
         borderWidth: 5,
+
       },
+
       suggestionList: {
+        width:'95%',
+        height:'95%',
         justifyContent: 'center',
+        alignItems: 'center'
+
+      },
+      
+       messageContainer:{
+        width: '100%',
+        height: '30%',
+        justifyContent: 'space-between',
         alignItems: 'center',
+        borderColor: 'blue',
+        borderWidth: 1
       },
       message: {
+        height:'20%',
         color: '#99BD8F',
         fontSize: 20,
         fontFamily: 'Poppins_600SemiBold',
@@ -251,15 +364,18 @@ export default function AddTransmissionScreen({navigation}) {
        }, 
 
        transmissionInput : {
+        width: '95%',
+        height: '80%',
         borderRadius: 50,
-        width: 350,
         textAlign: 'left', 
         textAlignVertical: 'top',
      
       },
       documentsInput : {
+        width: '95%',
+        height:'10%',
         marginBottom: 20,
-        width: 350,
+    
       },
 
       buttonValidate : {
@@ -272,5 +388,21 @@ export default function AddTransmissionScreen({navigation}) {
         borderColor: 'blue',
         borderWidth: 1
       },
- 
+      modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      },
+      modalContent: {
+        backgroundColor: '#99BD8F',
+        padding: 8,
+        borderRadius: 10,
+        elevation: 5,
+        height: 300,
+        width: 250,
+        display:'flex',
+        justifyContent: 'space-between',
+        alignContent: 'center'
+      },
      });
