@@ -12,7 +12,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { useDispatch, useSelector } from 'react-redux';
 //import PatientScreen from './screens/PatientScreen';
 //import users from '../reducers/users';
-import patients from '../reducers/patients';
+//import patients from '../reducers/patients';
 
 export default function ConsultationScreen({ navigation, route }) {
     
