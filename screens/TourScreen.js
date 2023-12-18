@@ -7,6 +7,7 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import { Card, Paragraph, ProgressBar, Switch, Icon, Modal, Button } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 export default function TourScreen({navigation}) {
@@ -19,15 +20,15 @@ export default function TourScreen({navigation}) {
   const [patientModal, setPatientModal] = useState({})
   const [modalVisible, setModalVisible] = useState(false);
 
-console.log('date :',date)
+//console.log('date :',date)
+
   const allData =()=> {
-    fetch('http://192.168.1.14:3000/patients/allPatients', {
+    fetch('http://192.168.1.5:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
     }).then(response => response.json())
       .then(data => {
-       // console.log(date, data)
         setAllPatients(data.patientsToSee)
       })
 
@@ -88,44 +89,6 @@ console.log('date :',date)
 
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
-
-  // Affichage des patients 
-  // useEffect(() => {
-  
-  //   fetch('http://192.168.1.14:3000/patients/allPatientDay')
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       console.log('Data structure:', data);
-  //       if (data.allPatient) {
-  //         // Filtrer les patients par date
-  //         const filteredPatients = data.allPatient.filter(patient => {
-  //           // Convertir la date du patient en objet Date pour la comparaison
-  //           const patientDate = new Date(patient.date);
-  //           // Comparer l'année, le mois et le jour
-  //           return patientDate.getFullYear() === date.getFullYear() &&
-  //                  patientDate.getMonth() === date.getMonth() &&
-  //                  patientDate.getDate() === date.getDate();
-  //         });
-  
-  //         // Trier les patients par date, office token et heure
-  //         const sortedPatients = filteredPatients.sort((a, b) => {
-  //           // Comparer les dates
-  //           const dateComparison = new Date(a.date) - new Date(b.date);
-  //           if (dateComparison !== 0) return dateComparison;
-  
-  //           // Si les dates sont les mêmes, comparer les office tokens
-  //           const officeTokenComparison = a.officeToken.localeCompare(user.officesTokens);
-  //           if (officeTokenComparison !== 0) return officeTokenComparison;
-  
-  //           // Si les office tokens sont les mêmes, comparer les heures
-  //           return new Date(`1970-01-01T${a.time}:00`) - new Date(`1970-01-01T${b.time}:00`);
-  //         });
-  
-  //         setPatients(sortedPatients);
-  //       }
-  //     });
-  // }, [date]);
-
   ////////////////  modal:
   
   const [isVisited, setIsVisited] = useState(false);
@@ -140,7 +103,14 @@ const updateTreatmentInDB = () => {
   fetch('http://192.168.1.5:3000/patients/allPatients', {
     method: 'PUT',
     headers: {'Content-Type' : 'application/json'},
-    body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
+    body: JSON.stringify({
+      _id: patientModal._id,
+      isVisited: isVisited,
+      isOk: isOk,
+      isOkWithModification: isOkWithModification,
+      actions: patientModal.actions,
+      nurse: user.username,
+    })
   }).then(response => response.json())
   .then(data => {
     setIsVisited(false);
@@ -170,26 +140,27 @@ const updateTreatmentInDB = () => {
     setModalVisible(!modalVisible);
   }
 
-  const modification = (data) =>{
+  const modification = () =>{
     setIsVisited(true)
     setIsOk(true)
     setIsOkWithModification(true)
     //setFinishStateColor('#FF9900')     
-    // navigation.navigate('ConsultationScreen', 
-    //             { _id : data._id,
-    //               name: data.name,
-    //               firstname: data.firstname,
-    //               address: data.address,
-    //               mobile: data.mobile,
-    //               homePhone: data.homePhone,
-    //               actions: data.actions,
-    //               date : data.date,
-    //               isVisited: isVisited,
-    //               isOk: isOk,
-    //               isOkWithModification: data.isOkWithModification,
-    //               _idTreatment: data._idTreatment,
+    navigation.navigate('ConsultationScreen', 
+            { name: patientModal.name,
+              firstname: patientModal.firstname,
+              address: patientModal.address,
+              mobile: patientModal.mobile,
+              homePhone: patientModal.homePhone,
+              _idTreatment: patientModal._idTreatment,
+              _id: patientModal._id,
+              isVisited: isVisited,
+              isOk: isOk,
+              isOkWithModification: isOkWithModification,
+              actions: patientModal.actions,
+              nurse: user.username,
+              date: patientModal.date,
 
-    //             });
+                });
       setIsVisited(false)
       setIsOk(false)
       setIsOkWithModification(false)
@@ -241,12 +212,10 @@ const updateTreatmentInDB = () => {
   const changeState = (data) => {
     setModalVisible(true)
     setPatientModal(data)
-
+  
   }
 
-
-
-  /////////////////
+///////////////////////
   
   
    
@@ -257,9 +226,9 @@ const updateTreatmentInDB = () => {
     const [hours, minutes] = time.split(':');
     return Number(hours) * 60 + Number(minutes);
   };
-    const allPatientsInorder = allPatients.sort((a, b) => toMinutes(a.hour) - toMinutes(b.hour));
-  
-    const AfficherPatients =  allPatientsInorder.map((patient, i) => {
+
+  const allPatientsInorder = allPatients.sort((a, b) => toMinutes(a.hour) - toMinutes(b.hour)); 
+  const AfficherPatients =  allPatientsInorder.map((patient, i) => {
 
     let nameAll = `${patient.name} ${patient.firstname}`;
     let truncatedNom;
@@ -305,10 +274,14 @@ const updateTreatmentInDB = () => {
                   mobile: patient.mobile,
                   homePhone: patient.homePhone,
                   actions: patient.actions,
-                  date : patient.date,
+                  hour : patient.hour,
                   isOk: patient.isOk,
                   isOkWithModification: patient.isOkWithModification,
+                  isVisited: patient.isVisited,
                   _idTreatment: patient._idTreatment,
+                  nurse: user.username,
+                  _idTreatment: patient._idTreatment,
+                  date: patient.date
 
                 })}>
                   <Icon source={'medical-bag'} size={24} color='#99BD8F'/>
