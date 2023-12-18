@@ -61,6 +61,8 @@ export default function ConsultationScreen({ navigation, route }) {
     
     // Formatage de la date de la consultation :
     const date = moment(route.params.date).format('L');
+    // Formatage de l'heure de la consultation :
+    const treatmentHour = moment(route.params.date).format('kk:mm');
     
     // Traitement des données du patient :
     const patientInfo = () => {
@@ -100,9 +102,10 @@ export default function ConsultationScreen({ navigation, route }) {
         );
     };
 
+    // modale de confirmation de validation :
     let modalContent;
     
-    if(plannedTreatments.length > 0 && transmission.length > 0) {
+    if(transmission.length > 0) {
         modalContent = (
         <Modal
             animationType="slide"
@@ -118,7 +121,6 @@ export default function ConsultationScreen({ navigation, route }) {
                 et envoyer la transmission ?</Text>
                 <View style={styles.modalChoice}>
                     <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
-                        navigation.navigate('TabNavigator');
                         setModalVisible(!modalVisible);
                     }}>
                     <Text>Non</Text>
@@ -133,7 +135,7 @@ export default function ConsultationScreen({ navigation, route }) {
             </View>
         </View>
     </Modal>)
-    } else if(plannedTreatments.length > 0) {
+    } else {
         modalContent = (
         <Modal
             animationType="slide"
@@ -148,7 +150,6 @@ export default function ConsultationScreen({ navigation, route }) {
                 <Text style={styles.modalText}>Souhaites-tu valider tes modifications ?</Text>
                 <View style={styles.modalChoice}>
                     <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
-                        navigation.navigate('TabNavigator');
                         setModalVisible(!modalVisible);
                     }}>
                     <Text>Non</Text>
@@ -177,9 +178,6 @@ export default function ConsultationScreen({ navigation, route }) {
         });
     }, []); */
 
-    // modale de confirmation de validation :
-
-
     // Effet du clic sur "validation" :
     const handleSubmit = () => {
         setModalVisible(true);
@@ -205,7 +203,7 @@ export default function ConsultationScreen({ navigation, route }) {
                             </View>
                             <View styles={styles.titleContainer}>
                                 <Text style={styles.titlePage}>Consultation</Text>
-                                <Text style={styles.day}>{`du ${date}`}</Text>
+                                <Text style={styles.day}>{`du ${date} à ${treatmentHour}`}</Text>
                             </View>
                             <View>
                                 {patientInfo()}
@@ -411,12 +409,15 @@ const styles = StyleSheet.create({
     modalChoice: {
         flexDirection: 'row',
         marginTop: 20,
+        fontSize: 20,
+        fontFamily: 'Poppins_400Regular',
         //justifyContent: 'space-between',
     },
     modalChoiceText: {
         fontFamily: 'Poppins_400Regular',
+        fontSize: 20,
         //justifyContent: 'space-between',
         //alignItems: "space-between",
-        textAlign: 'auto',
+        //textAlign: 'left',
     },
    });
