@@ -308,7 +308,6 @@ const styles = StyleSheet.create({
       },
     patientInfo : {
         backgroundColor: '#99BD8F',
-        alignItems: 'flex-start',
         width: 340,
         height: 150,
         borderRadius: 10,
