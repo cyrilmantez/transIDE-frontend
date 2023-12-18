@@ -2,7 +2,7 @@ import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoid
 //import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
-
+import moment from 'moment'; 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
 
@@ -18,7 +18,7 @@ export default function ConsultationScreen({ navigation, route }) {
     
     
     // Récupération des données du patient de TourScreen :
-    const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone});
+    const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone, isOk: route.params.isOk, isOkWithModification: route.params.isOkWithModification, _idTreatment: route.params._idTreatment});
     // Récupération des soins prévus de TourScreen (tableau de strings):
     const [plannedTreatments, setPlannedTreatments] = useState('');
     // Enregistrement des inputs :
@@ -28,7 +28,6 @@ export default function ConsultationScreen({ navigation, route }) {
     // Appel à la modale de validation :
     const [modalVisible, setModalVisible] = useState(false);
 
-    console.log(route.params.date);
     
     // Transformation des soins récupérés du tourScreen :
     // '\n'
@@ -40,11 +39,15 @@ export default function ConsultationScreen({ navigation, route }) {
         }
         setPlannedTreatments(treatments);
     }, []);
-
+    
     //console.log('soinsprévus', plannedTreatments)
     //console.log('patient', patient);
     //console.log('firstname', patient.firstname);
-
+    
+    // Formatage de la date de la consultation :
+    const date = moment(route.params.date);
+    console.log(date);
+    
     // Traitement des données du patient :
     const patientInfo = () => {
         let patientName = `${patient.firstname} ${patient.name.toUpperCase()}`;
@@ -174,7 +177,7 @@ export default function ConsultationScreen({ navigation, route }) {
                             </View>
                             <View styles={styles.titleContainer}>
                                 <Text style={styles.titlePage}>Consultation</Text>
-                                <Text style={styles.date}>{`du ${patient.date}`}</Text>
+                                <Text style={styles.date}>{`du ${date}`}</Text>
                             </View>
                             <View>
                                 {patientInfo()}
