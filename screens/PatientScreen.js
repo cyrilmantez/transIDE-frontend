@@ -232,16 +232,18 @@ export default function App({ navigation, route }) {
                   </ScrollView>
                   <View style={[styles.content, {zIndex: isDrawerOpen ? -1 : 0 }]}> 
                   <View style={styles.buttoncontain}>
-                    {buttons.map((button, index) => (
+                  {buttons.map((button, index) => (
                       <TouchableOpacity
                         key={`${index}-${refresh}`}
-                        onPress={() => handleButtonPress(index)}
+                        onPress={() => {
+                          handleButtonPress(index);
+                          setDisponibility(patient.disponibility);
+                        }}
                         style={[
-                            styles.button,
-                            index === selectedIndex ? styles.selected : null,
-                            { backgroundColor: buttonColors[index] }
-                          ]}
-                        
+                          styles.button,
+                          index === selectedIndex ? styles.selected : null,
+                          { backgroundColor: buttonColors[index] }
+                        ]}
                       >
                         <Text style={styles.text}>{button}</Text>
                       </TouchableOpacity>

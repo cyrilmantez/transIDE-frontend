@@ -2,7 +2,7 @@ import { Button, TouchableWithoutFeedback, ScrollView, Modal, Keyboard, SafeArea
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { TextInput, List} from 'react-native-paper';
 import { useEffect, useState } from 'react';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { addPatient } from '../reducers/patients';
@@ -30,20 +30,22 @@ export default function AddPatientScreen({navigation}) {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [displayDate, setDisplayDate] = useState('');
 
-    // Hook Add RDV
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    
+    const showDatePicker = () => {
+      setDatePickerVisibility(true);
+    };
+  
+    const hideDatePicker = () => {
+      setDatePickerVisibility(false);
+    };
+  
     const handleDateChange = (event, selectedDate) => {
       const currentDate = selectedDate || dateHeure;
       setDateHeure(currentDate);
-      
-      const formattedDate = currentDate.toLocaleDateString('fr-FR');
-      const formattedTime = currentDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-      setAddRdv(`${formattedDate} ${formattedTime}`);
-      
-      // Convertir la date en UTC avant de l'appeler toISOString()
-      const utcDate = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours(), currentDate.getMinutes()));
-      const utcFormat = utcDate.toISOString();
-      setAddRdv(utcFormat);
-  };
+      setAddRdv(currentDate.toString());
+    };
+    
     
     const user = useSelector((state) => state.users.value)
     
@@ -334,25 +336,25 @@ export default function AddPatientScreen({navigation}) {
                             />
                             <View style={styles.rdv}>
                                 <Text style={styles.textrdv}>Prochain rendez-vous</Text>
-                                <DateTimePicker
-                                    style={{ marginTop: 15, backgroundColor: 'white' }}
-                                    value={dateHeure}
-                                    mode="datetime"
-                                    display="default"
-                                    onChange={handleDateChange}
+                                <Button title="Sélectionner la date et l'heure" onPress={showDatePicker} />
+                                <DateTimePickerModal
+                                  isVisible={isDatePickerVisible}
+                                  mode="datetime"
+                                  onConfirm={handleDateChange}
+                                  onCancel={hideDatePicker}
                                 />
                                 <TextInput
-                                    label='Date et Heure du rendez-vous'
-                                    mode='outlined'
-                                    theme={{ 
-                                        colors: { 
-                                            primary: '#99BD8F', 
-                                        }
-                                    }}
-                                    style={{ width: 350, marginTop: 15 }} 
-                                    value={addRdv}
-                                    onChangeText={text => setAddRdv(text)}
-                                    editable={false} 
+                                  label='Date et Heure du rendez-vous'
+                                  mode='outlined'
+                                  theme={{ 
+                                    colors: { 
+                                      primary: '#99BD8F', 
+                                    }
+                                  }}
+                                  style={{ width: 350, marginTop: 15 }} 
+                                  value={addRdv}
+                                  onChangeText={text => setAddRdv(text)}
+                                  editable={false} 
                                 />
                                 <TextInput 
                                     label="Soin(s)"
