@@ -45,8 +45,7 @@ export default function ConsultationScreen({ navigation, route }) {
     //console.log('firstname', patient.firstname);
     
     // Formatage de la date de la consultation :
-    const date = moment(route.params.date);
-    console.log(date);
+    const date = moment(route.params.date).format('L');
     
     // Traitement des données du patient :
     const patientInfo = () => {
@@ -177,7 +176,7 @@ export default function ConsultationScreen({ navigation, route }) {
                             </View>
                             <View styles={styles.titleContainer}>
                                 <Text style={styles.titlePage}>Consultation</Text>
-                                <Text style={styles.date}>{`du ${date}`}</Text>
+                                <Text style={styles.day}>{`du ${date}`}</Text>
                             </View>
                             <View>
                                 {patientInfo()}
@@ -257,15 +256,18 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     titlePage: {
-       color: '#99BD8F',
-       fontSize: 30,
-       fontFamily: 'Poppins_600SemiBold',
-    date: {
         color: '#99BD8F',
-        fontSize: 10,
+        fontSize: 30,
         fontFamily: 'Poppins_600SemiBold',
+        textAlign: 'center',
     },
-   },
+    day: {
+        color: '#99BD8F',
+        fontSize: 15,
+        fontFamily: 'Poppins_600SemiBold',
+        textAlign: 'center',
+        marginTop: 0,
+    },
     chevron: {
        alignSelf: 'flex-start',
        marginLeft: 20,
@@ -306,7 +308,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         textAlign: 'left',
         width: 340,
-        height: 130,
+        height: 120,
         backgroundColor: '#F0F0F0',
         borderRadius: 10,
         marginLeft: 10,
