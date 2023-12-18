@@ -14,7 +14,7 @@ export default function App({ navigation, route }) {
   const [visible, setVisible] = useState(false);
 
   // Modal déroulant
-  const drawerHeight = 450; // Hauteur du tiroir ouvert
+  const drawerHeight = 455; // Hauteur du tiroir ouvert
   const peekHeight = 310; // Hauteur du tiroir fermé qui dépasse
 
   const [drawerPosition, setDrawerPosition] = useState(new Animated.Value(-drawerHeight + peekHeight));
@@ -52,7 +52,7 @@ export default function App({ navigation, route }) {
     const [refresh, setRefresh] = useState(false);
 
     const buttons = ['DISPONIBLE', 'INDISPONIBLE'];
-    const buttonColors = patient && patient.disponibility ? ['#99BD8F', 'transparent'] : ['transparent', '#99BD8F'];
+    const buttonColors = patient && patient.disponibility ? ['#99BD8F', 'transparent'] : ['transparent', 'red'];
     
 
     const handleButtonPress = (index) => {
@@ -120,7 +120,7 @@ export default function App({ navigation, route }) {
           }
           return response.json();
         })
-        .then(data => {
+        .then(data => {console.log('data', data)
           const currentPatient = data.allPatient.find(patient => patient._id === currentPatientId);
 
       if (currentPatient) {
@@ -138,34 +138,36 @@ export default function App({ navigation, route }) {
       const now = moment();  
       return (
         <View style={styles.treatmentAffichage}>
-          {treatments && treatments.map((treatment, index) => {
+          {treatments && treatments.sort((a, b) => new Date(b.date) - new Date(a.date)).map((treatment, index) => {
             const treatmentDate = moment(treatment.date);
             const isFuture = treatmentDate.isAfter(now);
-            return (
-              <Card style={{width: 350, marginBottom: 10}}>
-              <Card.Content>
-              <View key={index}>
-              <Text style={isFuture ? { fontStyle: 'italic', fontWeight: 'bold', marginBottom: 5 } : {fontWeight: 'bold', marginBottom: 5}}>
-                {treatmentDate.format('DD/MM/YYYY - HH:mm')}
-              </Text>
-              {treatment.actions.map((action, actionIndex) => (
-                <Text key={actionIndex} style={isFuture ? { fontStyle: 'italic', fontWeight: 'bold' } : {}}>
-                  Action: {action}
-                </Text>
-              ))}
-            </View>
-              </Card.Content>
-              </Card>
-            );
+            const isWithin90Days = now.diff(treatmentDate, 'days') <= 90;
+    
+            if (isWithin90Days) {
+              return (
+                <Card key={index} style={isFuture ? {backgroundColor: '#CADDC5', width: 350, marginBottom: 10} : {width: 350, marginBottom: 10}}>
+                  <Card.Content>
+                    <View>
+                      <Text style={isFuture ? { marginBottom: 5, fontFamily: 'Poppins_600SemiBold'} : {marginBottom: 5, fontFamily: 'Poppins_600SemiBold'}}>
+                        {treatmentDate.format('DD/MM/YYYY - HH:mm')} :
+                      </Text>
+                      {treatment.actions.map((action, actionIndex) => (
+                        <Text key={`${index}-${actionIndex}`} style={isFuture ? {fontFamily: 'Poppins_400Regular',} : {fontFamily: 'Poppins_400Regular',}}>
+                          Action : {action}
+                        </Text>
+                      ))}
+                    </View>
+                  </Card.Content>
+                </Card>
+              );
+            }
           })}
         </View>
       );
-
     };
-
-
-
-
+    
+    
+    
 
   if (!patient) {
     return (<View />);
@@ -174,8 +176,7 @@ export default function App({ navigation, route }) {
       <>
           <SafeAreaView style={{ flex: 0, backgroundColor: '#99BD8F' }} />
           <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-              <View style={styles.container}>
-                           
+              <View style={styles.container}>                           
                   <View style={styles.headcontent}>
                       <Text style={styles.title}>FICHE PATIENT</Text>
                   </View>
@@ -199,7 +200,7 @@ export default function App({ navigation, route }) {
                         </View>                
                       </View>
                       <View style={{marginTop: 30}}>
-                          <TouchableOpacity style={styles.buttonmodify}>
+                          <TouchableOpacity style={styles.buttonmodify} onPress={() => navigation.navigate('ModificationPatientRecordScreen', { _id : patient._id})}>
                             <Text style={{fontFamily: 'Poppins_600SemiBold'}}>Modifier</Text>
                           </TouchableOpacity>
                         </View>
@@ -209,6 +210,7 @@ export default function App({ navigation, route }) {
                     </Animated.View>
                   <View style={styles.visiblepart}>
                       <Text style={styles.namefirstname}>{patient.firstname} {patient.name}</Text>
+                      <Text style={{fontFamily: 'Poppins_400Regular', marginBottom: -20, marginTop: 5}}>{patient.yearOfBirthday}</Text>
                   <View style={styles.phonehome}>
                   <View style={styles.icone}>
                       <Icon source={'home-circle-outline'} size={24} color='black'/>
@@ -274,6 +276,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+
   },
   scrollView: {
     height: 200,
@@ -281,8 +284,8 @@ const styles = StyleSheet.create({
   },
   drawer: {
     position: 'absolute',
-    bottom: -300,
-    height: 195,
+    bottom: 0,
+    height: 200,
     width: '100%',
     backgroundColor: '#99BD8F',
     justifyContent: 'center',
@@ -301,10 +304,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   content: {
-    flex: 1,
     width: '100%',
-    marginTop: -420,
-    alignItems: 'center'
+    marginTop: -320,
+    alignItems: 'center',
     
   },
   headcontent: {
@@ -438,6 +440,7 @@ journalBtn: {
   height: 50,
   borderRadius: 10,
   marginTop: 20,
+  marginBottom: 10,
   justifyContent: 'center',
   alignItems: 'center',
 },
