@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Alert, StyleSheet, SafeAreaView, Animated, TouchableOpacity } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
-import { Icon } from 'react-native-paper';
 import moment from 'moment';
 import 'moment/locale/fr';
-import { Card } from 'react-native-paper';
+import { Card, Modal, Icon } from 'react-native-paper';
+import 'react-native-gesture-handler';
 
 export default function App({ navigation, route }) {
   const { _id: currentPatientId } = route.params;
@@ -165,7 +165,31 @@ export default function App({ navigation, route }) {
       );
     };
     
+
+      const [modalVisible, setModalVisible] = useState(false);
     
+      const handlePress = () => {
+        setModalVisible(true);
+      };
+      
+      const scrollViewContent = (
+        <View style={styles.container}>
+          <Text style={styles.text}>{patient.firstname} {patient.name}</Text>
+          <Text style={styles.text}>{}</Text>
+          <Text style={styles.text}>Date de naissance: 01/01/1980</Text>
+        </View>
+      );
+  
+      const ModalContent = (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        ></Modal>
+      );
     
 
   if (!patient) {
@@ -179,72 +203,34 @@ export default function App({ navigation, route }) {
                   <View style={styles.headcontent}>
                       <Text style={styles.title}>FICHE PATIENT</Text>
                   </View>
-                  <ScrollView
-                  onScrollBeginDrag={closeDrawer}
-                  contentContainerStyle={styles.scrollView}
-                  >
-                  <Animated.View style={[styles.drawer, { bottom: drawerPosition, zIndex: isDrawerOpen ? 1 : 0 }]}>
-                      <Text style={styles.infosAddress}>{patient.infosAddress}</Text>
-                      <View style={styles.drawercontent1}>
-                      <Text style={styles.pac}>Personne à contacter en cas d'urgence</Text>
-                      </View>
-                      <View style={styles.drawercontent2}>
-                        <View style={{flexDirection: 'row', alignContent: 'center'}}>
-                          <Icon source={'account-supervisor'} size={24} color='black'/>
-                          <Text>{patient.ICEIdentity}</Text>
-                        </View>
-                        <View style={{flexDirection: 'row', alignContent: 'center'}}>
-                          <Icon source={'cellphone'} size={24} color='black'/>
-                          <Text>{patient.ICEPhoneNumber}</Text>
-                        </View>                
-                      </View>
-                      <View style={{marginTop: 30}}>
-                          <TouchableOpacity style={styles.buttonmodify} onPress={() => navigation.navigate('ModificationPatientRecordScreen', { _id : patient._id})}>
-                            <Text style={{fontFamily: 'Poppins_600SemiBold'}}>Modifier</Text>
-                          </TouchableOpacity>
-                        </View>
-                      <TouchableOpacity style={{width: 100, height: 25}} onPress={openDrawer}>
-                        <View style={styles.handle} />
-                      </TouchableOpacity>
-                    </Animated.View>
-                  <View style={styles.visiblepart}>
-                      <Text style={styles.namefirstname}>{patient.firstname} {patient.name}</Text>
-                      <Text style={{fontFamily: 'Poppins_400Regular', marginBottom: -20, marginTop: 5}}>{patient.yearOfBirthday}</Text>
-                  <View style={styles.phonehome}>
-                  <View style={styles.icone}>
-                      <Icon source={'home-circle-outline'} size={24} color='black'/>
-                      <Icon source={'phone-classic'} size={24} color='black'/>
-                  </View>
-                  <View>
-                      <View style={styles.info}>
-                          <View style={styles.address}>
-                              <Text>{patient.address}</Text>
-                          </View>
-                          <View style={styles.mobile}>
-                              <Text>{patient.mobile}</Text>
-                              <Text>{patient.homePhone}</Text>
-                          </View>
-                      </View>
-                  </View>
-                  </View>
-                  </View>
-                  </ScrollView>
-                  <View style={[styles.content, {zIndex: isDrawerOpen ? -1 : 0 }]}> 
+                  <Card style={styles.patientcontent}>
+                    <Card.Content style={{height: 140, width: 352}}>
+                      <ScrollView>
+                        <TouchableOpacity onPress={handlePress}>
+                          {scrollViewContent}
+                        </TouchableOpacity>
+                      </ScrollView>
+                    </Card.Content>
+                  </Card>
+                                    <View style={styles.content}> 
                   <View style={styles.buttoncontain}>
-                    {buttons.map((button, index) => (
+                  {buttons.map((button, index) => (
                       <TouchableOpacity
                         key={`${index}-${refresh}`}
-                        onPress={() => handleButtonPress(index)}
+                        onPress={() => {
+                          handleButtonPress(index);
+                          setDisponibility(patient.disponibility);
+                        }}
                         style={[
-                            styles.button,
-                            index === selectedIndex ? styles.selected : null,
-                            { backgroundColor: buttonColors[index] }
-                          ]}
-                        
+                          styles.button,
+                          index === selectedIndex ? styles.selected : null,
+                          { backgroundColor: buttonColors[index] }
+                        ]}
                       >
                         <Text style={styles.text}>{button}</Text>
                       </TouchableOpacity>
                     ))}
+                    
                   </View> 
                   <View style={styles.journalContainer}>
                     <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10,}}>
@@ -264,7 +250,8 @@ export default function App({ navigation, route }) {
                     </View>
                   </View>                              
                   </View>
-              </View>
+                  
+              </View>{ModalContent}
           </SafeAreaView>
       </>
     );
@@ -277,129 +264,42 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
 
   },
-  scrollView: {
-    height: 200,
-    marginTop: 10
-  },
-  drawer: {
-    position: 'absolute',
-    bottom: 0,
-    height: 200,
-    width: '100%',
-    backgroundColor: '#99BD8F',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  infopatient: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   title: {
     color: '#99BD8F',
     fontFamily: 'Poppins_600SemiBold', 
     fontSize: 30,
     marginTop: 20,
     marginBottom: 20,
-  },
-  content: {
-    width: '100%',
-    marginTop: -320,
-    alignItems: 'center',
-    
-  },
-  headcontent: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  visiblepart: {
-    width: 360,
-    height: 176,
-    backgroundColor: '#99BD8F',
-    borderRadius: 10,
-    paddingTop: 10,
-    alignItems: 'center',
-    marginTop: 2,
-  },
-  namefirstname: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: 20,
-  },
-  phonehome: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 35,
-    width: 200,
-},
-  icone: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: '100%',
-},
-  info: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      marginTop: 10,
-},
-  address: {
-      width: 150,
-      alignItems: 'center',
-      marginRight: 10,
-      fontFamily: 'Poppins_400Regular',
-},
-  mobile: {
-      width: 150,
-      alignItems: 'center',
-      marginLeft: 20,
-      marginRight: -5,
-      fontFamily: 'Poppins_400Regular',
-},
-  handle: {
-      width: 40,
-      height: 5,
-      backgroundColor: 'gray',
-      borderRadius: 5,
-      alignSelf: 'center',
-      justifyContent:'flex-end',
-      marginTop: 10,
-},
-  pac: {
-      fontFamily: 'Poppins_600SemiBold',
-},
-  drawercontent1: {
-      marginTop: 20,
-      flexDirection: 'row',
-},
-  drawercontent2 : {
-      marginTop: 20,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: 300,
-},
-  drawercontent3: {
-      borderColor: 'red',
-      borderWidth: 2,
-      marginTop: 20,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-},
-  infosAddress: {
-    marginTop: 10,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-},
-buttonmodify: {
-  backgroundColor: '#CADDC5',
-  width: 300,
-  height: 40,
-  borderRadius: 5,
+ },
+ patientcontent: {
+  marginBottom: 20,
+  backgroundColor: '#99BD8F',
+
+ },
+ namepatient: {
+  fontFamily: 'Poppins_600SemiBold', 
+  fontSize: 20,
+  marginBottom: 10,
+ },
+ dob: {
+  fontFamily: 'Poppins_400Regular', 
+  fontSize: 15,
+  marginBottom: 20,
+ },
+
+ icone: {
   alignItems: 'center',
-  justifyContent: 'center',
-  marginTop: -15,
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  width: '100%',
 },
+addressInfo: {
+  alignItems: 'center',
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  width: '100%',
+},
+
 buttoncontain: {
   flexDirection: 'row',
   borderRadius: 5,

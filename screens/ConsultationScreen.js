@@ -100,68 +100,71 @@ export default function ConsultationScreen({ navigation, route }) {
         );
     };
 
-    const modalContent = () => {
-        if(transmission.length > 0) {
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                setModalVisible(!modalVisible);
-                }}
-            >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <Text style={styles.modalText}>`Souhaites-tu valider tes modifications
-                    et envoyer la transmission ?`</Text>
-                </View>
-                <View>
-                    <TouchableOpacity onPress={()=> {
+    let modalContent;
+    
+    if(plannedTreatments.length > 0 && transmission.length > 0) {
+        modalContent = (
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+            setModalVisible(!modalVisible);
+            }}
+        >
+        <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+                <Text style={styles.modalText}>Souhaites-tu valider tes modifications
+                et envoyer la transmission ?</Text>
+                <View style={styles.modalChoice}>
+                    <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
                         navigation.navigate('TabNavigator');
                         setModalVisible(!modalVisible);
                     }}>
-                        <Text>Non</Text>
+                    <Text>Non</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=> {
+                    <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
                         validation();
                         navigation.navigate('TourScreen',/*  { _id : patient._idnavigate} */);
                     }}>
-                        <Text>OK</Text>
+                    <Text>OK</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-        </Modal>
-        } else {
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                setModalVisible(!modalVisible);
-                }}
-            >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <Text style={styles.modalText}>`Souhaites-tu valider tes modifications ?`</Text>
-                </View>
-                <View>
-                    <TouchableOpacity onPress={()=> {
+        </View>
+    </Modal>)
+    } else if(plannedTreatments.length > 0) {
+        modalContent = (
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+            setModalVisible(!modalVisible);
+            }}
+        >
+        <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+                <Text style={styles.modalText}>Souhaites-tu valider tes modifications ?</Text>
+                <View style={styles.modalChoice}>
+                    <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
                         navigation.navigate('TabNavigator');
                         setModalVisible(!modalVisible);
                     }}>
-                        <Text>Non</Text>
+                    <Text>Non</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=> {
+                    <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
                         validation();
                         navigation.navigate('TourScreen',/*  { _id : patient._idnavigate} */);
                     }}>
-                        <Text>OK</Text>
+                    <Text>OK</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-        </Modal>
-        }
+        </View>
+    </Modal>)
     }
+
 
     /* useEffect(() => {
         fetch(`http://192.168.0.25:3000/patients/patient/6579c5d4c2873da0530e41bf`).then(response => response.json())
@@ -218,29 +221,29 @@ export default function ConsultationScreen({ navigation, route }) {
                                         multiline={true}
                                         textAlignVertical= 'top'
                                         theme={{ 
-                                        colors: { 
-                                            primary: '#99BD8F', 
-                                        }
+                                            colors: { 
+                                                primary: '#99BD8F', 
+                                            }
                                         }}
                                         style={styles.soinsPrevus} 
                                         onChangeText={text => setPlannedTreatments(text)}/>
                                 </View>
                                 {/* <View>
                                     <Text style={styles.titleSoins}>Soins supplémentaires</Text>
-                                </View>
-                                <View>      
+                                    </View>
+                                    <View>      
                                     <TextInput 
-                                        mode='outlined'
-                                        multiline={true}
-                                        textAlignVertical= 'top'
-                                        theme={{ 
+                                    mode='outlined'
+                                    multiline={true}
+                                    textAlignVertical= 'top'
+                                    theme={{ 
                                         colors: { 
                                             primary: '#99BD8F', 
                                         }
-                                        }}
-                                        style={styles.soinsPrevus} 
-                                        onChangeText={text => setNewTreatments(text)} 
-                                        value={newTreatments}/>
+                                    }}
+                                    style={styles.soinsPrevus} 
+                                    onChangeText={text => setNewTreatments(text)} 
+                                    value={newTreatments}/>
                                 </View>  */}
                                 <View>
                                     <Text style={styles.titleSoins}>Transmission</Text>
@@ -250,9 +253,9 @@ export default function ConsultationScreen({ navigation, route }) {
                                     multiline={true}
                                     textAlignVertical= 'top'
                                     theme={{ 
-                                    colors: { 
-                                        primary: '#99BD8F', 
-                                    }
+                                        colors: { 
+                                            primary: '#99BD8F', 
+                                        }
                                     }}
                                     style={styles.soinsPrevus} 
                                     onChangeText={text => setTransmission(text)} 
@@ -264,7 +267,7 @@ export default function ConsultationScreen({ navigation, route }) {
                                 </TouchableOpacity>
                             </View>
                         </ScrollView>
-                        {modalContent()}
+                        {modalContent}
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>
             </SafeAreaView>
@@ -274,11 +277,11 @@ export default function ConsultationScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
     container: {
-      marginTop: 35, 
-      marginBottom: 10,
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
+        marginTop: 35, 
+        marginBottom: 10,
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
       justifyContent: 'center',
     },
     titlePage: {
@@ -380,13 +383,12 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(0,0,0,0,0.5)",
       },
     modalView: {
-        //margin: 20,
-        height: 400,
+        height: 300,
         width: '80%',
         backgroundColor: "#F0F0F0",
         borderRadius: 20,
         padding: 35,
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
@@ -399,8 +401,22 @@ const styles = StyleSheet.create({
       },
     modalText: {
         marginTop: 10,
+        marginBottom: 25,
         color: '#99BD8F',
-        fontSize: 20,   
+        fontSize: 20,
+        textAlign: 'center',
         fontFamily: 'Poppins_400Regular',
-      }
+        fontWeight: 'bold',
+      },
+    modalChoice: {
+        flexDirection: 'row',
+        marginTop: 20,
+        //justifyContent: 'space-between',
+    },
+    modalChoiceText: {
+        fontFamily: 'Poppins_400Regular',
+        //justifyContent: 'space-between',
+        //alignItems: "space-between",
+        textAlign: 'auto',
+    },
    });
