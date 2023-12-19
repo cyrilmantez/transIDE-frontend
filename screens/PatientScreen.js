@@ -113,10 +113,11 @@ export default function App({ navigation, route }) {
             const treatmentDate = moment(treatment.date);
             const isFuture = treatmentDate.isAfter(now);
             const isWithin90Days = now.diff(treatmentDate, 'days') <= 90;
+            const isModified = treatment.isOkWithModification;
     
             if (isWithin90Days) {
               return (
-                <Card key={index} style={isFuture ? {backgroundColor: '#CADDC5', width: 350, marginBottom: 10} : {width: 350, marginBottom: 10}}>
+                <Card key={index} style={isModified ? {backgroundColor: '#F9EAB6', width: 350, marginBottom: 10} : (isFuture ? {backgroundColor: '#CADDC5', width: 350, marginBottom: 10} : {width: 350, marginBottom: 10})}>
                   <Card.Content>
                     <View>
                       <Text style={isFuture ? { marginBottom: 5, fontFamily: 'Poppins_600SemiBold'} : {marginBottom: 5, fontFamily: 'Poppins_600SemiBold'}}>
@@ -136,7 +137,7 @@ export default function App({ navigation, route }) {
         </View>
       );
     };
-  
+    
     
       const handlePress = () => {
         setModalVisible(true);
@@ -165,7 +166,11 @@ export default function App({ navigation, route }) {
           <Text style={styles.pac}>Personne à contacter en cas d'urgence</Text>
           <Text style={styles.icei}>{patient.ICEIdentity ? patient.ICEIdentity : "Non renseigné"}</Text>
           <Text style={styles.icep}>{patient.ICEPhoneNumber}</Text>
-          <TouchableOpacity style={styles.btnscroll} onPress={() => navigation.navigate('ModificationPatientRecordScreen')}>
+          <TouchableOpacity style={styles.btnscroll} onPress={() => {
+              navigation.navigate('ModificationPatientRecordScreen');
+              setModalVisible(false);
+            }}
+            >
             <Text style={styles.btnmodify}>Modifier</Text>
           </TouchableOpacity>
         </>)}
