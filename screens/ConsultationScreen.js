@@ -9,28 +9,83 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //import { faPhone, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
-//import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 //import PatientScreen from './screens/PatientScreen';
 //import users from '../reducers/users';
 //import patients from '../reducers/patients';
 
 export default function ConsultationScreen({ navigation, route }) {
     
+    const user = useSelector((state) => state.users.value);
     // Récupération des données du patient de TourScreen :
-    const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone, isOk: route.params.isOk, isOkWithModification: route.params.isOkWithModification, _idTreatment: route.params._idTreatment});
+    const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, yearOfBirthday: route.params.yearOfBirthday, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone, isOk: route.params.isOk, isOkWithModification: route.params.isOkWithModification, _idTreatment: route.params._idTreatment, documentsOfTreatment: route.params.documentsOfTreatment});
     // Récupération des soins prévus de TourScreen (tableau de strings):
     const [plannedTreatments, setPlannedTreatments] = useState('');
-    // Enregistrement des inputs :r
-    //const [textInputValue, setTextInputValue] = useState('');
     // Transmission :
-    const [transmission, setTransmission] = useState(' ');
+    const [transmission, setTransmission] = useState('');
     // Appel à la modale de validation :
     const [modalVisible, setModalVisible] = useState(false);
+
+    // Transformation des soins récupérés du tourScreen '\n' :
+    useEffect(() => {
+        let treatments = '';
+        for( const treatment of route.params.actions) {
+            treatments = `${treatments} 
+            ${treatment} `;
+        }
+        setPlannedTreatments(treatments);
+    }, []);
+
     // Validation des modifications effectuées :
-    const validation = () => {
-        updateTreatmentInDB();
-        setModalVisible(!modalVisible);
-      }
+    const validation = (a, b, c) => {
+        fetch('http://192.168.0.25:3000/patients/allPatients', {
+            method: 'PUT',
+            headers: {'Content-Type' : 'application/json'},
+            body: JSON.stringify({
+                _id: patient._id,
+                isVisited: a,
+                isOk: b,
+                isOkWithModification: c,
+                date: patient.date,
+                nurse: user.username,
+                documentsOfTreatment: patient.documentsOfTreatment,
+                actions: plannedTreatments,
+             })
+            }).then(response => response.json())
+            .then(data => {
+                if(data.result) {
+                    navigation.navigate('TabNavigator');
+            }
+        })
+      };
+    
+    const validationWithTransmission = () => {
+        fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
+            method: 'POST',
+            headers: {'Content-Type' : 'application/json'},
+            body: JSON.stringify({
+                transmission: {
+                    date: new Date(),
+                    nurse: user.username,
+                    info: transmission,
+                    UrlDocument: '',
+                },
+                patient: {
+                    name: patient.name, 
+                    yearOfBirthday:patient.yearOfBirthday, 
+                },
+                token: user.officesTokens[0].token,
+            })
+        .then(response => response.json())
+        .then(data)
+        });
+
+        if(route.params.actions !== treatments) {
+            validation(true, true, true);
+        } else {
+            validation(true, true, false);
+        }
+    };
 
     /* const updateTreatmentInDB = () => {
         fetch('http://192.168.0.25:3000/patients/allPatients', {
@@ -45,15 +100,6 @@ export default function ConsultationScreen({ navigation, route }) {
         })
     } */
     
-    // Transformation des soins récupérés du tourScreen '\n' :
-    useEffect(() => {
-        let treatments = '';
-        for( const treatment of route.params.actions) {
-            treatments = `${treatments} 
-            ${treatment} `;
-        }
-        setPlannedTreatments(treatments);
-    }, []);
     
     //console.log('soinsprévus', plannedTreatments)
     //console.log('patient', patient);
@@ -126,8 +172,7 @@ export default function ConsultationScreen({ navigation, route }) {
                     <Text>Non</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
-                        validation();
-                        navigation.navigate('TourScreen',/*  { _id : patient._idnavigate} */);
+                        validationWithTransmission();
                     }}>
                     <Text>OK</Text>
                     </TouchableOpacity>
@@ -155,8 +200,7 @@ export default function ConsultationScreen({ navigation, route }) {
                     <Text>Non</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
-                        validation();
-                        navigation.navigate('TourScreen',/*  { _id : patient._idnavigate} */);
+                        validation(true, true, true);
                     }}>
                     <Text>OK</Text>
                     </TouchableOpacity>
@@ -181,6 +225,11 @@ export default function ConsultationScreen({ navigation, route }) {
     const handleSubmit = () => {
         setModalVisible(true);
       };
+
+    // Effet du clic sur "Soin non réalisé" :
+    /* const handleCancel = () => {
+
+    } */
 
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
@@ -263,6 +312,11 @@ export default function ConsultationScreen({ navigation, route }) {
                                     <Text style={styles.text}>Valider</Text>            
                                 </TouchableOpacity>
                             </View>
+                            <View>
+                                <TouchableOpacity onPress={() => handleCancel()} style={styles.cancelButton} activeOpacity={0.8}>  
+                                    <Text style={styles.cancelText}>Soin non réalisé</Text>            
+                                </TouchableOpacity>
+                            </View>
                         </ScrollView>
                         {modalContent}
                     </KeyboardAvoidingView>
@@ -309,6 +363,11 @@ const styles = StyleSheet.create({
        fontSize: 17,
        fontFamily: 'Poppins_400Regular', 
    },
+   cancelText:{
+    fontSize: 17,
+    fontFamily: 'Poppins_400Regular', 
+    color: 'white',
+},
     button : {
        flexDirection: 'row',
        justifyContent: 'space-between',
@@ -320,6 +379,17 @@ const styles = StyleSheet.create({
        justifyContent: 'center',
        alignItems: 'center',
      },
+    cancelButton: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        backgroundColor: 'red',
+        width: 350,
+        height: 50,
+        borderRadius: 10,
+        marginTop: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     buttonDispo:{
        flexDirection: 'row',
        justifyContent: 'space-between',
