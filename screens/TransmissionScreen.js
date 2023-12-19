@@ -124,7 +124,7 @@ console.log(transmissions)
     )
 })
  return (
-  <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+  <SafeAreaView style={{flex: 1, backgroundColor: '#99BD8F'}}>
     <StatusBar barStyle="light-content"/>
       <View style={styles.container}>
         <View style={styles.header}>
