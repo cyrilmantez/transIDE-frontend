@@ -28,7 +28,11 @@ export default function TourScreen({navigation}) {
     const [progress, setProgress] = useState(0);
 
   const allData =()=> {
+<<<<<<< HEAD
     fetch('http://192.168.1.14:3000/patients/allPatients', {
+=======
+    fetch('http://192.168.0.25:3000/patients/allPatients', {
+>>>>>>> 47949f6458d2f985f49626106751af6e66b78c7d
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: user.officesTokens[0].token, dateOfToday : date })
