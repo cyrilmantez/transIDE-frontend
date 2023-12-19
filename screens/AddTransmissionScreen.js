@@ -15,7 +15,6 @@ import { addPhoto } from '../reducers/users';
 
 
 export default function AddTransmissionScreen({navigation}) {
-    //const dispatch = useDispatch();
     const officeToken = useSelector((state) => state.users.value.officesTokens[0].token);
     const user = useSelector((state) => state.users.value.username);
     const [isPatient, setIsPatient] = useState(false)
@@ -58,6 +57,26 @@ export default function AddTransmissionScreen({navigation}) {
     const filteredSuggestions = allPatients.filter((item) =>
     item.name.toLowerCase().includes(text.toLowerCase())
   );
+    filteredSuggestions.sort((a, b) => {
+      //Sort by name
+      const nameA = a.name.toUpperCase();
+      const nameB = b.name.toUpperCase();
+      if (nameA < nameB) return -1;
+      if (nameA > nameB) return 1;
+    
+       //Sort by firstname
+      const firstNameA = a.firstname.toUpperCase();
+      const firstNameB = b.firstname.toUpperCase();
+    
+      if (firstNameA < firstNameB) return -1;
+      if (firstNameA > firstNameB) return 1;
+    
+       //Sort by yearOfBirthday
+      const dateA = new Date(a.yearOfBirthday.split('/').reverse().join('/'));
+      const dateB = new Date(b.yearOfBirthday.split('/').reverse().join('/'));
+    
+      return dateA - dateB;
+    });
     setSuggestions(filteredSuggestions);
     })
 
@@ -68,8 +87,8 @@ export default function AddTransmissionScreen({navigation}) {
     const suggestionsToDisplay = suggestions.map((item, index) => {
        return (
        
-          <TouchableOpacity key={index} onPress={()=>{handlePatientChoice (item.name, item.firstname, item.yearOfBirthday)}}>
-          <Text >{`${item.name} ${item.firstname} - ${item.yearOfBirthday}`} </Text>
+          <TouchableOpacity key={index} style={styles.listSuggestionText} onPress={()=>{handlePatientChoice (item.name, item.firstname, item.yearOfBirthday)}}>
+          <Text style={styles.textAlign}>{`${item.name} ${item.firstname} - ${item.yearOfBirthday}`} </Text>
         </TouchableOpacity>
        )
        
@@ -166,7 +185,7 @@ export default function AddTransmissionScreen({navigation}) {
       <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+          <View style={styles.container}>
             <View style={styles.header}>
               <TouchableOpacity>
                   <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' marginTop={20} marginLeft={15} onPress={() => navigation.navigate('TabNavigator')} />
@@ -191,46 +210,46 @@ export default function AddTransmissionScreen({navigation}) {
                         <Text style={styles.textButton} >Patient</Text>
                     </TouchableOpacity>}
                 </View>
-                
-                {isPatient && (<>
-                      <TextInput style={styles.patientInput}
-                          label='Nom du patient' 
-                          mode='outlined'
-                          theme={{ 
-                            colors: { 
-                              primary: '#99BD8F', 
-                            }
-                      }}
-                        onChangeText={text => handlePatientNameChange(text)} 
-                        value={text}/>
-                        {text && <ScrollView style={styles.suggestionsContainer}>
-                          <View style={styles.suggestionList}> 
-                            {suggestionsToDisplay}
-                          </View>
-                    </ScrollView>}
-                        
-                  </> )}
-                
-                
-                <View style={styles.messageContainer}>
-                    {isPatient &&  <Text style={{color: '#99BD8F',
-            fontSize: 20,
-            fontFamily: 'Poppins_600SemiBold',borderColor: 'green',
-            borderWidth: 5,textAlign : 'center',height:'20%'}} >Message</Text>}
-                {!isPatient &&  <Text style={styles.message} >Message</Text>}
-                    <TextInput 
-                        label='Message' 
-                        mode='outlined'
-                        theme={{ 
-                          colors: { 
-                            primary: '#99BD8F', 
-                          }
-                        }}
-                        style={styles.transmissionInput}
-                        onChangeText={text => setTransmission({...transmission, info:text})} 
-                        value={transmission.info}/>
-                   
-                </View>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={styles.inputContainer}>
+                        {isPatient && (<>
+                          <TextInput style={styles.patientInput}
+                              label='Nom du patient' 
+                              mode='outlined'
+                              theme={{ 
+                                colors: { 
+                                  primary: '#99BD8F', 
+                                }
+                          }}
+                            onChangeText={text => handlePatientNameChange(text)} 
+                            value={text}/>
+                            {text && <View style={styles.suggestionsContainer}>
+                              <ScrollView style={styles.suggestionList}> 
+                                <>
+                                {suggestionsToDisplay}
+                                </>
+                              </ScrollView>
+                        </View>}                          
+                      </> )}
+                    <View style={styles.messageContainer}>
+                        {isPatient &&  <Text style={{color: '#99BD8F',
+                fontSize: 20,
+                fontFamily: 'Poppins_600SemiBold',textAlign : 'center',height:'20%'}} >Message</Text>}
+                    {!isPatient &&  <Text style={styles.message} >Message</Text>}
+                        <TextInput 
+                            label='Message' 
+                            mode='outlined'
+                            theme={{ 
+                              colors: { 
+                                primary: '#99BD8F', 
+                              }
+                            }}
+                            style={styles.transmissionInput}
+                            onChangeText={text => setTransmission({...transmission, info:text})} 
+                            value={transmission.info}/>
+                    </View>
+                </KeyboardAvoidingView>
+               
                 <TouchableOpacity onPress={console.log('pick document')}>
                     <Text>Choisir un document</Text>
                 </TouchableOpacity>
@@ -240,7 +259,7 @@ export default function AddTransmissionScreen({navigation}) {
                 <Modal transparent visible={isModalVisible} onRequestClose={closeModal}>
                       <View style={styles.modalContainer}>
                         <View style={styles.modalContent}>
-                            <Text>{modalMessage}</Text>
+                            <Text style={styles.modalText}>{modalMessage}</Text>
                             <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
                               <Text style={styles.modalButtonText}>Fermer</Text>
                             </TouchableOpacity>
@@ -249,7 +268,7 @@ export default function AddTransmissionScreen({navigation}) {
                 </Modal>
             </View>
            
-               </KeyboardAvoidingView>
+               </View>
           </ScrollView>
         </SafeAreaView>
     </>
@@ -288,8 +307,6 @@ export default function AddTransmissionScreen({navigation}) {
      content : {
         height: '90%',
         width: '100%',
-        borderColor: 'purple',
-        borderWidth: 2,
         justifyContent: 'space-around',
         alignItems: 'center',
      },
@@ -299,8 +316,6 @@ export default function AddTransmissionScreen({navigation}) {
        color: '#99BD8F',
        fontSize: 30,
        fontFamily: 'Poppins_600SemiBold',
-       borderColor: 'blue',
-       borderWidth: 1
       },
       buttonContainer:{
         width: 300,
@@ -308,9 +323,7 @@ export default function AddTransmissionScreen({navigation}) {
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        
-        borderColor: 'blue',
-        borderWidth: 1
+        marginTop: 10,
       },
       button: {
         backgroundColor: '#CADDC5',
@@ -331,17 +344,39 @@ export default function AddTransmissionScreen({navigation}) {
       suggestionsContainer:{
         width: '70%',
         maxHeight: '20%',
-        borderColor: 'red',
-        borderWidth: 5,
-
+        display:'flex',
+        justifyContent: 'space-between',
+        alignContent: 'center',
+        marginBottom: 0,
+        borderColor: '#99BD8F',
+        borderWidth: 0.5,
       },
 
       suggestionList: {
         width:'95%',
-        height:'95%',
-        justifyContent: 'center',
-        alignItems: 'center'
-
+        maxHeight:'95%',
+        backgroundColor: 'white',
+        marginLeft:5,
+      },
+      listSuggestionText:{
+        textAlign: 'center',
+        backgroundColor: 'white',
+        marginTop: 10,
+        height: 30,
+        ...Platform.select({
+          ios: {
+            shadowColor: 'black',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.5,
+            shadowRadius: 3,
+          },
+          android: {
+            elevation: 5,
+          },
+        }),
+      },
+      textList : {
+        textAlign: 'center',
       },
       
        messageContainer:{
@@ -349,16 +384,12 @@ export default function AddTransmissionScreen({navigation}) {
         height: '30%',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderColor: 'blue',
-        borderWidth: 1
       },
       message: {
         height:'20%',
         color: '#99BD8F',
         fontSize: 20,
         fontFamily: 'Poppins_600SemiBold',
-        borderColor: 'red',
-        borderWidth: 5,
         textAlign : 'center',
 
        }, 
@@ -385,8 +416,6 @@ export default function AddTransmissionScreen({navigation}) {
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        borderColor: 'blue',
-        borderWidth: 1
       },
       modalContainer: {
         flex: 1,
@@ -395,9 +424,11 @@ export default function AddTransmissionScreen({navigation}) {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
       },
       modalContent: {
-        backgroundColor: '#99BD8F',
+        backgroundColor: 'white',
         padding: 8,
         borderRadius: 10,
+        borderColor: '#99BD8F',
+        borderWidth: 5,
         elevation: 5,
         height: 300,
         width: 250,
@@ -405,4 +436,22 @@ export default function AddTransmissionScreen({navigation}) {
         justifyContent: 'space-between',
         alignContent: 'center'
       },
+      closeButton :{
+        borderColor: 'white',
+        borderWidth: 1,
+        display:'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        marginBottom: 10,
+        height: 40,
+        backgroundColor:'#99BD8F',
+      },
+      modalButtonText:{
+        textAlign: 'center',
+        color: 'white',
+       },
+       modalText:{
+        textAlign: 'center',
+        marginTop: 90,
+       }
      });
