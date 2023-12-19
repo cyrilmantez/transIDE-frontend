@@ -145,6 +145,7 @@ const updateTreatmentInDB = (a, b, c) => {
         nurse: user.username,
         date: patientModal.date,
         documentsOfTreatment: patientModal.documentsOfTreatment,
+        yearOfBirthday : patientModal.yearOfBirthday,
           });          
   };
 
@@ -350,7 +351,7 @@ const updateTreatmentInDB = (a, b, c) => {
      return (
       <>
         <SafeAreaView style={{ flex: 0, backgroundColor: '#99BD8F' }} />
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} >
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <View style={styles.container}>
                 <View style={styles.containerHeader}>
                         <View style={styles.header}>
