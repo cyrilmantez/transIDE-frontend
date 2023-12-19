@@ -6,6 +6,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { useSelector } from 'react-redux';
 
+
  
 
 export default function TransmissionScreen({navigation}) {
@@ -38,7 +39,7 @@ export default function TransmissionScreen({navigation}) {
 
   //get 10lastDayData from dataBase, and dispatch in the reducer
   useEffect(() => {
-    fetch(`http://192.168.1.162:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
+    fetch(`http://192.168.0.25:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
     .then((data) => {
       if(data.result){
         const compareDates = (a, b) => new Date(b.date) - new Date(a.date);

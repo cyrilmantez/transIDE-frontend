@@ -18,7 +18,7 @@ export default function SignInScreen({navigation}) {
       return;
     }
 
-    fetch('http://192.168.1.14:3000/users/signin', {
+    fetch('http://192.168.1.5:3000/users/signin', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({username: signInName, password: signInPassword})
@@ -51,57 +51,58 @@ export default function SignInScreen({navigation}) {
           <ScrollView contentContainerStyle={styles.scrollView}>
             <View>
               <View style={styles.header}>
-                <View >
-                  <Text style={styles.text1}>Encore toi ?</Text>
-                </View>
-                <View >
-                  <Text style={styles.text2}>Connecte-toi</Text>
-                </View>
-                <View >
-                  <Image
-                    style={styles.image}
-                    source={require('../assets/logo.png')}
-                        />
-                </View>
+                  <View >
+                    <Text style={styles.text1}>Encore toi ?</Text>
+                  </View>
+                  <View >
+                    <Text style={styles.text2}>Connecte-toi</Text>
+                  </View>
+                  <View >
+                    <Image
+                      style={styles.image}
+                      source={require('../assets/logo.png')}
+                          />
+                  </View>
               </View>
+
               <View style={styles.inputContainer}>  
-                <TextInput 
-                label='Ton nom utilisateur' 
-                mode='outlined'
-                theme={{ 
-                  colors: { 
-                    primary: '#99BD8F', 
-                  }
-                }}
-                style={{ width: 350, marginTop: 15 }}
-                onChangeText={text => setSignInName(text)} 
-                value={signInName}/>
-                <TextInput 
-                label='Ton mot de passe'
-                mode='outlined'
-                theme={{ 
-                  colors: { 
-                    primary: '#99BD8F', 
-                  }
-                }}
-                secureTextEntry={passwordVisible} 
-                style={{ width: 350, marginTop: 15 }}
-                onChangeText={text => setSignInPassword(text)} 
-                value={signInPassword}/>
-                <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 104}}>
-                  <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='grey' />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => handleConnexion()}>
-                  <Text style={styles.text}>Valider</Text>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Des trous de mémoire ?</Text>
-                </TouchableOpacity>
-                <View style={styles.footer}>
-                  <Text style={styles.footertext}>Pas encore de compte ?</Text>
-                  <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
-                    <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Vite! Crée le en 10 secondes</Text>
-                  </TouchableOpacity>
+                      <TextInput 
+                      label='Ton nom utilisateur' 
+                      mode='outlined'
+                      theme={{ 
+                        colors: { 
+                          primary: '#99BD8F', 
+                        }
+                      }}
+                      style={{ width: 350, marginTop: 15 }}
+                      onChangeText={text => setSignInName(text)} 
+                      value={signInName}/>
+                      <TextInput 
+                      label='Ton mot de passe'
+                      mode='outlined'
+                      theme={{ 
+                        colors: { 
+                          primary: '#99BD8F', 
+                        }
+                      }}
+                      secureTextEntry={passwordVisible} 
+                      style={{ width: 350, marginTop: 15 }}
+                      onChangeText={text => setSignInPassword(text)} 
+                      value={signInPassword}/>
+                      <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 104}}>
+                        <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='grey' />
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.button} onPress={() => handleConnexion()}>
+                        <Text style={styles.text}>Valider</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity>
+                        <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Des trous de mémoire ?</Text>
+                      </TouchableOpacity>
+                      <View style={styles.footer}>
+                        <Text style={styles.footertext}>Pas encore de compte ?</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
+                          <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Vite! Crée le en 10 secondes</Text>
+                        </TouchableOpacity>
                 </View>
               </View>
             </View>
