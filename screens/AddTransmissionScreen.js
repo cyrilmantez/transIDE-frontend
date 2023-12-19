@@ -32,7 +32,7 @@ export default function AddTransmissionScreen({navigation}) {
     console.log('patient :',patient);
 
     useEffect (() => {
-      fetch(`http://192.168.1.5:3000/patients/allPatients/${officeToken}`).then(
+      fetch(`http://192.168.0.25:3000/patients/allPatients/${officeToken}`).then(
         response => response.json())
         .then(data => setAllPatients(data.Patients))
     }, [])
@@ -125,7 +125,7 @@ export default function AddTransmissionScreen({navigation}) {
           transmission : newTransmission,
           token : officeToken,
         }
-        fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
+        fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -154,7 +154,7 @@ export default function AddTransmissionScreen({navigation}) {
                   transmission : newTransmission,
                   token : officeToken,
                 }
-                fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
+                fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
