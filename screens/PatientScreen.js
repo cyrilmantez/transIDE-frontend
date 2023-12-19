@@ -10,39 +10,15 @@ export default function App({ navigation, route }) {
   const { _id: currentPatientId } = route.params;
   const [patient, setPatient] = useState(null);
   const [value, setValue] = useState('');
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [visible, setVisible] = useState(false);
-
-  // Modal déroulant
-  const drawerHeight = 455; // Hauteur du tiroir ouvert
-  const peekHeight = 310; // Hauteur du tiroir fermé qui dépasse
-
-  const [drawerPosition, setDrawerPosition] = useState(new Animated.Value(-drawerHeight + peekHeight));
-
-  const closeDrawer = () => {
-    setIsDrawerOpen(false);
-    Animated.timing(drawerPosition, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const openDrawer = () => {
-    setIsDrawerOpen(true);
-    Animated.timing(drawerPosition, {
-      toValue: -drawerHeight + peekHeight,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  };
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    fetch(`http://192.168.0.25:3000/patients/patient/${route.params._id}`).then(response => response.json())
+    fetch(`http://192.168.1.14:3000/patients/patient/${route.params._id}`).then(response => response.json())
     .then(data => {
         setPatient(data.patient)
     });
-    closeDrawer();
+    
   }, []);
 
     // bouton disponible
@@ -68,7 +44,7 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http:192.168.0.25:3000/patients/updatePatientById', {
+                fetch('http:192.168.1.14:3000/patients/updatePatientById', {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -108,7 +84,7 @@ export default function App({ navigation, route }) {
     const [treatments, setTreatments] = useState([]);
 
     useEffect(() => {
-      fetch('http://192.168.0.25:3000/patients/allPatientDay')
+      fetch('http://192.168.1.14:3000/patients/allPatientDay')
         .then(response => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -160,26 +136,36 @@ export default function App({ navigation, route }) {
         </View>
       );
     };
-    
-
-      const [modalVisible, setModalVisible] = useState(false);
+  
     
       const handlePress = () => {
         setModalVisible(true);
       };
       
       const scrollViewContent = (
-        <View style={styles.container}>
+        <View style={styles.containerscroll}>
           {patient && (
         <>
           <Text style={styles.name}>{patient.firstname} {patient.name}</Text>
           <Text style={styles.dob}>{patient.yearOfBirthday}</Text>
-          <Text style={styles.address}>{patient.address}</Text>
-          <Text style={styles.addressplus}>{patient.infosAddress}</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center', width: 300}}>
+            <Icon source={'home'} size={30}/>
+            <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>              
+              <Text style={styles.address}>{patient.address} </Text>          
+              <View><Text style={styles.addressplus}>{patient.infosAddress}</Text></View>
+            </View>
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center', width: 300}}>
+            <Icon source={'phone'} size={27}/>
+            <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
+              <Text style={styles.mobile}>{patient.mobile ? patient.mobile : "Non renseigné"}</Text>
+              <Text style={styles.homephone}>{patient.homePhone}</Text>
+            </View>
+          </View>
           <Text style={styles.pac}>Personne à contacter en cas d'urgence</Text>
           <Text style={styles.icei}>{patient.ICEIdentity ? patient.ICEIdentity : "Non renseigné"}</Text>
           <Text style={styles.icep}>{patient.ICEPhoneNumber}</Text>
-          <TouchableOpacity style={styles.btnscroll}>
+          <TouchableOpacity style={styles.btnscroll} onPress={() => navigation.navigate('ModificationPatientRecordScreen')}>
             <Text style={styles.btnmodify}>Modifier</Text>
           </TouchableOpacity>
         </>)}
@@ -196,7 +182,19 @@ export default function App({ navigation, route }) {
             setModalVisible(!modalVisible);
           }}
         >
-          {scrollViewContent}
+          <View style={styles.centerView}>        
+            <View style={styles.modalView}>
+            <TouchableOpacity 
+              onPress={() => {
+                setModalVisible(false)
+              }}
+              style={styles.closemodal} 
+              >
+              <Icon source={'close-circle'} size={40}/>
+            </TouchableOpacity>
+              {scrollViewContent}
+            </View>          
+          </View>
         </Modal>
       );
 
@@ -220,7 +218,7 @@ export default function App({ navigation, route }) {
                       </ScrollView>
                     </Card.Content>
                   </Card>
-                                    <View style={styles.content}> 
+                  <View style={styles.content}> 
                   <View style={styles.buttoncontain}>
                   {buttons.map((button, index) => (
                       <TouchableOpacity
@@ -304,6 +302,7 @@ const styles = StyleSheet.create({
 address: {
   fontFamily: 'Poppins_400Regular', 
   fontSize: 15,
+  marginTop: 10,
 },
 addressplus: {
   fontFamily: 'Poppins_400Regular', 
@@ -323,15 +322,31 @@ icep: {
   fontFamily: 'Poppins_400Regular', 
   fontSize: 15,
 },
+mobile: {
+  fontFamily: 'Poppins_400Regular', 
+  fontSize: 15,
+  marginTop: 12,
+},
+containerscroll: {
+  width: 320,
+  alignItems: 'center',
+  justifyContent: 'center',
+},
 centerView: {
-  flex: 1,
   justifyContent: "center",
   alignItems: "center",
-  marginTop: 22
+  marginTop: 120,
 },
+closemodal: {
+  position: 'absolute',
+  top: 340,  
+},
+
 modalView: {
   margin: 20,
-  backgroundColor: "white",
+  height: 400,
+  width: 350,
+  backgroundColor: "#99BD8F",
   borderRadius: 20,
   padding: 35,
   alignItems: "center",
@@ -415,5 +430,6 @@ treatmentAffichage: {
   marginLeft: 10,
   marginRight: 10,
   alignItems: 'center',
-}
+},
+
 });
