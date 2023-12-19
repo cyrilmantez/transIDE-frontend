@@ -32,7 +32,7 @@ export default function ConsultationScreen({ navigation, route }) {
         setModalVisible(!modalVisible);
       }
 
-    const updateTreatmentInDB = () => {
+    /* const updateTreatmentInDB = () => {
         fetch('http://192.168.0.25:3000/patients/allPatients', {
             method: 'PUT',
             headers: {'Content-Type' : 'application/json'},
@@ -43,7 +43,7 @@ export default function ConsultationScreen({ navigation, route }) {
             setIsOk(false);
             setIsOkWithModification(false);
         })
-    }
+    } */
     
     // Transformation des soins récupérés du tourScreen '\n' :
     useEffect(() => {
@@ -165,7 +165,6 @@ export default function ConsultationScreen({ navigation, route }) {
         </View>
     </Modal>)
     }
-
 
     /* useEffect(() => {
         fetch(`http://192.168.0.25:3000/patients/patient/6579c5d4c2873da0530e41bf`).then(response => response.json())
