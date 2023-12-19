@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Alert, StyleSheet, SafeAreaView, Animated, TouchableOpacity } from 'react-native';
+import { View, Text, Modal, ScrollView, Alert, StyleSheet, SafeAreaView, Animated, TouchableOpacity, Touchable } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import moment from 'moment';
 import 'moment/locale/fr';
-import { Card, Modal, Icon } from 'react-native-paper';
+import { Card, Icon } from 'react-native-paper';
 import 'react-native-gesture-handler';
 
 export default function App({ navigation, route }) {
@@ -40,7 +40,6 @@ export default function App({ navigation, route }) {
   useEffect(() => {
     fetch(`http://192.168.1.14:3000/patients/patient/${route.params._id}`).then(response => response.json())
     .then(data => {
-        console.log(data.patient.firstname);
         setPatient(data.patient)
     });
     closeDrawer();
@@ -92,10 +91,7 @@ export default function App({ navigation, route }) {
                     setDisponibility(newDisponibility); 
                     setRefresh(!refresh);
                   }
-                })
-                .catch(error => {
-                  console.error('Une erreur s\'est produite:', error);
-                });
+                })                
               }
             } 
           },
@@ -105,7 +101,7 @@ export default function App({ navigation, route }) {
     };
 
     useEffect(() => {
-      console.log(`La disponibilité a changé, la nouvelle valeur est ${disponibility}`);
+      
     }, [disponibility]);
 
     // Affichage des soins
@@ -119,11 +115,11 @@ export default function App({ navigation, route }) {
           }
           return response.json();
         })
-        .then(data => {console.log('data', data)
+        .then(data => {
           const currentPatient = data.allPatient.find(patient => patient._id === currentPatientId);
 
       if (currentPatient) {
-        console.log('current patient treatments', currentPatient.treatments);
+
         setTreatments(currentPatient.treatments);
       } else {
         console.log('Patient not found');
@@ -174,12 +170,23 @@ export default function App({ navigation, route }) {
       
       const scrollViewContent = (
         <View style={styles.container}>
-          <Text style={styles.text}>{patient.firstname} {patient.name}</Text>
-          <Text style={styles.text}>{}</Text>
-          <Text style={styles.text}>Date de naissance: 01/01/1980</Text>
+          {patient && (
+        <>
+          <Text style={styles.name}>{patient.firstname} {patient.name}</Text>
+          <Text style={styles.dob}>{patient.yearOfBirthday}</Text>
+          <Text style={styles.address}>{patient.address}</Text>
+          <Text style={styles.addressplus}>{patient.infosAddress}</Text>
+          <Text style={styles.pac}>Personne à contacter en cas d'urgence</Text>
+          <Text style={styles.icei}>{patient.ICEIdentity ? patient.ICEIdentity : "Non renseigné"}</Text>
+          <Text style={styles.icep}>{patient.ICEPhoneNumber}</Text>
+          <TouchableOpacity style={styles.btnscroll}>
+            <Text style={styles.btnmodify}>Modifier</Text>
+          </TouchableOpacity>
+        </>)}
         </View>
       );
-  
+      
+      
       const ModalContent = (
         <Modal
           animationType="slide"
@@ -188,9 +195,10 @@ export default function App({ navigation, route }) {
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}
-        ></Modal>
+        >
+          {scrollViewContent}
+        </Modal>
       );
-    
 
   if (!patient) {
     return (<View />);
@@ -276,15 +284,15 @@ const styles = StyleSheet.create({
   backgroundColor: '#99BD8F',
 
  },
- namepatient: {
+ name: {
   fontFamily: 'Poppins_600SemiBold', 
   fontSize: 20,
-  marginBottom: 10,
+  marginBottom: 5,
  },
  dob: {
   fontFamily: 'Poppins_400Regular', 
   fontSize: 15,
-  marginBottom: 20,
+  marginBottom: 10,
  },
 
  icone: {
@@ -293,13 +301,58 @@ const styles = StyleSheet.create({
   justifyContent: 'space-around',
   width: '100%',
 },
-addressInfo: {
-  alignItems: 'center',
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  width: '100%',
+address: {
+  fontFamily: 'Poppins_400Regular', 
+  fontSize: 15,
 },
-
+addressplus: {
+  fontFamily: 'Poppins_400Regular', 
+  fontSize: 15,
+  marginBottom: 10,
+},
+pac: {
+  fontFamily: 'Poppins_600SemiBold', 
+  fontSize: 15,
+  marginBottom: 5,
+},
+icei: {
+  fontFamily: 'Poppins_400Regular', 
+  fontSize: 15,
+},
+icep: {
+  fontFamily: 'Poppins_400Regular', 
+  fontSize: 15,
+},
+centerView: {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  marginTop: 22
+},
+modalView: {
+  margin: 20,
+  backgroundColor: "white",
+  borderRadius: 20,
+  padding: 35,
+  alignItems: "center",
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 4,
+  elevation: 5
+},
+textStyle: {
+  color: "white",
+  fontWeight: "bold",
+  textAlign: "center"
+},
+modalText: {
+  marginBottom: 15,
+  textAlign: "center"
+},
 buttoncontain: {
   flexDirection: 'row',
   borderRadius: 5,
@@ -316,6 +369,16 @@ button: {
 },
 selected: {
   backgroundColor: '#99BD8F',
+},
+btnscroll: {
+  backgroundColor: '#CADDC5',
+  marginTop: 10,
+  width: 300,
+  alignItems: 'center',
+  justifyContent: 'center',
+  height: 40,
+  borderRadius: 10,
+
 },
 text: {
   color: '#000',

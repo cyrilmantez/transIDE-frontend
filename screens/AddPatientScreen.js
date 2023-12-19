@@ -140,29 +140,23 @@ export default function AddPatientScreen({navigation}) {
       // Modal RDV enregistré 
       const [modalVisible, setModalVisible] = useState(false);
 
-      const modalContent = (
+      const ModalContent = (
         <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Le patient a été ajouté avec succès</Text>
-            <Button
-              title="Retour"
-              onPress={() => {
-                setModalVisible(!modalVisible);
-                navigation.navigate('TabNavigator');
-              }}
-            />
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={modalStyle.centerView}>
+            <View style={modalStyle.modalView}>
+              {scrollViewContent}
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
       );
+      
 
       // Photo
               //Permission
