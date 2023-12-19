@@ -63,10 +63,11 @@ const styles = StyleSheet.create({
     marginRight: 20,
  },
  contentButton: {
-  marginTop: 100,
+  marginTop: 20,
+  marginBottom: 20,
  },
  anime: {
-  // marginTop: 200,
+  marginTop: 0,
  },
  button : {
     backgroundColor: '#99BD8F',

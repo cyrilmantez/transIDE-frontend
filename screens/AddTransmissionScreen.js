@@ -21,7 +21,7 @@ export default function AddTransmissionScreen({navigation}) {
     const [isGeneral, setIsGeneral] = useState(true)
 
     const [text, setText] = useState('');
-    const [patient , setPatient] = useState({name : '', firstname: '', yearOfBirthday : ''})
+    const [patient , setPatient] = useState({name : 'Général', firstname: '', yearOfBirthday : ''})
     const [transmission, setTransmission] = useState({info : '', UrlDocument: ''})
 
     const [allPatients, setAllPatients] = useState([]);
@@ -32,7 +32,7 @@ export default function AddTransmissionScreen({navigation}) {
     console.log('patient :',patient);
 
     useEffect (() => {
-      fetch(`http://192.168.0.25:3000/patients/allPatients/${officeToken}`).then(
+      fetch(`http://192.168.1.5:3000/patients/allPatients/${officeToken}`).then(
         response => response.json())
         .then(data => setAllPatients(data.Patients))
     }, [])
@@ -125,7 +125,7 @@ export default function AddTransmissionScreen({navigation}) {
           transmission : newTransmission,
           token : officeToken,
         }
-        fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
+        fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -154,7 +154,7 @@ export default function AddTransmissionScreen({navigation}) {
                   transmission : newTransmission,
                   token : officeToken,
                 }
-                fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
+                fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -176,16 +176,23 @@ export default function AddTransmissionScreen({navigation}) {
 
       //Close Modal
   const closeModal = () => {
-    setIsModalVisible(false);
-    setModalMessage('');
+     setIsModalVisible(false);
+     setModalMessage('');
   }
+  const handleCloseModale = (message) => {
+    if(message === 'transmission patient enregistrée !' || message === 'transmission générale enregistrée !'){
+        navigation.navigate('TabNavigator')
+        setPatient({name : 'Général', firstname: '', yearOfBirthday : ''});
+        setTransmission({info : '', UrlDocument: ''});
+    }
+    closeModal()
+  }
+  
 
         return (
     <>
-      <SafeAreaView style={{flex: 0, backgroundColor: '#99BD8F'}} />
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <View style={styles.container}>
+          <View style={{ flexGrow: 1 }}>
             <View style={styles.header}>
               <TouchableOpacity>
                   <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' marginTop={20} marginLeft={15} onPress={() => navigation.navigate('TabNavigator')} />
@@ -194,6 +201,7 @@ export default function AddTransmissionScreen({navigation}) {
               style={styles.image}
               source={require('../assets/logo.png')} />
             </View>
+            <ScrollView>
             <View style={styles.content}>
                 <Text style={styles.transmission} >Nouvelle transmission</Text>
                 <View style={styles.buttonContainer}>
@@ -210,66 +218,67 @@ export default function AddTransmissionScreen({navigation}) {
                         <Text style={styles.textButton} >Patient</Text>
                     </TouchableOpacity>}
                 </View>
-                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={styles.inputContainer}>
-                        {isPatient && (<>
-                          <TextInput style={styles.patientInput}
-                              label='Nom du patient' 
-                              mode='outlined'
-                              theme={{ 
-                                colors: { 
-                                  primary: '#99BD8F', 
-                                }
-                          }}
-                            onChangeText={text => handlePatientNameChange(text)} 
-                            value={text}/>
-                            {text && <View style={styles.suggestionsContainer}>
-                              <ScrollView style={styles.suggestionList}> 
-                                <>
-                                {suggestionsToDisplay}
-                                </>
-                              </ScrollView>
-                        </View>}                          
-                      </> )}
-                    <View style={styles.messageContainer}>
-                        {isPatient &&  <Text style={{color: '#99BD8F',
-                fontSize: 20,
-                fontFamily: 'Poppins_600SemiBold',textAlign : 'center',height:'20%'}} >Message</Text>}
-                    {!isPatient &&  <Text style={styles.message} >Message</Text>}
-                        <TextInput 
-                            label='Message' 
-                            mode='outlined'
-                            theme={{ 
-                              colors: { 
-                                primary: '#99BD8F', 
-                              }
-                            }}
-                            style={styles.transmissionInput}
-                            onChangeText={text => setTransmission({...transmission, info:text})} 
-                            value={transmission.info}/>
-                    </View>
-                </KeyboardAvoidingView>
-               
-                <TouchableOpacity onPress={console.log('pick document')}>
-                    <Text>Choisir un document</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonValidate} onPress={() => handleRegister()}>
-                      <Text style={styles.textButton} >Valider</Text>
-                </TouchableOpacity>
-                <Modal transparent visible={isModalVisible} onRequestClose={closeModal}>
-                      <View style={styles.modalContainer}>
-                        <View style={styles.modalContent}>
-                            <Text style={styles.modalText}>{modalMessage}</Text>
-                            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-                              <Text style={styles.modalButtonText}>Fermer</Text>
-                            </TouchableOpacity>
+                                  {isPatient && (<>
+                                      <TextInput style={styles.patientInput}
+                                          label='Nom du patient' 
+                                          mode='outlined'
+                                          theme={{ 
+                                            colors: { 
+                                              primary: '#99BD8F', 
+                                            }
+                                      }}
+                                       
+                                        onChangeText={text => handlePatientNameChange(text)} 
+                                        value={text}
+                                        onFocus={() => setPatient({name : 'Général', firstname: '', yearOfBirthday : ''})}/>
+                                        {text && patient.name==='Général' && (<View style={styles.suggestionsContainer}>
+                                            <>
+                                            {suggestionsToDisplay}
+                                            </>
+                                        </View>)}
+                                        
+                                   </> )}
+                                <View style={styles.messageContainer}>
+                                    {isPatient &&  <Text style={{color: '#99BD8F',
+                                    fontSize: 20,
+                                    fontFamily: 'Poppins_600SemiBold',textAlign : 'center'}} >Message</Text>}
+                                    {!isPatient &&  <Text style={styles.message} >Message</Text>}
+                                    <TextInput 
+                                        label='Message' 
+                                        mode='outlined'
+                                        theme={{ 
+                                          colors: { 
+                                            primary: '#99BD8F', 
+                                          }
+                                        }}
+                                        multiline={true}
+                                        numberOfLines={10}
+                                        style={styles.transmissionInput}
+                                        onChangeText={text => setTransmission({...transmission, info:text})} 
+                                        value={transmission.info}/>
+                                </View>
+                              
+                                {isGeneral && <TouchableOpacity style={styles.buttonValidate} onPress={() => handleRegister()}>
+                                      <Text style={styles.textButton} >Valider</Text>
+                                </TouchableOpacity>}
+                                {isPatient && <TouchableOpacity style={styles.buttonValidatePatient} onPress={() => handleRegister()}>
+                                      <Text style={styles.textButton} >Valider</Text>
+                                </TouchableOpacity>}
+                                
+                   
+                  <Modal transparent visible={isModalVisible} onRequestClose={closeModal}>
+                        <View style={styles.modalContainer}>
+                          <View style={styles.modalContent}>
+                              <Text style={styles.modalText}>{modalMessage}</Text>
+                              <TouchableOpacity style={styles.closeButton} onPress={() => handleCloseModale(modalMessage)}>
+                                <Text style={styles.modalButtonText}>Fermer</Text>
+                              </TouchableOpacity>
+                          </View>
                         </View>
-                      </View>
-                </Modal>
+                  </Modal>
             </View>
-           
-               </View>
-          </ScrollView>
+            </ScrollView>
+          </View>
         </SafeAreaView>
     </>
         );
@@ -285,7 +294,7 @@ export default function AddTransmissionScreen({navigation}) {
       container: {
        flex: 1,
        alignItems: 'center',
-       justifyContent: 'center',
+     
       },
       dropdown: {
        top: 0,
@@ -301,14 +310,13 @@ export default function AddTransmissionScreen({navigation}) {
      image: {
        width: 60,
        height: 60,
-      
      },
 
      content : {
-        height: '90%',
+        flexGrow: 1,
         width: '100%',
-        justifyContent: 'space-around',
         alignItems: 'center',
+     
      },
 
 
@@ -323,7 +331,6 @@ export default function AddTransmissionScreen({navigation}) {
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        marginTop: 10,
       },
       button: {
         backgroundColor: '#CADDC5',
@@ -340,14 +347,15 @@ export default function AddTransmissionScreen({navigation}) {
       },
       patientInput : {
         width: 350,
+       
       },
       suggestionsContainer:{
         width: '70%',
-        maxHeight: '20%',
         display:'flex',
+        overflow: 'scroll',
         justifyContent: 'space-between',
         alignContent: 'center',
-        marginBottom: 0,
+        marginTop: 0,
         borderColor: '#99BD8F',
         borderWidth: 0.5,
       },
@@ -380,13 +388,12 @@ export default function AddTransmissionScreen({navigation}) {
       },
       
        messageContainer:{
+        marginTop: 60,
         width: '100%',
-        height: '30%',
         justifyContent: 'space-between',
         alignItems: 'center',
       },
       message: {
-        height:'20%',
         color: '#99BD8F',
         fontSize: 20,
         fontFamily: 'Poppins_600SemiBold',
@@ -396,20 +403,12 @@ export default function AddTransmissionScreen({navigation}) {
 
        transmissionInput : {
         width: '95%',
-        height: '80%',
+       
         borderRadius: 50,
-        textAlign: 'left', 
-        textAlignVertical: 'top',
-     
-      },
-      documentsInput : {
-        width: '95%',
-        height:'10%',
-        marginBottom: 20,
-    
-      },
 
-      buttonValidate : {
+      },
+      buttonValidatePatient : {
+        marginTop: 120,
         backgroundColor: '#99BD8F',
         width: 350,
         height: 50,
@@ -417,6 +416,17 @@ export default function AddTransmissionScreen({navigation}) {
         justifyContent: 'center',
         alignItems: 'center',
       },
+      buttonValidate : {
+        marginTop: 175,
+        backgroundColor: '#99BD8F',
+        width: 350,
+        height: 50,
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+
+
       modalContainer: {
         flex: 1,
         justifyContent: 'center',

@@ -17,12 +17,17 @@ import { useSelector } from 'react-redux';
 export default function ConsultationScreen({ navigation, route }) {
     
     const user = useSelector((state) => state.users.value);
+    const officeToken = useSelector((state) => state.users.value.officesTokens[0].token);
     // Récupération des données du patient de TourScreen :
     const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, yearOfBirthday: route.params.yearOfBirthday, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone, isOk: route.params.isOk, isOkWithModification: route.params.isOkWithModification, _idTreatment: route.params._idTreatment, documentsOfTreatment: route.params.documentsOfTreatment});
     // Récupération des soins prévus de TourScreen (tableau de strings):
     const [plannedTreatments, setPlannedTreatments] = useState('');
     // Transmission :
     const [transmission, setTransmission] = useState('');
+    // Statut de la consultation à la validation :
+    const [consultationDone, setConsultationDone] = useState(false);
+    // Appel à la modale de confirmation de fin de la consultation :
+    const [consultationModalVisible, setConsultationModalVisible] = useState(false);
     // Appel à la modale de validation :
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -30,62 +35,80 @@ export default function ConsultationScreen({ navigation, route }) {
     useEffect(() => {
         let treatments = '';
         for( const treatment of route.params.actions) {
-            treatments = `${treatments} 
-            ${treatment} `;
+            treatments = `${treatment} 
+            ${treatments} `;
         }
         setPlannedTreatments(treatments);
     }, []);
 
+    //console.log(patient);
+
     // Validation des modifications effectuées :
-    const validation = (a, b, c) => {
-        fetch('http://192.168.0.25:3000/patients/allPatients', {
+    const validation = () => {
+        let isVisited = false;
+        let isOkWithModification = false;
+
+        if(route.params.actions !== plannedTreatments) {
+            isOkWithModification = true;
+        }
+        if (consultationDone) {
+            isVisited = true;
+        }
+        
+        fetch('http://192.168.0.25:3000/patients/updateTreatment', {
             method: 'PUT',
             headers: {'Content-Type' : 'application/json'},
             body: JSON.stringify({
                 _id: patient._id,
-                isVisited: a,
-                isOk: b,
-                isOkWithModification: c,
+                isVisited: isVisited,
+                isOk: true,
+                isOkWithModification: isOkWithModification,
                 date: patient.date,
                 nurse: user.username,
                 documentsOfTreatment: patient.documentsOfTreatment,
                 actions: plannedTreatments,
+                _idTreatment: patient._idTreatment,
              })
             }).then(response => response.json())
             .then(data => {
                 if(data.result) {
+                    console.log(data);
                     navigation.navigate('TabNavigator');
             }
         })
+
+        if(transmission > 0) {
+            fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
+                method: 'POST',
+                headers: {'Content-Type' : 'application/json'},
+                body: JSON.stringify({
+                    transmission: {
+                        date: new Date(),
+                        nurse: user.username,
+                        info: transmission,
+                        UrlDocument: '',
+                    },
+                    patient: {
+                        name: patient.name, 
+                        yearOfBirthday:patient.yearOfBirthday, 
+                    },
+                    token: officeToken,
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+        }
       };
     
-    const validationWithTransmission = () => {
-        fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
-            method: 'POST',
-            headers: {'Content-Type' : 'application/json'},
-            body: JSON.stringify({
-                transmission: {
-                    date: new Date(),
-                    nurse: user.username,
-                    info: transmission,
-                    UrlDocument: '',
-                },
-                patient: {
-                    name: patient.name, 
-                    yearOfBirthday:patient.yearOfBirthday, 
-                },
-                token: user.officesTokens[0].token,
-            })
-        .then(response => response.json())
-        .then(data)
-        });
+    
 
-        if(route.params.actions !== treatments) {
+        /* if(route.params.actions !== plannedTreatments) {
             validation(true, true, true);
         } else {
             validation(true, true, false);
-        }
-    };
+        } */
 
     /* const updateTreatmentInDB = () => {
         fetch('http://192.168.0.25:3000/patients/allPatients', {
@@ -148,68 +171,70 @@ export default function ConsultationScreen({ navigation, route }) {
         );
     };
 
-    // modale de confirmation de validation :
-    let modalContent;
-    
-    if(transmission.length > 0) {
-        modalContent = (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-            setModalVisible(!modalVisible);
-            }}
-        >
-        <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-                <Text style={styles.modalText}>Souhaites-tu valider tes modifications
-                et envoyer la transmission ?</Text>
-                <View style={styles.modalChoice}>
-                    <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
-                        setModalVisible(!modalVisible);
-                    }}>
-                    <Text>Non</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
-                        validationWithTransmission();
-                    }}>
-                    <Text>OK</Text>
-                    </TouchableOpacity>
-                </View>
+    // Modale de validation des modifications :
+    let modalContent = (
+    <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+        setModalVisible(!modalVisible);
+        }}
+    >
+    <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+            <Text style={styles.modalText}>Souhaites-tu valider tes modifications ?</Text>
+            <View style={styles.modalChoice}>
+                <TouchableOpacity onPress={()=> {
+                    setModalVisible(!modalVisible);
+                }}>
+                <Text style={styles.modalChoiceText}>Non</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=> {
+                    setModalVisible(!modalVisible);
+                    setConsultationModalVisible(true);
+                }}>
+                <Text style={styles.modalChoiceText}>Oui</Text>
+                </TouchableOpacity>
             </View>
         </View>
+    </View>
     </Modal>)
-    } else {
-        modalContent = (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-            setModalVisible(!modalVisible);
-            }}
-        >
-        <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-                <Text style={styles.modalText}>Souhaites-tu valider tes modifications ?</Text>
-                <View style={styles.modalChoice}>
-                    <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
-                        setModalVisible(!modalVisible);
-                    }}>
-                    <Text>Non</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
-                        validation(true, true, true);
-                    }}>
-                    <Text>OK</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </View>
-    </Modal>)
-    }
 
+    // modale de confirmation de consultation :
+    let consultationModalContent = (
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={consultationModalVisible}
+        onRequestClose={() => {
+            setConsultationModalVisible(!consultationModalVisible);
+        }}
+        >
+        <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+                <Text style={styles.modalText}>As-tu déjà effectué la consultation ?</Text>
+                <View style={styles.modalChoice}>
+                    <TouchableOpacity onPress={()=> {
+                        setConsultationModalVisible(!consultationModalVisible);
+                        validation();
+                    }}>
+                    <Text style={styles.modalChoiceText}>Non</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=> {
+                        setConsultationModalVisible(!consultationModalVisible);
+                        setConsultationDone(true);
+                        validation();
+                    }}>
+                    <Text style={styles.modalChoiceText}>Oui</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
+        </Modal>
+    )
+    
+    
     /* useEffect(() => {
         fetch(`http://192.168.0.25:3000/patients/patient/6579c5d4c2873da0530e41bf`).then(response => response.json())
         .then(data => {
@@ -312,12 +337,13 @@ export default function ConsultationScreen({ navigation, route }) {
                                     <Text style={styles.text}>Valider</Text>            
                                 </TouchableOpacity>
                             </View>
-                            <View>
+                            {/* <View>
                                 <TouchableOpacity onPress={() => handleCancel()} style={styles.cancelButton} activeOpacity={0.8}>  
                                     <Text style={styles.cancelText}>Soin non réalisé</Text>            
                                 </TouchableOpacity>
-                            </View>
+                            </View> */}
                         </ScrollView>
+                        {consultationModalContent}
                         {modalContent}
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>
@@ -477,17 +503,20 @@ const styles = StyleSheet.create({
       },
     modalChoice: {
         flexDirection: 'row',
-        //marginTop: 20,
         margin: 20,
         fontSize: 20,
         fontFamily: 'Poppins_400Regular',
-        //justifyContent: 'space-between',
     },
     modalChoiceText: {
         fontFamily: 'Poppins_400Regular',
         fontSize: 20,
+        marginLeft: 30,
+        marginRight: 30,
+        backgroundColor: "#99BD8F",
+        padding: 15,
+        borderRadius: 10,
         //justifyContent: 'space-between',
-        //alignItems: "space-between",
-        //textAlign: 'left',
+        //alignItems: "center",
+        //textAlign: 'justify',
     },
    });

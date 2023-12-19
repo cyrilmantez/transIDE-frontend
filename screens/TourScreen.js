@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity, StatusBar} from 'react-native';
 import Dropdown from './Dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -8,10 +8,12 @@ import { Card, Paragraph, ProgressBar, Switch, Icon, Modal, Button } from 'react
 import { useSelector } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useFocusEffect } from '@react-navigation/native';
+import * as Linking from 'expo-linking';
 
 
 export default function TourScreen({navigation}) {
   const user = useSelector((state) => state.users.value)
+
 
   const [date, setDate] = useState(new Date());
   const [visible, setVisible] = useState(false);
@@ -19,16 +21,18 @@ export default function TourScreen({navigation}) {
   const [allPatients, setAllPatients] = useState([])
   const [patientModal, setPatientModal] = useState({})
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [modalAddressVisible, setModalAddressVisible] = useState(false);
 
   ////////////// gestion des tous/restants :
   const [seeAll, setSeeAll] = useState(true)
 
-    // //////////////////// Progress bar :
-    const [progress, setProgress] = useState(0);
+  ////////////////////// Progress bar :
+  const [progress, setProgress] = useState(0);
 
+
+  //////////////// fonction en chage du fetch pour récupérer les patients à voir :
   const allData =()=> {
-    fetch('http://192.168.1.14:3000/patients/allPatients', {
+    fetch('http://192.168.0.25:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: user.officesTokens[0].token, dateOfToday : date })
@@ -42,8 +46,7 @@ export default function TourScreen({navigation}) {
 
   useFocusEffect(
     React.useCallback(() => {
-      allData()
-     
+      allData()  
     }, [date, modalVisible])
   );
 
@@ -92,10 +95,9 @@ export default function TourScreen({navigation}) {
   /////////////////////////////////////////////////  modal:
   
   
-    /////////////: fetch de mise à jour treatment in DB:
-
+/////////////fonction en charge du fetch de mise à jour treatment in DB:
 const updateTreatmentInDB = (a, b, c) => {
-  fetch('http://192.168.1.14:3000/patients/updateTreatment', {
+  fetch('http://192.168.1.5:3000/patients/updateTreatment', {
     method: 'PUT',
     headers: {'Content-Type' : 'application/json'},
     body: JSON.stringify({
@@ -149,6 +151,7 @@ const updateTreatmentInDB = (a, b, c) => {
           });          
   };
 
+  ///////// modal de validation des soins :
   const modalContent = (
     <Modal
     animationType="slide"
@@ -182,13 +185,58 @@ const updateTreatmentInDB = (a, b, c) => {
   const changeState = (data) => {
     setModalVisible(true)
     setPatientModal(data)
-  
   }
+
+
+
+/////////////////////modal Address et redirection vers waze:
+  
+  const changeStateAddress = (data) => {
+    setModalAddressVisible(true)
+    setPatientModal(data)
+  }
+
+  const openWazeWithAddress = () => {
+    const address = patientModal.address;
+    const encodedAddress = encodeURIComponent(address);
+    Linking.openURL(`https://waze.com/ul?q=${encodedAddress}&navigate=yes`);
+
+  };
+  
+  const modalAddressContent = (
+    <Modal
+    animationType="slide"
+    transparent={true}
+    visible={modalAddressVisible}
+    onRequestClose={() => {
+      setModalAddressVisible(!modalAddressVisible);
+    }}
+  >
+    <View style={styles.centeredView}>
+      <View style={styles.modalView}>
+        <Text style={styles.modalText}>Adresse de {patientModal.firstname} {patientModal.name}:</Text>
+        <View style={{justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{fontFamily: 'Poppins_400Regular', fontSize: 16, }}>{patientModal.address}</Text>
+        <Text style={{fontFamily: 'Poppins_400Regular', fontSize: 14, }}>{patientModal.infosAddress}</Text>
+        </View>
+        <View>
+        <TouchableOpacity onPress={()=> openWazeWithAddress()} style={{flexDirection: 'row', justifyContent: 'flex-end', marginRight: 20, marginBottom: 20}}>
+          <Text style={{marginTop : 12, marginRight: 40, fontFamily: 'Poppins_400Regular', fontSize: 14,}}>y aller avec Waze...</Text>
+          <Icon source={'waze'} size={42} color='#99BD8F' style={{marginLeft: 0}}/>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setModalAddressVisible(!modalAddressVisible)} style={{flexDirection: 'row', justifyContent: 'flex-end', marginRight: 20}}>
+          <Text style={{marginTop : 12, marginRight: 30, fontFamily: 'Poppins_400Regular', fontSize: 14, }}>rester dans TransIDE</Text>
+          <Icon source={'close-circle'} size={42} color='#99BD8F' />
+        </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  </Modal>
+  )
 
      
   
 ///////////////// Afficher les patients :
-
   const toMinutes = (time) => {
     const [hours, minutes] = time.split(':');
     return Number(hours) * 60 + Number(minutes);
@@ -205,7 +253,7 @@ const updateTreatmentInDB = (a, b, c) => {
       truncatedNom = nameAll;
     }
 
-    ///////////////// gestion de la couleur du bouton validé :
+    ///////////////// gestion de la couleur du bouton valider :
     let finishColor = '#CADDC5'
     if (patient.isVisited && patient.isOk && !patient.isOkWithModification) {
       finishColor = '#52B339';
@@ -228,7 +276,7 @@ const updateTreatmentInDB = (a, b, c) => {
                 </TouchableOpacity>
               </View>
               <View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=> changeStateAddress(patient)}>
                   <FontAwesome  name={'map-pin'} size={24} color='#99BD8F' />
                 </TouchableOpacity>
               </View>
@@ -278,7 +326,7 @@ const updateTreatmentInDB = (a, b, c) => {
       truncatedNom = nameAll;
     }
 
-    ///////////////// gestion de la couleur du bouton validé :
+    ///////////////// gestion de la couleur du bouton valider :
     let finishColor = '#CADDC5'
     if (patient.isVisited && patient.isOk && !patient.isOkWithModification) {
       finishColor = '#52B339';
@@ -301,7 +349,7 @@ const updateTreatmentInDB = (a, b, c) => {
                 </TouchableOpacity>
               </View>
               <View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=> changeStateAddress(patient)}>
                   <FontAwesome  name={'map-pin'} size={24} color='#99BD8F' />
                 </TouchableOpacity>
               </View>
@@ -349,9 +397,8 @@ const updateTreatmentInDB = (a, b, c) => {
       return (<View />);
     } else {
      return (
-      <>
-        <SafeAreaView style={{ flex: 0, backgroundColor: '#99BD8F' }} />
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+          <StatusBar barStyle="light-content"/>
             <View style={styles.container}>
                 <View style={styles.containerHeader}>
                         <View style={styles.header}>
@@ -403,9 +450,9 @@ const updateTreatmentInDB = (a, b, c) => {
                 {seeAll ? afficherPatients : afficherRestants }
               </ScrollView>
               {modalContent}
+              {modalAddressContent}
            </View>    
         </SafeAreaView>
-      </>
     );
   }
 };
