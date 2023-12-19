@@ -5,10 +5,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
 
 
  
-
 export default function TransmissionScreen({navigation}) {
   const initialDate = new Date();
   initialDate.setDate(initialDate.getDate() - 10);
@@ -38,18 +38,20 @@ export default function TransmissionScreen({navigation}) {
   }
 
   //get 10lastDayData from dataBase, and dispatch in the reducer
-  useEffect(() => {
+  useFocusEffect(
+    React.useCallback(() => {
     fetch(`http://192.168.1.162:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
-    .then((data) => {
-      if(data.result){
-        const compareDates = (a, b) => new Date(b.date) - new Date(a.date);
-        const sortedData = data.transmissions.sort(compareDates);
-        setTransmissions(sortedData)
-      }else{
-        setTransmissions([])
-      }
-    })
-  },[date])
+        .then((data) => {
+          if(data.result){
+            const compareDates = (a, b) => new Date(b.date) - new Date(a.date);
+            const sortedData = data.transmissions.sort(compareDates);
+            setTransmissions(sortedData)
+          }else{
+            setTransmissions([])
+          }
+        })
+    }, [date])
+  )
 
 
   const showPicker = (currentMode) => {
@@ -83,17 +85,18 @@ export default function TransmissionScreen({navigation}) {
     return isPatientFiltered && isIDEFiltered;
   }).map((element, id) => {
       const newDate= new Date(element.date);
+      
       return (
       <ScrollView style={styles.transmission} key={id}>
         <View style={styles.innerContainer}>
            <Text style={styles.personAbout}>Pour {element.name} {element.firstname}</Text>
-          <Text style={styles.publicationDate}>Publié le {newDate.getDate()}/{newDate.getMonth() + 1}/{newDate.getFullYear()} à {newDate.getHours()}h{newDate.getMinutes()}, par {element.nurse}.</Text>
+          <Text style={styles.publicationDate}>Publié le {newDate.getDate()}/{newDate.getMonth() + 1}/{newDate.getFullYear()} à {String(newDate.getHours()).padStart(2, '0')}h{String(newDate.getMinutes()).padStart(2, '0')}, par {element.nurse}.</Text>
           <Text style={styles.message}>{element.info} </Text>
         </View>
     </ScrollView>)
     })
 
-console.log(transmissions)
+console.log('transmissions' ,transmissions)
 
 
  //IDE List
@@ -141,7 +144,7 @@ console.log(transmissions)
                       <Text style={styles.textButton} >{ideFiltered}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={showDate}>
-                      <Text style={styles.textButton} >{`${(date.getDate().toString()).length<2?'0'+date.getDate().toString():date.getDate().toString()}-${date.getMonth()+1}-${date.getFullYear()}`}</Text>
+                      <Text style={styles.textButton} >{`${String(date.getHours()).padStart(2, '0')}-${String(date.getMonth()+1).padStart(2, '0')}-${date.getFullYear()}`}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={() => openModal('Patients')}>
                       <Text style={styles.textButton} >{patientFiltered}</Text>
