@@ -14,7 +14,7 @@ export default function App({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    fetch(`http://192.168.1.14:3000/patients/patient/${route.params._id}`).then(response => response.json())
+    fetch(`http://192.168.1.162:3000/patients/patientById/${route.params._id}`).then(response => response.json())
     .then(data => {
         setPatient(data.patient)
     });
@@ -44,7 +44,7 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http:192.168.1.14:3000/patients/updatePatientById', {
+                fetch('http:192.168.1.162:3000/patients/updatePatientById', {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ export default function App({ navigation, route }) {
     const [treatments, setTreatments] = useState([]);
 
     useEffect(() => {
-      fetch('http://192.168.1.14:3000/patients/allPatientDay')
+      fetch('http://192.168.1.162:3000/patients/allPatientDay')
         .then(response => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -341,7 +341,7 @@ containerscroll: {
 centerView: {
   justifyContent: "center",
   alignItems: "center",
-  marginTop: 120,
+  marginTop: 100,
 },
 closemodal: {
   position: 'absolute',
@@ -349,6 +349,7 @@ closemodal: {
 },
 
 modalView: {
+ 
   margin: 20,
   height: 450,
   width: 350,

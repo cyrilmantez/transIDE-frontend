@@ -40,7 +40,7 @@ export default function TransmissionScreen({navigation}) {
   //get 10lastDayData from dataBase, and dispatch in the reducer
   useFocusEffect(
     React.useCallback(() => {
-    fetch(`http://192.168.0.25:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
+    fetch(`http://192.168.1.162:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
         .then((data) => {
           if(data.result){
             const compareDates = (a, b) => new Date(b.date) - new Date(a.date);
@@ -144,7 +144,7 @@ console.log('transmissions' ,transmissions)
                       <Text style={styles.textButton} >{ideFiltered}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={showDate}>
-                      <Text style={styles.textButton} >{`${String(date.getHours()).padStart(2, '0')}-${String(date.getMonth()+1).padStart(2, '0')}-${date.getFullYear()}`}</Text>
+                      <Text style={styles.textButton} >{date.getDate().toString()}-{(date.getMonth()+1).toString()}-{(date.getFullYear()).toString()}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={() => openModal('Patients')}>
                       <Text style={styles.textButton} >{patientFiltered}</Text>

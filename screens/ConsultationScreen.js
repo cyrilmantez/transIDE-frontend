@@ -55,7 +55,7 @@ export default function ConsultationScreen({ navigation, route }) {
             isVisited = true;
         }
         
-        fetch('http://192.168.0.25:3000/patients/updateTreatment', {
+        fetch('http://192.168.1.162:3000/patients/updateTreatment', {
             method: 'PUT',
             headers: {'Content-Type' : 'application/json'},
             body: JSON.stringify({
