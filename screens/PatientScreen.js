@@ -14,8 +14,10 @@ export default function App({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    fetch(`http://192.168.0.25:3000/patients/patient/${route.params._id}`).then(response => response.json())
+    fetch(`http://192.168.0.25:3000/patients/patientById/${route.params._id}`).then(response => response.json())
     .then(data => {
+        console.log('ID', route.params._id);
+        console.log('patient', data);
         setPatient(data.patient)
     });
     

@@ -28,6 +28,7 @@ export default function TransmissionScreen({navigation}) {
   const openModal = (target) => {
     setModalVisible(true);
     target === 'IDE' ? setIdeVisible(true) : setPatientsVisible(true);
+    // target === 'Patients' ?
   };
   //Close Modal
   const closeModal = () => {
