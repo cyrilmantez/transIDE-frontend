@@ -408,7 +408,8 @@ const styles = StyleSheet.create({
       },
     modalChoice: {
         flexDirection: 'row',
-        marginTop: 20,
+        //marginTop: 20,
+        margin: 20,
         fontSize: 20,
         fontFamily: 'Poppins_400Regular',
         //justifyContent: 'space-between',
