@@ -75,7 +75,7 @@ export default function AddPatientScreen({navigation}) {
       };
 
   const handleRegister = () => {      
-        fetch('http://192.168.0.25:3000/patients/addPatient', {
+        fetch('http://192.168.1.14:3000/patients/addPatient', {
           method: 'POST',
           headers: {'Content-Type' : 'application/json'},
           body: JSON.stringify({
@@ -140,23 +140,29 @@ export default function AddPatientScreen({navigation}) {
       // Modal RDV enregistré 
       const [modalVisible, setModalVisible] = useState(false);
 
-      const ModalContent = (
+      const modalContent = (
         <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View style={modalStyle.centerView}>
-            <View style={modalStyle.modalView}>
-              {scrollViewContent}
-            </View>
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Le patient a été ajouté avec succès</Text>
+            <Button
+              title="Retour"
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                navigation.navigate('TabNavigator');
+              }}
+            />
           </View>
-        </Modal>
+        </View>
+      </Modal>
       );
-      
 
       // Photo
               //Permission

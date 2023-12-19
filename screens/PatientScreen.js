@@ -148,11 +148,11 @@ export default function App({ navigation, route }) {
         <>
           <Text style={styles.name}>{patient.firstname} {patient.name}</Text>
           <Text style={styles.dob}>{patient.yearOfBirthday}</Text>
-          <View style={{flexDirection: 'row', alignItems: 'center', width: 300}}>
+          <View style={{flexDirection: 'row', alignItems: 'center', width: 290, marginRight: 40,}}>
             <Icon source={'home'} size={30}/>
             <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>              
               <Text style={styles.address}>{patient.address} </Text>          
-              <View><Text style={styles.addressplus}>{patient.infosAddress}</Text></View>
+              <View><Text style={styles.addressplus}>{patient.infosAdress ? patient.infosAdress : "..."}</Text></View>
             </View>
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center', width: 300}}>
@@ -277,6 +277,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
  },
+
  patientcontent: {
   marginBottom: 20,
   backgroundColor: '#99BD8F',
@@ -303,6 +304,7 @@ address: {
   fontFamily: 'Poppins_400Regular', 
   fontSize: 15,
   marginTop: 10,
+  width: 300,
 },
 addressplus: {
   fontFamily: 'Poppins_400Regular', 
@@ -326,6 +328,10 @@ mobile: {
   fontFamily: 'Poppins_400Regular', 
   fontSize: 15,
   marginTop: 12,
+  
+},
+homephone: {
+marginBottom: 10,
 },
 containerscroll: {
   width: 320,
@@ -339,12 +345,12 @@ centerView: {
 },
 closemodal: {
   position: 'absolute',
-  top: 340,  
+  top: 390,  
 },
 
 modalView: {
   margin: 20,
-  height: 400,
+  height: 450,
   width: 350,
   backgroundColor: "#99BD8F",
   borderRadius: 20,
@@ -387,14 +393,18 @@ selected: {
 },
 btnscroll: {
   backgroundColor: '#CADDC5',
-  marginTop: 10,
+  marginTop: 20,
   width: 300,
   alignItems: 'center',
   justifyContent: 'center',
   height: 40,
   borderRadius: 10,
-
 },
+btnmodify: {
+  fontFamily: 'Poppins_600SemiBold', 
+  fontSize: 17,
+},
+
 text: {
   color: '#000',
   fontSize: 16,
