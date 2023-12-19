@@ -96,12 +96,12 @@ export default function SignInScreen({navigation}) {
                         <Text style={styles.text}>Valider</Text>
                       </TouchableOpacity>
                       <TouchableOpacity>
-                        <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Des trous de mémoire ?</Text>
+                        <Text style={[styles.footertext, {marginTop: 10, color: 'blue'}]}>Des trous de mémoire ?</Text>
                       </TouchableOpacity>
                       <View style={styles.footer}>
                         <Text style={styles.footertext}>Pas encore de compte ?</Text>
                         <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
-                          <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>Vite! Crée le en 10 secondes</Text>
+                          <Text style={[styles.footertext, {marginTop: 5, color: 'blue'}]}>Vite! Crée le en 10 secondes</Text>
                         </TouchableOpacity>
                 </View>
               </View>
