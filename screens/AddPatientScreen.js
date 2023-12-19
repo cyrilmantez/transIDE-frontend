@@ -75,7 +75,7 @@ export default function AddPatientScreen({navigation}) {
       };
 
   const handleRegister = () => {      
-        fetch('http://192.168.1.5:3000/patients/addPatient', {
+        fetch('http://192.168.1.162:3000/patients/addPatient', {
           method: 'POST',
           headers: {'Content-Type' : 'application/json'},
           body: JSON.stringify({

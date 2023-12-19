@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image, Keyboard, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Image, Keyboard, TouchableOpacity, SafeAreaView,Modal } from 'react-native';
 import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState } from 'react';
@@ -11,14 +11,11 @@ export default function SignInScreen({navigation}) {
   const dispatch = useDispatch();
   const [signInName, setSignInName] = useState('');
   const [signInPassword, setSignInPassword] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false)
 
   const handleConnexion = () => {
-    if (!signInName || !signInPassword) {
-      alert('Champs manquants ou incomplets');
-      return;
-    }
-
-    fetch('http://192.168.1.14:3000/users/signin', {
+    fetch('http://192.168.1.162:3000/users/signin', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({username: signInName, password: signInPassword})
@@ -29,8 +26,21 @@ export default function SignInScreen({navigation}) {
           setSignInName('');
           setSignInPassword('');
           navigation.navigate('TabNavigator');
+        }else{
+          if(data.error === 'Missing or empty fields'){
+            setModalMessage('Merci de renseigner les champs de saisie');
+            setIsModalVisible(true);
+          }else{
+            setModalMessage('Utilisateur et/ou mot de pass incorrect');
+            setIsModalVisible(true);
+          }
+          
         }
       })
+  }
+  const closeModal = () => {
+    setIsModalVisible(false);
+    setModalMessage('');
   }
 
   let [fontsLoaded] = useFonts({
@@ -50,60 +60,70 @@ export default function SignInScreen({navigation}) {
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <ScrollView contentContainerStyle={styles.scrollView}>
             <View>
-              <View style={styles.header}>
-                  <View >
-                    <Text style={styles.text1}>Encore toi ?</Text>
+                  <View style={styles.header}>
+                        <View >
+                            <Text style={styles.text1}>Encore toi ?</Text>
+                        </View>
+                        <View >
+                            <Text style={styles.text2}>Connecte-toi</Text>
+                        </View>
+                        <View >
+                            <Image
+                              style={styles.image}
+                              source={require('../assets/logo.png')}
+                                  />
+                        </View>
                   </View>
-                  <View >
-                    <Text style={styles.text2}>Connecte-toi</Text>
-                  </View>
-                  <View >
-                    <Image
-                      style={styles.image}
-                      source={require('../assets/logo.png')}
-                          />
-                  </View>
-              </View>
 
-              <View style={styles.inputContainer}>  
-                      <TextInput 
-                      label='Ton nom utilisateur' 
-                      mode='outlined'
-                      theme={{ 
-                        colors: { 
-                          primary: '#99BD8F', 
-                        }
-                      }}
-                      style={{ width: 350, marginTop: 15 }}
-                      onChangeText={text => setSignInName(text)} 
-                      value={signInName}/>
-                      <TextInput 
-                      label='Ton mot de passe'
-                      mode='outlined'
-                      theme={{ 
-                        colors: { 
-                          primary: '#99BD8F', 
-                        }
-                      }}
-                      secureTextEntry={passwordVisible} 
-                      style={{ width: 350, marginTop: 15 }}
-                      onChangeText={text => setSignInPassword(text)} 
-                      value={signInPassword}/>
-                      <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 104}}>
-                        <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='grey' />
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.button} onPress={() => handleConnexion()}>
-                        <Text style={styles.text}>Valider</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity>
-                        <Text style={[styles.footertext, {marginTop: 10, color: 'blue'}]}>Des trous de mémoire ?</Text>
-                      </TouchableOpacity>
-                      <View style={styles.footer}>
-                        <Text style={styles.footertext}>Pas encore de compte ?</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
-                          <Text style={[styles.footertext, {marginTop: 5, color: 'blue'}]}>Vite! Crée le en 10 secondes</Text>
-                        </TouchableOpacity>
-                </View>
+                  <View style={styles.inputContainer}>  
+                          <TextInput 
+                          label='Ton nom utilisateur' 
+                          mode='outlined'
+                          theme={{ 
+                            colors: { 
+                              primary: '#99BD8F', 
+                            }
+                          }}
+                          style={{ width: 350, marginTop: 15 }}
+                          onChangeText={text => setSignInName(text)} 
+                          value={signInName}/>
+                          <TextInput 
+                          label='Ton mot de passe'
+                          mode='outlined'
+                          theme={{ 
+                            colors: { 
+                              primary: '#99BD8F', 
+                            }
+                          }}
+                          secureTextEntry={passwordVisible} 
+                          style={{ width: 350, marginTop: 15 }}
+                          onChangeText={text => setSignInPassword(text)} 
+                          value={signInPassword}/>
+                          <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 104}}>
+                            <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='grey' />
+                          </TouchableOpacity>
+                          <TouchableOpacity style={styles.button} onPress={() => handleConnexion()}>
+                            <Text style={styles.text}>Valider</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity>
+                            <Text style={[styles.footertext, {marginTop: 10, color: 'blue'}]}>Des trous de mémoire ?</Text>
+                          </TouchableOpacity>
+                          <View style={styles.footer}>
+                            <Text style={styles.footertext}>Pas encore de compte ?</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
+                              <Text style={[styles.footertext, {marginTop: 5, color: 'blue'}]}>Vite! Crée le en 10 secondes</Text>
+                            </TouchableOpacity>
+                    </View>
+                  <Modal transparent visible={isModalVisible} onRequestClose={closeModal}>
+                        <View style={styles.modalContainer}>
+                          <View style={styles.modalContent}>
+                              <Text style={styles.modalText}>{modalMessage}</Text>
+                              <TouchableOpacity style={styles.closeButton} onPress={() => closeModal()}>
+                                <Text style={styles.modalButtonText}>Fermer</Text>
+                              </TouchableOpacity>
+                          </View>
+                        </View>
+                  </Modal>
               </View>
             </View>
           </ScrollView>
@@ -173,4 +193,41 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 8,
+    borderRadius: 10,
+    borderColor: '#99BD8F',
+    borderWidth: 5,
+    elevation: 5,
+    height: 300,
+    width: 250,
+    display:'flex',
+    justifyContent: 'space-between',
+    alignContent: 'center'
+  },
+  closeButton :{
+    borderColor: 'white',
+    borderWidth: 1,
+    display:'flex',
+    justifyContent: 'center',
+    alignContent: 'center',
+    marginBottom: 10,
+    height: 40,
+    backgroundColor:'#99BD8F',
+  },
+  modalButtonText:{
+    textAlign: 'center',
+    color: 'white',
+   },
+   modalText:{
+    textAlign: 'center',
+    marginTop: 90,
+   }
 });
