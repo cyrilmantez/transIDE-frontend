@@ -45,7 +45,7 @@ export default function ConsultationScreen({ navigation, route }) {
             isVisited = true;
         }
         
-        fetch('http://192.168.1.162:3000/patients/updateTreatment', {
+        fetch('http://192.168.1.5:3000/patients/updateTreatment', {
             method: 'PUT',
             headers: {'Content-Type' : 'application/json'},
             body: JSON.stringify({
@@ -71,7 +71,7 @@ export default function ConsultationScreen({ navigation, route }) {
             console.log('essai');
             const tokenByDefault = user.officesTokens;
             console.log(tokenByDefault.filter(e => e.isByDefault)[0].token);
-            fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
+            fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: {'Content-Type' : 'application/json'},
                 body: JSON.stringify({

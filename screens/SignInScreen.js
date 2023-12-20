@@ -15,7 +15,9 @@ export default function SignInScreen({navigation}) {
   const [isModalVisible, setIsModalVisible] = useState(false)
  
   const handleConnexion = () => {
-    fetch('http://192.168.1.162:3000/users/signin', {
+
+    fetch('http://192.168.1.5:3000/users/signin', {
+
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({username: signInName, password: signInPassword})
@@ -36,6 +38,7 @@ export default function SignInScreen({navigation}) {
           }
           
         }
+        
       })
   }
   const closeModal = () => {

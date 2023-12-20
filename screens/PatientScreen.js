@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Modal, ScrollView, Alert, StyleSheet, SafeAreaView, Animated, TouchableOpacity, Touchable } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
-import moment from 'moment';
+import moment from 'moment'; 
 import 'moment/locale/fr';
 import { Card, Icon } from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function App({ navigation, route }) {
-  const { _id: currentPatientId } = route.params;
+  const { _id: currentPatientId } = route.params; 
+
   const [patient, setPatient] = useState(null);
   const [value, setValue] = useState('');
   const [visible, setVisible] = useState(false);
@@ -49,7 +50,9 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http://192.168.1.162:3000/patients/updatePatientById', {
+
+                fetch('http://192.168.1.5:3000/patients/updatePatientById', {
+
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',

@@ -42,8 +42,7 @@ export default function TransmissionScreen({navigation}) {
     React.useCallback(() => {
 
     const tokenByDefault = user.officesTokens;
-    console.log('token:',tokenByDefault.filter(e => e.isByDefault)[0].token);
-    fetch(`http://192.168.1.162:3000/transmissions/allTransmissions/${tokenByDefault.filter(e => e.isByDefault)[0].token}/${date}`).then(response => response.json())
+    fetch(`http://192.168.1.5:3000/transmissions/allTransmissions/${tokenByDefault.filter(e => e.isByDefault)[0].token}/${date}`).then(response => response.json())
         .then((data) => {
           if(data.result){
             const compareDates = (a, b) => new Date(b.date) - new Date(a.date);
