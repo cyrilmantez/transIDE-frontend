@@ -49,7 +49,11 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http://192.168.1.162:3000/patients/updatePatientById', {
+<<<<<<<<< Temporary merge branch 1
+                fetch('http://192.168.1.14:3000/patients/updatePatientById', {
+=========
+                fetch('http://192.168.0.25:3000/patients/updatePatientById', {
+>>>>>>>>> Temporary merge branch 2
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',

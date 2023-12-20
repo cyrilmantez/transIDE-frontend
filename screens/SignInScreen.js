@@ -16,7 +16,11 @@ export default function SignInScreen({navigation}) {
  console.log('coucou');
  
   const handleConnexion = () => {
-    fetch('http://192.168.1.162:3000/users/signin', {
+<<<<<<<<< Temporary merge branch 1
+    fetch('http://192.168.1.14:3000/users/signin', {
+=========
+    fetch('http://192.168.0.25:3000/users/signin', {
+>>>>>>>>> Temporary merge branch 2
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({username: signInName, password: signInPassword})

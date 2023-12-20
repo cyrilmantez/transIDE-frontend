@@ -12,7 +12,11 @@ export default function ModificationPatientRecordScreen({ navigation, route }) {
 
   useEffect(() => {
     if (patient) {
+<<<<<<<<< Temporary merge branch 1
       fetch(`http://192.168.1.162:3000/patients/allPatientDay/${patient._id}`)
+=========
+      fetch(`http://192.168.0.25:3000/patients/allPatientDay/${patient._id}`)
+>>>>>>>>> Temporary merge branch 2
         .then(response => response.json())
         .then(data => {console.log('data recherchée: ', data)
           setAddress(data.address); 
