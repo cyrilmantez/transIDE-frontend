@@ -91,13 +91,13 @@ export default function TourScreen({navigation}) {
 
   // Switch :
   const [isSwitchOn, setIsSwitchOn] = useState(false);
-
-  // const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+  
   const onToggleSwitch = () => {
     setIsSwitchOn(!isSwitchOn);
     setSeeAll(!seeAll)
   }
-  /////////////////////////////////////////////////  modal:
+
+/////////////////////////////////////////////////  modal:
   
   
 /////////////fonction en charge du fetch de mise à jour treatment in DB:

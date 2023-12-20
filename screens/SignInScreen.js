@@ -42,6 +42,7 @@ export default function SignInScreen({navigation}) {
           }
           
         }
+        
       })
   }
   const closeModal = () => {
