@@ -17,7 +17,7 @@ export default function SignUpScreen({navigation}) {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /.*[!@#$%^&*()_+{}\|:<>?].*/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/;
 
   const handleRegister = () => {
     if (signUpPassword !== confirmPassword) {
@@ -31,7 +31,7 @@ export default function SignUpScreen({navigation}) {
     };
 
     if (!passwordRegex.test(signUpPassword)) {
-      alert('Le mot de passe doit contenir au moins un caractère spécial.');
+      alert('Le mot de passe doit contenir 10 caractères minimum, dont au moins un caractère spécial, une majuscule et une minuscule');
       return;
     }
     

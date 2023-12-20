@@ -1,12 +1,13 @@
 import {  ScrollView, Modal, KeyboardAvoidingView, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity, View, Platform, Clipboard, ToastAndroid} from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { TextInput, List, Icon} from 'react-native-paper';
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { upDateOfficeByDefault } from '../reducers/users';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 
@@ -42,7 +43,33 @@ export default function ManagementScreen({navigation}) {
                   </TouchableOpacity>
               </View>
     })
+    
   
+    useFocusEffect(
+      React.useCallback(() => {
+      const tokens = offices;
+      const tokenByDefault = tokens.filter(e => e.isByDefault === true)
+      console.log(tokenByDefault[0].token)
+      fetch('http://192.168.1.162:3000/users/usersByOffice', {
+        method: 'PUT',
+        headers: {'Content-Type' : 'application/json'},
+        body: JSON.stringify({
+          token:  tokenByDefault[0].token ,
+        })
+      }).then(response => response.json())
+      .then(data => {
+        console.log(data.nurses)
+        if(data.result){
+          setAllIDE(data.nurses)
+        }else{
+          console.log(data)
+        }
+      })
+    },[])
+    )
+
+
+
     const selectByDefault = (index) => {
       const newOfficesTokens = offices.map(element => ({
         ...element,
@@ -62,7 +89,7 @@ export default function ManagementScreen({navigation}) {
         })
       }).then(response => response.json())
         .then(data => {
-          console.log('data :',data)
+         
           if(data.result){
             setModalMessage('Nouveau cabinet par default');
             setAllIDE(data.allIDE)
@@ -121,7 +148,7 @@ export default function ManagementScreen({navigation}) {
     console.error('Erreur lors de la copie du texte :', error);
   }
 };
-
+console.log('allIDE :',allIDE)
 const ideToDisplay = allIDE.map((nurse, index) => {
   return  <View style={styles.nurse} key={index}>
               <Text style={styles.nurseName}>{nurse.username}</Text>
