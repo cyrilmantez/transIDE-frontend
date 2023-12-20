@@ -21,6 +21,8 @@ export default function TourScreen({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalAddressVisible, setModalAddressVisible] = useState(false);
 
+  console.log(patientModal);
+
 
   ////////////// gestion des tous/restants :
   const [seeAll, setSeeAll] = useState(true)
@@ -151,6 +153,7 @@ const updateTreatmentInDB = (a, b, c) => {
           });          
   };
 
+  console.log(patientModal.yearOfBirthday);
   ///////// modal de validation des soins :
   const modalContent = (
     <Modal
