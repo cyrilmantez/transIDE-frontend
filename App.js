@@ -26,7 +26,7 @@ import AddPatientScreen from './screens/AddPatientScreen';
 import AddTransmissionScreen from './screens/AddTransmissionScreen';
 import ModificationPatientRecordScreen from './screens/ModificationPatientRecordScreen';
 import AddConsultationScreen from './screens/AddConsultationScreen';
-
+import ModifyAddressScreen from './screens/ModifyAddressScreen';
 
 const reducers = combineReducers({users, patients, transmissions});
 
@@ -94,6 +94,7 @@ export default function App() {
             <Stack.Screen name="ManagementScreen" component={ManagementScreen}/>     
             <Stack.Screen name="RessourcesScreen" component={RessourcesScreen}/>    
             <Stack.Screen name="Mon compte" component={MyAccountScreen} />
+            <Stack.Screen name="ModifyAddressScreen" component={ModifyAddressScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

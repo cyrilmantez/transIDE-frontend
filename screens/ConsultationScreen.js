@@ -19,11 +19,8 @@ export default function ConsultationScreen({ navigation, route }) {
     
     const user = useSelector((state) => state.users.value);
     const officeToken = useSelector((state) => state.users.value.officesTokens[0].token);
-    console.log(officeToken);
     // Récupération des données du patient de TourScreen :
     const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, yearOfBirthday: route.params.yearOfBirthday, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone, isOk: route.params.isOk, isOkWithModification: route.params.isOkWithModification, _idTreatment: route.params._idTreatment, documentsOfTreatment: route.params.documentsOfTreatment});
-    console.log(patient);
-    console.log( patient.yearOfBirthday);
     // Récupération des soins prévus de TourScreen (tableau de strings):
     const [plannedTreatments, setPlannedTreatments] = useState('');
     // Transmission :
@@ -80,8 +77,9 @@ export default function ConsultationScreen({ navigation, route }) {
             }
         })
 
-        if(transmission > 0) {
-            fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
+        if(transmission.length > 0) {
+            console.log('essai');
+            fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: {'Content-Type' : 'application/json'},
                 body: JSON.stringify({
@@ -107,7 +105,8 @@ export default function ConsultationScreen({ navigation, route }) {
         }
       };
     
-    
+      console.log(patient);
+      console.log( patient.yearOfBirthday);
 
         /* if(route.params.actions !== plannedTreatments) {
             validation(true, true, true);
