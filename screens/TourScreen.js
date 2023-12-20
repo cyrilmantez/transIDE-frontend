@@ -21,9 +21,6 @@ export default function TourScreen({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalAddressVisible, setModalAddressVisible] = useState(false);
 
-  console.log(patientModal);
-
-
   ////////////// gestion des tous/restants :
   const [seeAll, setSeeAll] = useState(true)
 

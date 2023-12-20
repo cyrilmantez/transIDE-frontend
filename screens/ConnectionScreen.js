@@ -45,6 +45,8 @@ export default function ConnectionScreen({ navigation }) {
                       </TouchableOpacity>
                   </View>
                   <Text onPress={() => navigation.navigate('TabNavigator')}>Lien Temporaire</Text>
+                  
+                  <Text onPress={() => navigation.navigate('MenuScreen')}>Lien Temporaire MenuScreen</Text>
                 </View>
               </KeyboardAwareScrollView>
             </SafeAreaView>
