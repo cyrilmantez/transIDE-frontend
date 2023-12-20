@@ -13,6 +13,7 @@ import * as Linking from 'expo-linking';
 export default function TourScreen({navigation}) {
   const user = useSelector((state) => state.users.value)
 
+ 
   const [date, setDate] = useState(new Date());
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
@@ -30,10 +31,12 @@ export default function TourScreen({navigation}) {
 
   //////////////// fonction en chage du fetch pour récupérer les patients à voir :
   const allData =()=> {
-    fetch('http://192.168.0.25:3000/patients/allPatients', {
+    const tokenByDefault = user.officesTokens;
+    console.log(tokenByDefault.filter(e => e.isByDefault)[0].token)
+    fetch('http://192.168.1.14:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
-      body: JSON.stringify({officeToken: user.officesTokens[0].token, dateOfToday : date })
+      body: JSON.stringify({officeToken: tokenByDefault.filter(e => e.isByDefault)[0].token, dateOfToday : date })
     }).then(response => response.json())
       .then(data => {
         setAllPatients(data.patientsToSee)
@@ -95,7 +98,7 @@ export default function TourScreen({navigation}) {
   
 /////////////fonction en charge du fetch de mise à jour treatment in DB:
 const updateTreatmentInDB = (a, b, c) => {
-  fetch('http://192.168.0.25:3000/patients/updateTreatment', {
+  fetch('http://192.168.1.162:3000/patients/updateTreatment', {
     method: 'PUT',
     headers: {'Content-Type' : 'application/json'},
     body: JSON.stringify({
@@ -299,6 +302,9 @@ const updateTreatmentInDB = (a, b, c) => {
                   yearOfBirthday : patient.yearOfBirthday,
                   documentsOfTreatment: patient.documentsOfTreatment,
 
+                  date: patient.date,
+                  yearOfBirthday : patient.yearOfBirthday,
+                  documentsOfTreatment: patient.documentsOfTreatment,
                 })}>
                   <Icon source={'medical-bag'} size={24} color='#99BD8F'/>
                 </TouchableOpacity>

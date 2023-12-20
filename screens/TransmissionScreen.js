@@ -16,7 +16,7 @@ export default function TransmissionScreen({navigation}) {
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const userToken = useSelector((state) => state.users.value.officesTokens[0].token)
+  const user = useSelector((state) => state.users.value)
   const [ideVisible, setIdeVisible] = useState(false);
   const [patientsVisible, setPatientsVisible] = useState(false);
   const [modalList, setModalList] = useState([])
@@ -40,7 +40,8 @@ export default function TransmissionScreen({navigation}) {
   //get 10lastDayData from dataBase, and dispatch in the reducer
   useFocusEffect(
     React.useCallback(() => {
-    fetch(`http://192.168.0.25:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
+    const tokenByDefault = user.officesTokens;
+    fetch(`http://192.168.1.162:3000/transmissions/allTransmissions/${tokenByDefault.filter(e => e.isByDefault)[0].token}/${date}`).then(response => response.json())
         .then((data) => {
           if(data.result){
             const compareDates = (a, b) => new Date(b.date) - new Date(a.date);

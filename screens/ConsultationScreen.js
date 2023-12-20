@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 export default function ConsultationScreen({ navigation, route }) {
     
     const user = useSelector((state) => state.users.value);
-    const officeToken = useSelector((state) => state.users.value.officesTokens[0].token);
+   
     // Récupération des données du patient de TourScreen :
     const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, yearOfBirthday: route.params.yearOfBirthday, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone, isOk: route.params.isOk, isOkWithModification: route.params.isOkWithModification, _idTreatment: route.params._idTreatment, documentsOfTreatment: route.params.documentsOfTreatment});
     // Récupération des soins prévus de TourScreen (tableau de strings):
@@ -45,7 +45,7 @@ export default function ConsultationScreen({ navigation, route }) {
             isVisited = true;
         }
         
-        fetch('http://192.168.0.25:3000/patients/updateTreatment', {
+        fetch('http://192.168.1.162:3000/patients/updateTreatment', {
             method: 'PUT',
             headers: {'Content-Type' : 'application/json'},
             body: JSON.stringify({
@@ -69,7 +69,9 @@ export default function ConsultationScreen({ navigation, route }) {
 
         if(transmission.length > 0) {
             console.log('essai');
-            fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
+            const tokenByDefault = user.officesTokens;
+            console.log(tokenByDefault.filter(e => e.isByDefault)[0].token);
+            fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: {'Content-Type' : 'application/json'},
                 body: JSON.stringify({
@@ -83,7 +85,7 @@ export default function ConsultationScreen({ navigation, route }) {
                         name: patient.name, 
                         yearOfBirthday: patient.yearOfBirthday, 
                     },
-                    token: officeToken,
+                    token: tokenByDefault.filter(e => e.isByDefault)[0].token,
                 })
             })
             .then(response => response.json())
