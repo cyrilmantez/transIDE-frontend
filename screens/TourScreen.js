@@ -405,7 +405,7 @@ const updateTreatmentInDB = (a, b, c) => {
                         <View style={styles.header}>
                           <View>
                           <TouchableOpacity>
-                            <FontAwesome name='bars' size={32} color='#99BD8F'/>
+                            <FontAwesome name='bars' size={32} style={{marginTop: 10, marginLeft: 15}} color='#99BD8F'/>
                           </TouchableOpacity> 
                           </View>
                           <Text style={{fontFamily: 'Poppins_400Regular', fontSize: 24,color: '#99BD8F', marginTop: 5,}}>Au boulot !</Text>
@@ -467,8 +467,8 @@ const styles = StyleSheet.create({
     flex: 1,
     // marginTop: 30,
     display: 'flex',
-    borderColor : 'blue',
-    borderWidth : 2,
+    // borderColor : 'blue',
+    // borderWidth : 2,
   },
   containerHeader: {
     height: '20%',
@@ -476,8 +476,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     // alignItems: 'center',
-    borderColor : 'green',
-    borderWidth : 2,
+    // borderColor : 'green',
+    // borderWidth : 2,
   },
   dropdown: {
     top: 0,
@@ -544,8 +544,8 @@ const styles = StyleSheet.create({
   allcards: {
     width: '95%',
     marginLeft: 10,
-    borderColor : 'red',
-    borderWidth : 2
+    // borderColor : 'red',
+    // borderWidth : 2
   },
   progressBar: {
     marginTop: 10,

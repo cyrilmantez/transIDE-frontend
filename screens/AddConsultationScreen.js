@@ -4,29 +4,159 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import React, { useState, useEffect } from 'react';
 import moment from 'moment'; 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function AddConsultationScreen({ navigation, route }) {
     const [plannedTreatments, setPlannedTreatments] = useState('');
-    const [patient, setPatient] = useState();
+    const [patient, setPatient] = useState({name : '', firstname: '', yearOfBirthday : '', _id:''});
     const [patientName, setPatientName] = useState('');
-    const [startDay, setStartDay] = useState();
+    const [startDay, setStartDay] = useState('');
     const [endDay, setEndDay] = useState('');
     const [hour, setHour] = useState('');
     const [frequency, setFrequency] = useState('');
-    
-    // // Recherche des patients avec le même nom de famille :
-    // const findPatient = (name) => {
-    //     name = name.toUpperCase()
-    //     // Affichage modale multichoix des patients avec le même nom :
-    //     fetch(`http://192.168.1.5:3000/patients/patientByName/${name}`)
-    //     .then(response => response.json())
+
+    const [modalMessage, setModalMessage] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false)
+
+    const [allPatients, setAllPatients] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+    const [text, setText] = useState('');
+    const [idForFetch, setIdForFetch ] = useState('')
+
+    const officeToken = useSelector((state) => state.users.value.officesTokens[0].token);
+    const user = useSelector((state) => state.users.value.username);
+
+
+    useEffect (() => {
+        fetch(`http://192.168.1.5:3000/patients/allPatients/${officeToken}`).then(
+          response => response.json())
+          .then(data => {
+            //console.log(data.Patients)
+            setAllPatients(data.Patients)
+          })
+      }, [])
+
+
+    const handlePatientNameChange = (text => {
+        setText(text);
+        const filteredSuggestions = allPatients.filter((item) =>
+        item.name.toLowerCase().includes(text.toLowerCase())
+        );
+
+        filteredSuggestions.sort((a, b) => {
+
+        //Sort by name
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+      
+         //Sort by firstname
+        const firstNameA = a.firstname.toUpperCase();
+        const firstNameB = b.firstname.toUpperCase();
+      
+        if (firstNameA < firstNameB) return -1;
+        if (firstNameA > firstNameB) return 1;
+      
+         //Sort by yearOfBirthday
+        const dateA = new Date(a.yearOfBirthday.split('/').reverse().join('/'));
+        const dateB = new Date(b.yearOfBirthday.split('/').reverse().join('/'));
+      
+        return dateA - dateB;
+      });
+      setSuggestions(filteredSuggestions);
+      })
+  
+      const handlePatientChoice = (name, firstname, yearOfBirthday, _id) => {
+        setText(`${name} ${firstname}`);
+        setPatient({...patient, name , firstname, yearOfBirthday, _id})
+        setIdForFetch(_id)
+      }
+
+      const suggestionsToDisplay = suggestions.map((item, index) => {
+         return (
+            <TouchableOpacity key={index} style={styles.listSuggestionText} onPress={()=>{handlePatientChoice (item.name, item.firstname, item.yearOfBirthday, item._id)}}>
+                <Text style={styles.textAlign}>{`${item.name} ${item.firstname} - ${item.yearOfBirthday}`} </Text>
+            </TouchableOpacity>
+         )
+      })
+
+
+      ////////// gestion couleur de la fréquence sélectionnée:
+      let frequencyColor1 = '#CADDC5';
+      let frequencyColor2 = '#CADDC5';
+      let frequencyColor3 = '#CADDC5';
+      let frequencyColor4 = '#CADDC5';
+
+      if(frequency === '1X/ jour'){frequencyColor1 = '#99BD8F'}
+      if(frequency === '1X/2 jours'){frequencyColor2 = '#99BD8F'}
+      if(frequency === '1X/3 jours'){frequencyColor3 = '#99BD8F'}
+      if(frequency === '1X/7 jours'){frequencyColor4 = '#99BD8F'}
+
+
+
+    ///////////////////// addTreatment :
+    const handleSubmit = () => {
+        const [dayStart, monthStart, yearStart] = startDay.split('/').map(Number);
+        const [dayEnd, monthEnd, yearEnd] = endDay.split('/').map(Number);
+        const [hours, minutes] = hour.split('h').map(Number)
+        const debut = new Date(yearStart , monthStart - 1, dayStart, hours + 1, minutes);
+        const fin = new Date(yearEnd, monthEnd - 1, dayEnd, hours + 1, minutes);
+        let newTreatments = [];
+        let currentDate = new Date(debut)
+        while (currentDate <= fin) {
+            newTreatments.push({
+              date: new Date(currentDate),
+              isVisited : false,
+              isOk: false,
+              isOkWithModification: false,
+              actions: [plannedTreatments],
+              nurse: '',
+              documentsOfTreatment: [],
+              
+            });
+            if(frequency === '1X/ jour'){currentDate.setDate(currentDate.getDate() + 1);}
+            if(frequency === '1X/2 jours'){currentDate.setDate(currentDate.getDate() + 2);}
+            if(frequency === '1X/3 jours'){currentDate.setDate(currentDate.getDate() + 3);}
+            if(frequency === '1X/7 jours'){currentDate.setDate(currentDate.getDate() + 7);}
+          }
+        // console.log(debut)
+        // console.log(fin)
+        // console.log(newTreatments)
+
+    //     fetch('http://192.168.1.5:3000/patients/addTreatment', {
+    //         method: 'PUT',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({
+    //              newTreatments : newTreatments,
+    //             _id: idForFetch
+    //         })
+    //     }).then(response => response.json())
     //     .then(data => {
-    //         if (data.result) {
-    //             console.log('trouvé :', data.patient)
-    //             setPatient(data)
+    //         if(data.result){
+    //         setModalMessage('consultations ajoutées !');
+    //         setIsModalVisible(true);
     //         }
-    //     })
-    // };
+    //     });
+    }
+
+//////////////Close Modal :
+const closeModal = () => {
+    setIsModalVisible(false);
+    setModalMessage('');
+ };
+
+ const handleCloseModale = (message) => {
+   if(message === 'consultations ajoutées !'){
+       navigation.navigate('TabNavigator')
+       setPatient({name : '', firstname: '', yearOfBirthday : '', _id: ''});
+       setStartDay('')
+       setEndDay('')
+       setFrequency('')
+       setPlannedTreatments('')
+   }
+   closeModal()
+ };
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
@@ -43,8 +173,7 @@ export default function AddConsultationScreen({ navigation, route }) {
                         <View styles={styles.titleContainer}>
                             <Text style={styles.titlePage}>Nouvelle consultation</Text>
                         </View>
-                        <View style={styles.inputContainer}>   
-                            <View style={styles.searchPatient}>    
+                        <View style={styles.inputContainer}>    
                                 <TextInput  
                                     label='Nom du patient'
                                     mode='outlined'
@@ -55,14 +184,20 @@ export default function AddConsultationScreen({ navigation, route }) {
                                         primary: '#99BD8F', 
                                         }
                                     }}
-                                    style={{ width: 300, marginTop: 15 }}
-                                    value={patientName}
-                                    onChangeText={text => setPatientName(text)}
-                                    />
-                                <TouchableOpacity>
-                                    <Icon source={'account-search'} size={36} color='#99BD8F' activeOpacity={0.8} style={styles.searchIcon}/>
-                                </TouchableOpacity>      
-                            </View>
+                                    style={{ width: 350, marginTop: 15 }}
+                                    value={text}
+                                    // onChangeText={text => setPatientName(text)}
+                                    onChangeText={text => handlePatientNameChange(text)} 
+                                    onFocus={() => setPatient({name : '', firstname: '', yearOfBirthday : '', _id:''})}/>
+                                        {text && patient.name ==='' && (<View style={styles.suggestionsContainer}>
+                                            <>
+                                            {suggestionsToDisplay}
+                                            </>
+                                        </View>)}
+                          
+                             {/* <>
+                                {suggestionsToDisplay}
+                            </> */}
                             <View>
                             <TextInput 
                                 label='soins prévus'
@@ -98,7 +233,7 @@ export default function AddConsultationScreen({ navigation, route }) {
                                 onChangeText={text => setEndDay(text)} 
                                 value={endDay}/>
                             <TextInput 
-                                label='heure de passage (hh/mm)'
+                                label='heure de passage (heures h minutes)'
                                 mode='outlined'
                                 theme={{ 
                                     colors: { 
@@ -111,21 +246,21 @@ export default function AddConsultationScreen({ navigation, route }) {
                                 value={hour}/>
                             </View>
                             <View style={styles.frequency}>
-                            <TouchableOpacity onPress={()=> validation(patientModal)} style={{ justifyContent: 'space-between', alignItems: 'center'}}>
-                            <Text style={{marginTop : 12, fontFamily: 'Poppins_400Regular', fontSize: 10,}}>1X/ jour</Text>
-                            <Icon source={'checkbox-blank-circle'} size={42} color='#99BD8F' activeOpacity={0.8}/>
+                            <TouchableOpacity onPress={() => setFrequency('1X/ jour')} style={{ justifyContent: 'space-between', alignItems: 'center'}}>
+                                <Text style={{marginTop : 12, fontFamily: 'Poppins_400Regular', fontSize: 10,}}>1X/ jour</Text>
+                                <Icon source={'checkbox-blank-circle'} size={42} color={frequencyColor1} activeOpacity={0.8}/>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={()=> validation(patientModal)} style={{ justifyContent: 'space-between', alignItems: 'center'}}>
-                            <Text style={{marginTop : 12, fontFamily: 'Poppins_400Regular', fontSize: 10,}}>1X/2 jours</Text>
-                            <Icon source={'checkbox-blank-circle'} size={42} color='#99BD8F' activeOpacity={0.8}/>
+                            <TouchableOpacity onPress={() => setFrequency('1X/2 jours')} style={{ justifyContent: 'space-between', alignItems: 'center'}}>
+                                <Text style={{marginTop : 12, fontFamily: 'Poppins_400Regular', fontSize: 10,}}>1X/2 jours</Text>
+                                <Icon source={'checkbox-blank-circle'} size={42} color={frequencyColor2} activeOpacity={0.8}/>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={()=> validation(patientModal)} style={{ justifyContent: 'space-between', alignItems: 'center'}}>
-                            <Text style={{marginTop : 12, fontFamily: 'Poppins_400Regular', fontSize: 10,}}>1X/3 jours</Text>
-                            <Icon source={'checkbox-blank-circle'} size={42} color='#99BD8F' activeOpacity={0.8}/>
+                            <TouchableOpacity onPress={()=> setFrequency('1X/3 jours')}style={{ justifyContent: 'space-between', alignItems: 'center'}}>
+                                <Text style={{marginTop : 12, fontFamily: 'Poppins_400Regular', fontSize: 10,}}>1X/3 jours</Text>
+                                <Icon source={'checkbox-blank-circle'} size={42} color={frequencyColor3} activeOpacity={0.8}/>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={()=> validation(patientModal)} style={{ justifyContent: 'space-between', alignItems: 'center'}}>
-                            <Text style={{marginTop : 12, fontFamily: 'Poppins_400Regular', fontSize: 10,}}>1X/7 jours</Text>
-                            <Icon source={'checkbox-blank-circle'} size={42} color='#99BD8F' activeOpacity={0.8}/>
+                            <TouchableOpacity onPress={() => setFrequency('1X/7 jours')} style={{ justifyContent: 'space-between', alignItems: 'center'}}>
+                                <Text style={{marginTop : 12, fontFamily: 'Poppins_400Regular', fontSize: 10,}}>1X/7 jours</Text>
+                                <Icon source={'checkbox-blank-circle'} size={42} color={frequencyColor4} activeOpacity={0.8}/>
                             </TouchableOpacity>
                             </View>
                         </View>
@@ -134,6 +269,16 @@ export default function AddConsultationScreen({ navigation, route }) {
                                 <Text style={styles.textButton}>Valider</Text>            
                             </TouchableOpacity>
                         </View>
+                    <Modal transparent visible={isModalVisible} onRequestClose={closeModal}>
+                        <View style={styles.modalContainer}>
+                          <View style={styles.modalContent}>
+                              <Text style={styles.modalText}>{modalMessage}</Text>
+                              <TouchableOpacity style={styles.closeButton} onPress={() => handleCloseModale(modalMessage)}>
+                                <Text style={styles.modalButtonText}>Fermer</Text>
+                              </TouchableOpacity>
+                          </View>
+                        </View>
+                  </Modal>
                 </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
         </SafeAreaView>
@@ -200,4 +345,58 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontFamily: 'Poppins_600SemiBold',
     },
+    listSuggestionText:{
+        textAlign: 'center',
+        backgroundColor: 'white',
+        marginTop: 10,
+        height: 30,
+        ...Platform.select({
+          ios: {
+            shadowColor: 'black',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.5,
+            shadowRadius: 3,
+          },
+          android: {
+            elevation: 5,
+          },
+        }),
+      },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 8,
+        borderRadius: 10,
+        borderColor: '#99BD8F',
+        borderWidth: 5,
+        elevation: 5,
+        height: 300,
+        width: 250,
+        display:'flex',
+        justifyContent: 'space-between',
+        alignContent: 'center'
+      },
+    closeButton :{
+        borderColor: 'white',
+        borderWidth: 1,
+        display:'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        marginBottom: 10,
+        height: 40,
+        backgroundColor:'#99BD8F',
+      },
+    modalButtonText:{
+        textAlign: 'center',
+        color: 'white',
+       },
+    modalText:{
+        textAlign: 'center',
+        marginTop: 90,
+       }  
 });
