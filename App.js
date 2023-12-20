@@ -24,7 +24,6 @@ import PatientScreen from './screens/PatientScreen';
 import ConsultationScreen from './screens/ConsultationScreen';
 import AddPatientScreen from './screens/AddPatientScreen';
 import AddTransmissionScreen from './screens/AddTransmissionScreen';
-import ModificationPatientRecordScreen from './screens/ModificationPatientRecordScreen';
 import AddConsultationScreen from './screens/AddConsultationScreen';
 import ModifyAddressScreen from './screens/ModifyAddressScreen';
 import ModifyPhoneScreen from './screens/ModifyPhoneScreen';
@@ -93,7 +92,6 @@ export default function App() {
             <Stack.Screen name="ConsultationScreen" component={ConsultationScreen}/>
             <Stack.Screen name="AddPatientScreen" component={AddPatientScreen}/>
             <Stack.Screen name="AddTransmissionScreen" component={AddTransmissionScreen}/>
-            <Stack.Screen name="ModificationPatientRecordScreen" component={ModificationPatientRecordScreen}/>
             <Stack.Screen name='AddConsultationScreen' component={AddConsultationScreen}/>
             <Stack.Screen name="ManagementScreen" component={ManagementScreen}/>     
             <Stack.Screen name="RessourcesScreen" component={RessourcesScreen}/>    

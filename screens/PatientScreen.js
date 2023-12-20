@@ -24,7 +24,7 @@ export default function App({ navigation, route }) {
 
   useFocusEffect(
     React.useCallback(() => {
-    fetch(`http://192.168.0.25:3000/patients/patientById/${route.params._id}`).then(response => response.json())
+    fetch(`http://192.168.1.14:3000/patients/patientById/${route.params._id}`).then(response => response.json())
     .then(data => {
         setPatient(data.patient);
         setTreatments(data.patient.treatments);
@@ -49,7 +49,7 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http://192.168.0.25:3000/patients/updatePatientById', {
+                fetch('http://192.168.1.162:3000/patients/updatePatientById', {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ export default function App({ navigation, route }) {
           <Text style={styles.pac}>Personne à contacter en cas d'urgence</Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}} >          
                 <View style={{width: 285}}>              
-                    <Text style={styles.address}>{patient.ICEIdentity}</Text>          
+                    <Text style={styles.address}>{patient.ICEIdentity ? patient.ICEIdentity : "Non renseigné"}</Text>          
                     <Text>{patient.ICEPhoneNumber ? patient.ICEPhoneNumber : ""}</Text>
                 </View>
                 <TouchableOpacity onPress={() => {
@@ -254,7 +254,7 @@ export default function App({ navigation, route }) {
                       </ScrollView>
                     </View>
                     <View>
-                      <TouchableOpacity style={styles.journalBtn}>
+                      <TouchableOpacity onPress={navigation.navigate('addConsultationScreen')} style={styles.journalBtn}>
                         <Text style={styles.textBtn}>Ajouter un consultation</Text>
                       </TouchableOpacity>
                     </View>
@@ -352,13 +352,13 @@ centerView: {
 },
 closemodal: {
   position: 'absolute',
-  top: 390,  
+  top: 330,  
 },
 
 modalView: {
  
   margin: 20,
-  height: '75%',
+  height: '68%',
   width: '97%',
   backgroundColor: "#99BD8F",
   borderRadius: 20,
