@@ -35,7 +35,8 @@ export default function TourScreen({navigation}) {
   //////////////// fonction en chage du fetch pour récupérer les patients à voir :
   const allData =()=> {
     const tokenByDefault = user.officesTokens;
-    fetch('http://192.168.1.14:3000/patients/allPatients', {
+    console.log(tokenByDefault.filter(e => e.isByDefault)[0].token)
+    fetch('http://192.168.1.162:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: tokenByDefault.filter(e => e.isByDefault)[0].token, dateOfToday : date })
