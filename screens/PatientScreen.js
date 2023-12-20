@@ -16,6 +16,8 @@ export default function App({ navigation, route }) {
   useEffect(() => {
     fetch(`http://192.168.1.162:3000/patients/patientById/${route.params._id}`).then(response => response.json())
     .then(data => {
+        console.log('ID', route.params._id);
+        console.log('patient', data);
         setPatient(data.patient)
     });
     
