@@ -20,6 +20,7 @@ export default function SignInScreen({navigation}) {
       return;
     }
 
+    
     fetch('http://192.168.1.5:3000/users/signin', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
