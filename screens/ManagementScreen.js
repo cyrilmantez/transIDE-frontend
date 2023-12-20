@@ -80,6 +80,7 @@ export default function ManagementScreen({navigation}) {
     setModalMessage('');
  }
 
+ 
  const addNewOffice = () => {
   const isAllReadyExist = offices.filter(e => e.token === newOffice);
   if(isAllReadyExist.length>0){
