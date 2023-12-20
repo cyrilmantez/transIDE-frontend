@@ -19,8 +19,11 @@ export default function ConsultationScreen({ navigation, route }) {
     
     const user = useSelector((state) => state.users.value);
     const officeToken = useSelector((state) => state.users.value.officesTokens[0].token);
+    console.log(officeToken);
     // Récupération des données du patient de TourScreen :
     const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, yearOfBirthday: route.params.yearOfBirthday, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone, isOk: route.params.isOk, isOkWithModification: route.params.isOkWithModification, _idTreatment: route.params._idTreatment, documentsOfTreatment: route.params.documentsOfTreatment});
+    console.log(patient);
+    console.log( patient.yearOfBirthday);
     // Récupération des soins prévus de TourScreen (tableau de strings):
     const [plannedTreatments, setPlannedTreatments] = useState('');
     // Transmission :
@@ -42,8 +45,6 @@ export default function ConsultationScreen({ navigation, route }) {
         }
         setPlannedTreatments(treatments);
     }, []);
-
-    //console.log(patient);
 
     // Validation des modifications effectuées :
     const validation = () => {
@@ -74,7 +75,7 @@ export default function ConsultationScreen({ navigation, route }) {
             }).then(response => response.json())
             .then(data => {
                 if(data.result) {
-                    console.log(data);
+                    console.log('updateTreatment', data);
                     navigation.navigate('TabNavigator');
             }
         })
@@ -92,14 +93,16 @@ export default function ConsultationScreen({ navigation, route }) {
                     },
                     patient: {
                         name: patient.name, 
-                        yearOfBirthday:patient.yearOfBirthday, 
+                        yearOfBirthday: patient.yearOfBirthday, 
                     },
                     token: officeToken,
                 })
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
+                if(data.result) {
+                    console.log('addtransmission', data);
+                }
             })
         }
       };
@@ -124,12 +127,7 @@ export default function ConsultationScreen({ navigation, route }) {
             setIsOkWithModification(false);
         })
     } */
-    
-    
-    //console.log('soinsprévus', plannedTreatments)
-    //console.log('patient', patient);
-    //console.log('firstname', patient.firstname);
-    
+        
     // Formatage de la date de la consultation :
     const date = moment(route.params.date).format('L');
     // Formatage de l'heure de la consultation :
