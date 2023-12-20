@@ -13,11 +13,58 @@ export default function AddConsultationScreen({ navigation, route }) {
     const [patientHomePhone, setPatientHomePhone] = useState('');
     const [plannedTreatments, setPlannedTreatments] = useState('');
 
+    const [allPatients, setAllPatients] = useState([]);
+    const [suggestions, setSuggestions] = useState([])
+    const [modalMessage, setModalMessage] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false)
+
+    useEffect (() => {
+        fetch(`http://192.168.0.25:3000/patients/allPatientDay/${officeToken}`).then(
+          response => response.json())
+          .then(data => setAllPatients(data.Patients))
+      }, [])
+      console.log('allPatients :', allPatients);
+
     
     // Recherche des patients avec le même nom de famille :
-    const findPatient = (name) => {
+    const handlePatientNameChange = (text => {
+        setPatientName(text);
+      const filteredSuggestions = allPatients.filter((item) =>
+      item.name.toLowerCase().includes(text.toLowerCase())
+    );
+      filteredSuggestions.sort((a, b) => {
+        //Sort by name
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+      
+         //Sort by firstname
+        const firstNameA = a.firstname.toUpperCase();
+        const firstNameB = b.firstname.toUpperCase();
+      
+        if (firstNameA < firstNameB) return -1;
+        if (firstNameA > firstNameB) return 1;
+      
+         //Sort by yearOfBirthday
+        const dateA = new Date(a.yearOfBirthday.split('/').reverse().join('/'));
+        const dateB = new Date(b.yearOfBirthday.split('/').reverse().join('/'));
+      
+        return dateA - dateB;
+      });
+      setSuggestions(filteredSuggestions);
+      });
 
-        // Affichage modale multichoix des patients avec le même nom :
+      const suggestionsToDisplay = suggestions.map((item, index) => {
+        return (
+        
+           <TouchableOpacity key={index} style={styles.listSuggestionText} onPress={()=>{handlePatientChoice (item.name, item.firstname, item.yearOfBirthday)}}>
+           <Text style={styles.textAlign}>{`${item.name} ${item.firstname} - ${item.yearOfBirthday}`} </Text>
+         </TouchableOpacity>
+        )
+        
+     });
+    // Affichage modale multichoix des patients avec le même nom :
 
         fetch(`http://192.168.1.5:3000/patients/patient/${name}`)
         .then(response => response.json())
@@ -42,28 +89,29 @@ export default function AddConsultationScreen({ navigation, route }) {
                         <View style={styles.inputContainer}>   
                             <View>    
                                 <TextInput   
-                                    label='NOM'
                                     mode='outlined'
+                                    value={plannedTreatments}
+                                    multiline={true}
+                                    textAlignVertical= 'top'
                                     theme={{ 
                                         colors: { 
-                                          primary: '#99BD8F', 
+                                            primary: '#99BD8F', 
                                         }
-                                      }}
-                                    value={plannedTreatments}
-                                    style={styles.input} 
-                                    onChangeText={text => findPatient(text)}/>
+                                    }}
+                                    style={styles.soinsPrevus} 
+                                    onChangeText={text => setPlannedTreatments(text)}/>
                             </View>
-                        </View>
-                        <View>
-                            <TouchableOpacity onPress={() => handleSubmit()} style={styles.button} activeOpacity={0.8}>  
-                                <Text style={styles.text}>Valider</Text>            
-                            </TouchableOpacity>
-                        </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
-            </TouchableWithoutFeedback>
-        </SafeAreaView>
-    )
+                            <View>
+                                <TouchableOpacity onPress={() => handleSubmit()} style={styles.button} activeOpacity={0.8}>  
+                                    <Text style={styles.text}>Enregistrer</Text>            
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </KeyboardAvoidingView>
+                </TouchableWithoutFeedback>
+            </SafeAreaView>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
