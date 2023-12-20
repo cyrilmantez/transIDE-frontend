@@ -149,6 +149,7 @@ const updateTreatmentInDB = (a, b, c) => {
         date: patientModal.date,
         documentsOfTreatment: patientModal.documentsOfTreatment,
         yearOfBirthday : patientModal.yearOfBirthday,
+        hour: patientModal.hour
           });          
   };
 
@@ -297,8 +298,9 @@ const updateTreatmentInDB = (a, b, c) => {
                   isVisited: patient.isVisited,
                   _idTreatment: patient._idTreatment,
                   nurse: user.username,
-                  _idTreatment: patient._idTreatment,
-                  date: patient.date
+                  date: patient.date,
+                  yearOfBirthday : patient.yearOfBirthday,
+                  documentsOfTreatment: patient.documentsOfTreatment,
 
                 })}>
                   <Icon source={'medical-bag'} size={24} color='#99BD8F'/>
@@ -370,8 +372,9 @@ const updateTreatmentInDB = (a, b, c) => {
                   isVisited: patient.isVisited,
                   _idTreatment: patient._idTreatment,
                   nurse: user.username,
-                  _idTreatment: patient._idTreatment,
-                  date: patient.date
+                  date: patient.date,
+                  yearOfBirthday : patient.yearOfBirthday,
+                  documentsOfTreatment: patientModal.documentsOfTreatment,
 
                 })}>
                   <Icon source={'medical-bag'} size={24} color='#99BD8F'/>
