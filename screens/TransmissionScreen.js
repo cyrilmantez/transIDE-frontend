@@ -124,6 +124,7 @@ console.log('transmissions' ,transmissions)
              <Text style={styles.modalText}  >{element.name} {element.firstname}</Text>
           </TouchableOpacity>
      
+     
     )
 })
  return (
