@@ -28,6 +28,8 @@ import AddConsultationScreen from './screens/AddConsultationScreen';
 import ModifyAddressScreen from './screens/ModifyAddressScreen';
 import ModifyPhoneScreen from './screens/ModifyPhoneScreen';
 import ModifyPACScreen from './screens/ModifyPACScreen';
+import MenuScreen from './screens/MenuScreen';
+
 
 const reducers = combineReducers({users, patients, transmissions});
 
@@ -94,6 +96,7 @@ export default function App() {
             <Stack.Screen name="ManagementScreen" component={ManagementScreen}/>     
             <Stack.Screen name="RessourcesScreen" component={RessourcesScreen}/>    
             <Stack.Screen name="Mon compte" component={MyAccountScreen} />
+            <Stack.Screen name="MenuScreen" component={MenuScreen} />
             <Stack.Screen name="ModifyAddressScreen" component={ModifyAddressScreen} />
             <Stack.Screen name="ModifyPhoneScreen" component={ModifyPhoneScreen} />
             <Stack.Screen name="ModifyPACScreen" component={ModifyPACScreen} />
