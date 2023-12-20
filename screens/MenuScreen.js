@@ -1,4 +1,5 @@
 import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Keyboard, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Keyboard, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -69,12 +70,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#99BD8F',
         //alignItems: 'center',
-    },
-    scrollView: {
-        flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    scrollView: {
         
+               
     },
     chevron: {
         alignSelf: 'flex-start',
@@ -82,9 +83,13 @@ const styles = StyleSheet.create({
         marginBottom: 40,
      },
     titleContainer: {
-        flexDirection: 'row',
-        width: '100%',
-        fontFamily: 'Poppins_600SemiBold',
+        //flexDirection: 'row',
+        //justifyContent: 'space-between',
+        width: 300,
+        height: 300,
+        borderColor: 'red',
+        borderWidth: 4,
+        //fontFamily: 'Poppins_600SemiBold',
     },
     titlePage: {
         //flexDirection: 'row',
@@ -93,7 +98,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 30,
         fontFamily: 'Poppins_600SemiBold',
-        justifyContent: 'flex-start',
         textAlign: 'center',
     },
     text: {
