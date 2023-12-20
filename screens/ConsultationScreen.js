@@ -43,8 +43,6 @@ export default function ConsultationScreen({ navigation, route }) {
         setPlannedTreatments(treatments);
     }, []);
 
-    //console.log(patient);
-
     // Validation des modifications effectuées :
     const validation = () => {
         let isVisited = false;
@@ -74,12 +72,13 @@ export default function ConsultationScreen({ navigation, route }) {
             }).then(response => response.json())
             .then(data => {
                 if(data.result) {
-                    console.log(data);
+                    console.log('updateTreatment', data);
                     navigation.navigate('TabNavigator');
             }
         })
 
-        if(transmission > 0) {
+        if(transmission.length > 0) {
+            console.log('essai');
             fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: {'Content-Type' : 'application/json'},
@@ -92,19 +91,22 @@ export default function ConsultationScreen({ navigation, route }) {
                     },
                     patient: {
                         name: patient.name, 
-                        yearOfBirthday:patient.yearOfBirthday, 
+                        yearOfBirthday: patient.yearOfBirthday, 
                     },
                     token: officeToken,
                 })
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
+                if(data.result) {
+                    console.log('addtransmission', data);
+                }
             })
         }
       };
     
-    
+      console.log(patient);
+      console.log( patient.yearOfBirthday);
 
         /* if(route.params.actions !== plannedTreatments) {
             validation(true, true, true);
@@ -124,12 +126,7 @@ export default function ConsultationScreen({ navigation, route }) {
             setIsOkWithModification(false);
         })
     } */
-    
-    
-    //console.log('soinsprévus', plannedTreatments)
-    //console.log('patient', patient);
-    //console.log('firstname', patient.firstname);
-    
+        
     // Formatage de la date de la consultation :
     const date = moment(route.params.date).format('L');
     // Formatage de l'heure de la consultation :

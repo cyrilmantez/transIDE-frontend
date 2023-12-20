@@ -19,7 +19,6 @@ import users from './reducers/users';
 import patients from './reducers/patients';
 import transmissions from './reducers/transmissions';
 import ManagementScreen from './screens/ManagementScreen';
-import JoinScreen from './screens/JoinScreen';
 import RessourcesScreen from './screens/RessourcesScreen';
 import PatientScreen from './screens/PatientScreen';
 import ConsultationScreen from './screens/ConsultationScreen';
@@ -93,7 +92,6 @@ export default function App() {
             <Stack.Screen name="ModificationPatientRecordScreen" component={ModificationPatientRecordScreen}/>
             <Stack.Screen name='AddConsultationScreen' component={AddConsultationScreen}/>
             <Stack.Screen name="ManagementScreen" component={ManagementScreen}/>     
-            <Stack.Screen name="Rejoindre un cabinet" component={JoinScreen} />
             <Stack.Screen name="RessourcesScreen" component={RessourcesScreen}/>    
             <Stack.Screen name="Mon compte" component={MyAccountScreen} />
             <Stack.Screen name="ModifyAddressScreen" component={ModifyAddressScreen} />

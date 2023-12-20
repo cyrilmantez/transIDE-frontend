@@ -13,8 +13,8 @@ import { addPhoto } from '../reducers/users';
 
 
 export default function AddTransmissionScreen({navigation}) {
-    const officeToken = useSelector((state) => state.users.value.officesTokens[0].token);
-    const user = useSelector((state) => state.users.value.username);
+   
+    const user = useSelector((state) => state.users.value);
     const [isPatient, setIsPatient] = useState(false)
     const [isGeneral, setIsGeneral] = useState(true)
 
@@ -30,7 +30,10 @@ export default function AddTransmissionScreen({navigation}) {
     console.log('patient :',patient);
 
     useEffect (() => {
-      fetch(`http://192.168.1.5:3000/patients/allPatientDay/${officeToken}`).then(
+      const tokenByDefault = user.officesTokens;
+      const officeToken = tokenByDefault.filter(e => e.isByDefault)[0].token;
+      console.log('token:',officeToken)
+      fetch(`http://192.168.1.162:3000/patients/allPatients/${officeToken}`).then(
         response => response.json())
         .then(data => setAllPatients(data.Patients))
     }, [])
@@ -113,17 +116,19 @@ export default function AddTransmissionScreen({navigation}) {
           setModalMessage('Pas de message, pas de transmission !');
           setIsModalVisible(true);;
       }else if(!isPatient){
+        const tokenByDefault = user.officesTokens;
+        const officeToken = tokenByDefault.filter(e => e.isByDefault)[0].token;
         const newTransmission = {
           ...transmission,
           date : new Date(),
-          nurse : user,
+          nurse : user.username,
          }
          const data = {
           patient : patient,
           transmission : newTransmission,
           token : officeToken,
         }
-        fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
+        fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -141,10 +146,12 @@ export default function AddTransmissionScreen({navigation}) {
         });
      
         if(isExisting.length === 1){
+                const tokenByDefault = user.officesTokens;
+                const officeToken = tokenByDefault.filter(e => e.isByDefault)[0].token;
                 const newTransmission = {
                   ...transmission,
                   date : new Date(),
-                  nurse : user,
+                  nurse : user.username,
                 };
                 console.log('transmission pour :', newTransmission);
                 const data = {
@@ -152,7 +159,7 @@ export default function AddTransmissionScreen({navigation}) {
                   transmission : newTransmission,
                   token : officeToken,
                 }
-                fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
+                fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
