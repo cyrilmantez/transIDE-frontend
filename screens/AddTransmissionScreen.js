@@ -32,7 +32,7 @@ export default function AddTransmissionScreen({navigation}) {
     console.log('patient :',patient);
 
     useEffect (() => {
-      fetch(`http://192.168.1.162:3000/patients/allPatients/${officeToken}`).then(
+      fetch(`http://192.168.1.5:3000/patients/allPatientDay/${officeToken}`).then(
         response => response.json())
         .then(data => setAllPatients(data.Patients))
     }, [])
