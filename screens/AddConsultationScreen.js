@@ -46,7 +46,6 @@ export default function AddConsultationScreen({ navigation, route }) {
                                 <TextInput  
                                     label='Nom du patient'
                                     mode='outlined'
-                                    value={plannedTreatments}
                                     multiline={true}
                                     textAlignVertical= 'top'
                                     theme={{ 
