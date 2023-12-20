@@ -19,7 +19,7 @@ export default function AddConsultationScreen({ navigation, route }) {
 
         // Affichage modale multichoix des patients avec le même nom :
 
-        fetch(`http://192.168.0.25:3000/patients/patient/${name}`)
+        fetch(`http://192.168.1.5:3000/patients/patient/${name}`)
         .then(response => response.json())
         .then(data => {
             

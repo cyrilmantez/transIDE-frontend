@@ -32,7 +32,7 @@ export default function TourScreen({navigation}) {
 
   //////////////// fonction en chage du fetch pour récupérer les patients à voir :
   const allData =()=> {
-    fetch('http://192.168.0.25:3000/patients/allPatients', {
+    fetch('http://192.168.1.5:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: user.officesTokens[0].token, dateOfToday : date })
@@ -56,7 +56,7 @@ export default function TourScreen({navigation}) {
     if (tous > 0 && restants > 0) {
       setProgress((tous-restants)/tous)
     } else {
-      setProgress(0)
+      setProgress(1)
     }
   }, [allPatients]);
 
@@ -199,8 +199,8 @@ const updateTreatmentInDB = (a, b, c) => {
   const openWazeWithAddress = () => {
     const address = patientModal.address;
     const encodedAddress = encodeURIComponent(address);
-    Linking.openURL(`https://waze.com/ul?q=${encodedAddress}&navigate=yes`);
-
+    // Linking.openURL(`https://waze.com/ul?q=${encodedAddress}&navigate=yes`);
+    Linking.openURL(`waze://?q=${encodedAddress}&navigate=yes`);
   };
   
   const modalAddressContent = (

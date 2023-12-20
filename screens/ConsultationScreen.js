@@ -4,25 +4,22 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import React, { useState, useEffect } from 'react';
 import moment from 'moment'; 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-//import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
-
-//import FontAwesome from 'react-native-vector-icons/FontAwesome';
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//import { faPhone, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
-//import PatientScreen from './screens/PatientScreen';
-//import users from '../reducers/users';
-//import patients from '../reducers/patients';
+
 
 export default function ConsultationScreen({ navigation, route }) {
     
     const user = useSelector((state) => state.users.value);
+
     // Récupération des données du patient de TourScreen :
     const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, yearOfBirthday: route.params.yearOfBirthday, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone, isOk: route.params.isOk, isOkWithModification: route.params.isOkWithModification, _idTreatment: route.params._idTreatment, documentsOfTreatment: route.params.documentsOfTreatment});
+    
     // Récupération des soins prévus de TourScreen (tableau de strings):
     const [plannedTreatments, setPlannedTreatments] = useState('');
+    
     // Transmission :
     const [transmission, setTransmission] = useState('');
+   
     // Appel à la modale de validation :
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -36,13 +33,14 @@ export default function ConsultationScreen({ navigation, route }) {
         setPlannedTreatments(treatments);
     }, []);
 
-    // Validation des modifications effectuées :
+    // fonction de fetch de validation du soin avec modif ou non:
     const validation = (a, b, c) => {
-        fetch('http://192.168.0.25:3000/patients/allPatients', {
+        fetch('http://192.168.1.5:3000/patients/updateTreatment', {
             method: 'PUT',
             headers: {'Content-Type' : 'application/json'},
             body: JSON.stringify({
                 _id: patient._id,
+                _idTreatment : patient._idTreatment,
                 isVisited: a,
                 isOk: b,
                 isOkWithModification: c,
@@ -59,52 +57,41 @@ export default function ConsultationScreen({ navigation, route }) {
         })
       };
     
-    const validationWithTransmission = () => {
-        fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
-            method: 'POST',
-            headers: {'Content-Type' : 'application/json'},
-            body: JSON.stringify({
-                transmission: {
-                    date: new Date(),
-                    nurse: user.username,
-                    info: transmission,
-                    UrlDocument: '',
-                },
-                patient: {
-                    name: patient.name, 
-                    yearOfBirthday:patient.yearOfBirthday, 
-                },
-                token: user.officesTokens[0].token,
-            })
-        .then(response => response.json())
-        .then(data)
-        });
 
-        if(route.params.actions !== treatments) {
+
+    const validationWithTransmission = () => {
+        const data = {
+            transmission: {
+                date: new Date(),
+                nurse: user.username,
+                info: transmission,
+                UrlDocument: '',
+            },
+            patient: {
+                name: patient.name, 
+                yearOfBirthday:patient.yearOfBirthday, 
+            },
+            token: user.officesTokens[0].token
+        }
+        fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data).then(response => response.json())
+            .then(data => {})
+        });
+        
+        if(route.params.actions !== plannedTreatments) {
             validation(true, true, true);
         } else {
             validation(true, true, false);
         }
+        // if(route.params.actions !== treatments) {
+        //     validation(true, true, true);
+        // } else {
+        //     validation(true, true, false);
+        // }
     };
 
-    /* const updateTreatmentInDB = () => {
-        fetch('http://192.168.0.25:3000/patients/allPatients', {
-            method: 'PUT',
-            headers: {'Content-Type' : 'application/json'},
-            body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
-        }).then(response => response.json())
-        .then(data => {
-            setIsVisited(false);
-            setIsOk(false);
-            setIsOkWithModification(false);
-        })
-    } */
-    
-    
-    //console.log('soinsprévus', plannedTreatments)
-    //console.log('patient', patient);
-    //console.log('firstname', patient.firstname);
-    
     // Formatage de la date de la consultation :
     const date = moment(route.params.date).format('L');
     // Formatage de l'heure de la consultation :
@@ -202,7 +189,7 @@ export default function ConsultationScreen({ navigation, route }) {
                     <TouchableOpacity style={styles.modalChoiceText} onPress={()=> {
                         validation(true, true, true);
                     }}>
-                    <Text>OK</Text>
+                    <Text>Ok</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -228,6 +215,8 @@ export default function ConsultationScreen({ navigation, route }) {
 
     // Effet du clic sur "Soin non réalisé" :
     /* const handleCancel = () => {
+        validation(true, false, false)
+    }
 
     } */
 
@@ -274,23 +263,6 @@ export default function ConsultationScreen({ navigation, route }) {
                                         style={styles.soinsPrevus} 
                                         onChangeText={text => setPlannedTreatments(text)}/>
                                 </View>
-                                {/* <View>
-                                    <Text style={styles.titleSoins}>Soins supplémentaires</Text>
-                                    </View>
-                                    <View>      
-                                    <TextInput 
-                                    mode='outlined'
-                                    multiline={true}
-                                    textAlignVertical= 'top'
-                                    theme={{ 
-                                        colors: { 
-                                            primary: '#99BD8F', 
-                                        }
-                                    }}
-                                    style={styles.soinsPrevus} 
-                                    onChangeText={text => setNewTreatments(text)} 
-                                    value={newTreatments}/>
-                                </View>  */}
                                 <View>
                                     <Text style={styles.titleSoins}>Transmission</Text>
                                 </View>            
@@ -426,7 +398,8 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 5,
         fontSize: 20,
-        fontWeight: '600',
+        fontFamily: 'Poppins_400Regular',
+      
     },
     dataTop: {
         flexDirection: 'row',
@@ -451,12 +424,12 @@ const styles = StyleSheet.create({
       },
     modalView: {
         height: 300,
-        width: '80%',
+        width: '85%',
         backgroundColor: "#F0F0F0",
         borderRadius: 20,
         padding: 35,
         justifyContent: 'flex-start',
-        alignItems: "center",
+        // alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
           width: 0,
@@ -481,7 +454,7 @@ const styles = StyleSheet.create({
         margin: 20,
         fontSize: 20,
         fontFamily: 'Poppins_400Regular',
-        //justifyContent: 'space-between',
+        justifyContent: 'space-around',
     },
     modalChoiceText: {
         fontFamily: 'Poppins_400Regular',

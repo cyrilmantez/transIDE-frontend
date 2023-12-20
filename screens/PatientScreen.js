@@ -14,7 +14,7 @@ export default function App({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    fetch(`http://192.168.1.14:3000/patients/patient/${route.params._id}`).then(response => response.json())
+    fetch(`http://192.168.1.5:3000/patients/patientById/${route.params._id}`).then(response => response.json())
     .then(data => {
         setPatient(data.patient)
     });
@@ -44,7 +44,7 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http:192.168.1.14:3000/patients/updatePatientById', {
+                fetch('http://192.168.1.5:3000/patients/updatePatientById', {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ export default function App({ navigation, route }) {
     const [treatments, setTreatments] = useState([]);
 
     useEffect(() => {
-      fetch('http://192.168.1.14:3000/patients/allPatientDay')
+      fetch('http://192.168.1.5:3000/patients/allPatientDay')
         .then(response => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -165,7 +165,10 @@ export default function App({ navigation, route }) {
           <Text style={styles.pac}>Personne à contacter en cas d'urgence</Text>
           <Text style={styles.icei}>{patient.ICEIdentity ? patient.ICEIdentity : "Non renseigné"}</Text>
           <Text style={styles.icep}>{patient.ICEPhoneNumber}</Text>
-          <TouchableOpacity style={styles.btnscroll} onPress={() => navigation.navigate('ModificationPatientRecordScreen')}>
+          <TouchableOpacity style={styles.btnscroll} onPress={() => {
+            navigation.navigate('ModificationPatientRecordScreen')
+            setModalVisible(false)
+        }}>
             <Text style={styles.btnmodify}>Modifier</Text>
           </TouchableOpacity>
         </>)}
