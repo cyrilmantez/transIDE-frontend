@@ -13,7 +13,7 @@ import * as Linking from 'expo-linking';
 export default function TourScreen({navigation}) {
   const user = useSelector((state) => state.users.value)
 
-  console.log(user);
+ 
   const [date, setDate] = useState(new Date());
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');
@@ -21,6 +21,7 @@ export default function TourScreen({navigation}) {
   const [patientModal, setPatientModal] = useState({})
   const [modalVisible, setModalVisible] = useState(false);
   const [modalAddressVisible, setModalAddressVisible] = useState(false);
+  const [officeToken, setOfficeToken] = useState('');
 
 
   ////////////// gestion des tous/restants :
@@ -32,10 +33,11 @@ export default function TourScreen({navigation}) {
 
   //////////////// fonction en chage du fetch pour récupérer les patients à voir :
   const allData =()=> {
+    const tokenByDefault = user.officesTokens;
     fetch('http://192.168.1.162:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
-      body: JSON.stringify({officeToken: user.officesTokens[0].token, dateOfToday : date })
+      body: JSON.stringify({officeToken: tokenByDefault.filter(e => e.isByDefault)[0].token, dateOfToday : date })
     }).then(response => response.json())
       .then(data => {
         setAllPatients(data.patientsToSee)
