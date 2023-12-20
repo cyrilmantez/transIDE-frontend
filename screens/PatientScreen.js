@@ -14,7 +14,7 @@ export default function App({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    fetch(`http://192.168.1.162:3000/patients/patientById/${route.params._id}`).then(response => response.json())
+    fetch(`http://192.168.1.14:3000/patients/patientById/${route.params._id}`).then(response => response.json())
     .then(data => {
         setPatient(data.patient)
     });
@@ -45,7 +45,7 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http://192.168.0.25:3000/patients/updatePatientById', {
+                fetch('http://192.168.1.14:3000/patients/updatePatientById', {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ export default function App({ navigation, route }) {
     const [treatments, setTreatments] = useState([]);
 
     useEffect(() => {
-      fetch('http://192.168.1.162:3000/patients/allPatientDay')
+      fetch('http://192.168.1.14:3000/patients/allPatientDay')
         .then(response => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -156,7 +156,10 @@ export default function App({ navigation, route }) {
                     <Text style={styles.address}>{patient.address}</Text>          
                     <View><Text style={styles.addressplus}>{patient.infosAdress ? patient.infosAdress : ""}</Text></View>
                 </View>
-                <TouchableOpacity onPress={() => navigation.navigate('ModifyAddressScreen', { _id : patient._id})}style={{ width: 35, height: 35, alignItems: 'center', justifyContent: 'space-between'}}>
+                <TouchableOpacity onPress={() => {
+                  navigation.navigate('ModifyAddressScreen', { _id : patient._id});
+                  setModalVisible(false);
+                  }} style={{ width: 35, height: 35, alignItems: 'center', justifyContent: 'space-between'}}>
                     <FontAwesome name={'pencil-square-o'} size={24} color='black'/>
                 </TouchableOpacity>
             </View>
@@ -165,7 +168,10 @@ export default function App({ navigation, route }) {
                 <Text style={styles.mobile}>{patient.mobile ? patient.mobile : "Non renseigné"}</Text>
                 <Text style={styles.homephone}>{patient.homePhone ? patient.homePhone : ""}</Text>
               </View>
-              <TouchableOpacity style={{ width: 35, height: 35, alignItems: 'center', justifyContent: 'center'}}>
+              <TouchableOpacity onPress={() => {
+                navigation.navigate('ModifyPhoneScreen', { _id : patient._id});
+                setModalVisible(false);
+                }} style={{ width: 35, height: 35, alignItems: 'center', justifyContent: 'center'}}>
                     <FontAwesome name={'pencil-square-o'} size={24} color='black'/>
               </TouchableOpacity>
             </View>
@@ -176,7 +182,11 @@ export default function App({ navigation, route }) {
                     <Text style={styles.address}>{patient.ICEIdentity}</Text>          
                     <Text>{patient.ICEPhoneNumber ? patient.ICEPhoneNumber : ""}</Text>
                 </View>
-                <TouchableOpacity style={{ width: 35, height: 35, alignItems: 'center', justifyContent: 'center'}}>
+                <TouchableOpacity onPress={() => {
+                  navigation.navigate('ModifyPACScreen', { _id : patient._id});
+                  setModalVisible(false);
+                }} 
+                  style={{ width: 35, height: 35, alignItems: 'center', justifyContent: 'center'}}>
                     <FontAwesome name={'pencil-square-o'} size={24} color='black'/>
                 </TouchableOpacity>
             </View>
@@ -324,7 +334,8 @@ address: {
   fontFamily: 'Poppins_400Regular', 
   fontSize: 15,
   marginTop: 10,
-  width: 300,
+  width: 270,
+
 },
 addressplus: {
   fontFamily: 'Poppins_400Regular', 
@@ -351,7 +362,9 @@ mobile: {
   
 },
 homephone: {
-marginBottom: 10,
+  marginBottom: 10,
+  fontFamily: 'Poppins_400Regular', 
+  fontSize: 15,
 },
 containerscroll: {
   alignItems: 'center',
