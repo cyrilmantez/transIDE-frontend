@@ -33,11 +33,7 @@ export default function TourScreen({navigation}) {
   const allData =()=> {
     const tokenByDefault = user.officesTokens;
     console.log(tokenByDefault.filter(e => e.isByDefault)[0].token)
-<<<<<<<<< Temporary merge branch 1
     fetch('http://192.168.1.14:3000/patients/allPatients', {
-=========
-    fetch('http://192.168.0.25:3000/patients/allPatients', {
->>>>>>>>> Temporary merge branch 2
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: tokenByDefault.filter(e => e.isByDefault)[0].token, dateOfToday : date })
@@ -102,11 +98,7 @@ export default function TourScreen({navigation}) {
   
 /////////////fonction en charge du fetch de mise à jour treatment in DB:
 const updateTreatmentInDB = (a, b, c) => {
-<<<<<<<<< Temporary merge branch 1
   fetch('http://192.168.1.162:3000/patients/updateTreatment', {
-=========
-  fetch('http://192.168.0.25:3000/patients/updateTreatment', {
->>>>>>>>> Temporary merge branch 2
     method: 'PUT',
     headers: {'Content-Type' : 'application/json'},
     body: JSON.stringify({
@@ -413,13 +405,13 @@ const updateTreatmentInDB = (a, b, c) => {
       return (<View />);
     } else {
      return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#99BD8F' }}>
           <StatusBar barStyle="light-content"/>
             <View style={styles.container}>
                 <View style={styles.containerHeader}>
                         <View style={styles.header}>
                           <View>
-                            <TouchableOpacity onPress={() => navigation.navigate('MenuScreen')}> 
+                            <TouchableOpacity style={styles.barsStyle} onPress={() => navigation.navigate('MenuScreen')}> 
                               <FontAwesome name='bars' size={32} color='#99BD8F'/>
                             </TouchableOpacity> 
                           </View>
@@ -484,6 +476,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     // borderColor : 'blue',
     // borderWidth : 2,
+    backgroundColor: '#fff',
+  },
+  barsStyle: {
+    marginLeft: 10,
+    marginTop: 10,
   },
   containerHeader: {
     height: '20%',

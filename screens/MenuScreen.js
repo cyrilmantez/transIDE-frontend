@@ -57,18 +57,17 @@ export default function MenuScreen({ navigation, route }) {
       } else {
 
         return (
-            <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+            <SafeAreaView style={{flex: 1, backgroundColor: '#99BD8F'}}>
                 <StatusBar barStyle="light-content"/>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                             <ScrollView >
-                                <View style={styles.chevron}> 
+                                <View style={styles.bars}> 
                                     <TouchableOpacity onPress={() => {navigation.navigate('TabNavigator')}}>
-                                        <FontAwesome name={'chevron-left'} size={30} color='white' />
+                                    <FontAwesome name='bars' size={32} color='white'/>
                                     </TouchableOpacity>
                                 </View>
-                                <View style={styles.titleContainer}>
-                                    <FontAwesome name='bars' size={32} color='white'/>
+                                <View style={styles.titleContainer}>                                    
                                     <Text style={styles.titlePage}>  MENU</Text>
                                 </View>
                                 <View style={styles.menuContainer}>
@@ -108,21 +107,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         //alignItems: 'center',
     },
-    chevron: {
+    bars: {
         alignContent: 'flex-start',
-        marginTop: 40,
-        marginBottom: 40,
-        paddingLeft: 20,
-        /* borderColor: 'red',
-        borderWidth: 4, */
+        marginTop: 10,
+        marginLeft: 10,
      },
     titleContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'baseline',
-        //borderColor: 'red',
-        //borderWidth: 4,
-        //padding: 15,
+        marginRight: 10
     },
     titlePage: {
         marginBottom: 20,
@@ -130,19 +124,10 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontFamily: 'Poppins_600SemiBold',
     },
-   /*  text: {
-        color: 'white',
-        fontSize: 20,
-        fontWeight: '400',
-    }, */
     menuContainer: {
-        /* borderColor: 'red',
-        borderWidth: 4, */
-        paddingLeft: 40,
+        marginLeft: 10,
     },
     choiceText: {
-        /* borderColor: 'red',
-        borderWidth: 4, */
         color: 'white',
         fontSize: 20,
         marginTop: 20,
