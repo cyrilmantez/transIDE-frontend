@@ -53,7 +53,7 @@ export default function TransmissionScreen({navigation}) {
             setTransmissions([])
           }
         })
-    }, [date])
+    }, [date, user.officesTokens])
   )
 
 
@@ -304,7 +304,7 @@ modalContainer: {
   backgroundColor: 'rgba(0, 0, 0, 0.5)',
 },
 modalContent: {
-  backgroundColor: '#99BD8F',
+  backgroundColor: 'white',
   padding: 8,
   borderRadius: 10,
   elevation: 5,
@@ -318,13 +318,11 @@ modalList:{
   width: '100%',
   maxHeight: '80%',
  backgroundColor: 'white',
- borderColor: '#99BD8F',
- borderWidth: 1,
+ 
 },
 modalTextButton:{
  textAlign: 'center',
  backgroundColor: 'white',
- marginTop: 10,
  height: 30,
  ...Platform.select({
   ios: {
@@ -334,7 +332,7 @@ modalTextButton:{
     shadowRadius: 3,
   },
   android: {
-    elevation: 5,
+    elevation: 2,
   },
 }),
 },
@@ -342,8 +340,7 @@ modalText:{
  textAlign: 'center'
 },
 closeButton : {
-  borderColor: 'white',
-  borderWidth: 1,
+
   display:'flex',
   justifyContent: 'center',
   alignContent: 'center',
