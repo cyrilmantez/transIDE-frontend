@@ -23,27 +23,29 @@ export default function MenuScreen({ navigation, route }) {
                         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                             <View>
                                 <ScrollView contentContainerStyle={styles.scrollView}>
-                                    <View style={styles.chevron}> 
-                                        <TouchableOpacity onPress={() => {navigation.navigate('TabNavigator')}}>
-                                            <FontAwesome name={'chevron-left'} size={30} color='white' />
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View styles={styles.titleContainer}>
-                                        <FontAwesome name='bars' size={32} color='white'/>
-                                        <Text style={styles.titlePage}>  MENU</Text>
-                                    </View>
-                                    <View style={styles.menuContainer}>
-                                        <View>
-                                            <Text style={styles.choiceText}>Mon compte</Text>
+                                    <View>
+                                        <View style={styles.chevron}> 
+                                            <TouchableOpacity onPress={() => {navigation.navigate('TabNavigator')}}>
+                                                <FontAwesome name={'chevron-left'} size={30} color='white' />
+                                            </TouchableOpacity>
                                         </View>
-                                        <View>
-                                            <Text style={styles.choiceText}>Gérer mon cabinet</Text>
+                                        <View styles={{}}>
+                                            <FontAwesome name='bars' size={32} color='white'/>
+                                            <Text style={styles.titlePage}>  MENU</Text>
                                         </View>
-                                        <View>
-                                            <Text style={styles.choiceText}>Rejoindre une équipe</Text>
-                                        </View>
-                                        <View>
-                                            <Text style={styles.choiceText}>Ressources</Text>
+                                        <View style={styles.menuContainer}>
+                                            <View>
+                                                <Text style={styles.choiceText}>Mon compte</Text>
+                                            </View>
+                                            <View>
+                                                <Text style={styles.choiceText}>Gérer mon cabinet</Text>
+                                            </View>
+                                            <View>
+                                                <Text style={styles.choiceText}>Rejoindre une équipe</Text>
+                                            </View>
+                                            <View>
+                                                <Text style={styles.choiceText}>Ressources</Text>
+                                            </View>
                                         </View>
                                     </View>
                                 </ScrollView>
@@ -60,12 +62,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#99BD8F',
         //alignItems: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     scrollView: {
         
-        justifyContent: 'center',
-        alignItems: 'center',
-        
+               
     },
     chevron: {
         alignSelf: 'flex-start',
@@ -88,7 +90,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 30,
         fontFamily: 'Poppins_600SemiBold',
-        justifyContent: 'flex-start',
         textAlign: 'center',
     },
     text: {
