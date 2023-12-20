@@ -179,7 +179,7 @@ export default function App({ navigation, route }) {
           <Text style={styles.pac}>Personne à contacter en cas d'urgence</Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}} >          
                 <View style={{width: 285}}>              
-                    <Text style={styles.address}>{patient.ICEIdentity}</Text>          
+                    <Text style={styles.address}>{patient.ICEIdentity ? patient.ICEIdentity : "Non renseigné"}</Text>          
                     <Text>{patient.ICEPhoneNumber ? patient.ICEPhoneNumber : ""}</Text>
                 </View>
                 <TouchableOpacity onPress={() => {
@@ -377,13 +377,13 @@ centerView: {
 },
 closemodal: {
   position: 'absolute',
-  top: 390,  
+  top: 330,  
 },
 
 modalView: {
  
   margin: 20,
-  height: '75%',
+  height: '68%',
   width: '97%',
   backgroundColor: "#99BD8F",
   borderRadius: 20,
