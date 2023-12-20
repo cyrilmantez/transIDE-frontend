@@ -16,7 +16,7 @@ export default function AddConsultationScreen({ navigation, route }) {
     // Recherche des patients avec le même nom de famille :
     const findPatient = (name) => {
         // Affichage modale multichoix des patients avec le même nom :
-        fetch(`http://192.168.1.5:3000/patients/patientByName/${name}`)
+        fetch(`http://192.168.0.25:3000/patients/patientByName/${name}`)
         .then(response => response.json())
         .then(data => {
             if (data.result) {
