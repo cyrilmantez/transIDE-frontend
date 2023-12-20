@@ -14,14 +14,9 @@ export default function SignInScreen({navigation}) {
   const [modalMessage, setModalMessage] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false)
  console.log('coucou');
+ 
   const handleConnexion = () => {
-    if (!signInName || !signInPassword) {
-      alert('Champs manquants ou incomplets');
-      return;
-    }
-
-    
-    fetch('http://192.168.1.5:3000/users/signin', {
+    fetch('http://192.168.1.162:3000/users/signin', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({username: signInName, password: signInPassword})
@@ -40,7 +35,6 @@ export default function SignInScreen({navigation}) {
             setModalMessage('Utilisateur et/ou mot de pass incorrect');
             setIsModalVisible(true);
           }
-          
           
         }
       })
