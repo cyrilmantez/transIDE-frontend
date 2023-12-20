@@ -87,7 +87,6 @@ export default function AddTransmissionScreen({navigation}) {
     }
     const suggestionsToDisplay = suggestions.map((item, index) => {
        return (
-       
           <TouchableOpacity key={index} style={styles.listSuggestionText} onPress={()=>{handlePatientChoice (item.name, item.firstname, item.yearOfBirthday)}}>
           <Text style={styles.textAlign}>{`${item.name} ${item.firstname} - ${item.yearOfBirthday}`} </Text>
         </TouchableOpacity>
@@ -334,6 +333,7 @@ export default function AddTransmissionScreen({navigation}) {
         width: 350,
       },
       suggestionsContainer:{
+        marginRight: 80,
         width: '70%',
         display:'flex',
         overflow: 'scroll',
@@ -353,7 +353,7 @@ export default function AddTransmissionScreen({navigation}) {
       listSuggestionText:{
         textAlign: 'center',
         backgroundColor: 'white',
-        marginTop: 10,
+        paddingLeft:10,
         height: 30,
         ...Platform.select({
           ios: {
@@ -363,7 +363,7 @@ export default function AddTransmissionScreen({navigation}) {
             shadowRadius: 3,
           },
           android: {
-            elevation: 5,
+            elevation: 2,
           },
         }),
       },

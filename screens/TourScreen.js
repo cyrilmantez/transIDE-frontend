@@ -50,7 +50,7 @@ export default function TourScreen({navigation}) {
   useFocusEffect(
     React.useCallback(() => {
       allData()  
-    }, [date, modalVisible])
+    }, [date, modalVisible, user.officesTokens])
   );
 
   useEffect( () => {
@@ -155,7 +155,7 @@ const updateTreatmentInDB = (a, b, c) => {
           });          
   };
 
-  //console.log(patientModal.yearOfBirthday);
+
   ///////// modal de validation des soins :
   const modalContent = (
     <Modal
