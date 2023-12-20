@@ -4,14 +4,30 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { TextInput, Icon} from 'react-native-paper';
 import React, { useState, useEffect } from 'react';
 
-export default function ModificationPatientRecordScreen() {
+export default function ModificationPatientRecordScreen({ navigation, route }) {
     const [data, setData] = useState({}); 
     const [patient, setPatient] = useState(null);
+
+    const [address, setAddress] = useState('');
+
+
+    useEffect(() => {
+      if (patient) { console.log(patient)
+        fetch(`http://192.168.1.14:3000/patients/allPatientDay/${patient._id}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log('data.add :', data);
+          setAddress(data.address);
+        })
+      }
+    }, []);
+    
+
 
     useEffect(() => {
         // Assurez-vous que 'patient' est défini avant de l'utiliser
         if (patient) { console.log(patient)
-          fetch('http://192.168.1.5:3000/patients/updatePatientById', {
+          fetch('http://192.168.1.14:3000/patients/updatePatientById', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -74,17 +90,13 @@ export default function ModificationPatientRecordScreen() {
                                     </View>
                                     <View>    
                                         <Text>{data.address}</Text>                               
-                                    <TextInput
-                                        label='Adresse' 
+                                        <TextInput
+                                        label='Adresse'
                                         mode='outlined'
-                                        theme={{ 
-                                            colors: { 
-                                                primary: '#99BD8F', 
-                                            }
-                                            }}
-                                        value={data.address}
-                                        onChangeText={text => handleInputChange('address', text)}
-                                    />
+                                        theme={{ colors: { primary: '#99BD8F' }}}
+                                        value={data.address} 
+                                        onChangeText={text => setAddress(text)}
+                                      />
                                     <Icon
                                         icon="delete"
                                         size={20}
