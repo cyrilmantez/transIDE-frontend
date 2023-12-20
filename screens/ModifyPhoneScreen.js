@@ -4,29 +4,16 @@ import React, { useState, useEffect } from 'react';
 import { TextInput, List } from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-export default function ModifyAddressScreen({ navigation, route }) {
+export default function ModifyPhoneScreen({ navigation, route }) {
     const { _id } = route.params;
 
-    const [results, setResults] = useState([]);
-    const [showSuggestions, setShowSuggestions] = useState(false);
-    const [addressPatient, setAddressPatient] = useState('');
-    const [additionalAddress, setAdditionalAddress] = useState('');
-
- 
-      // Suggestion adresse
-      const fetchAddress = (query) => {
-        fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&autocomplete=1`)
-          .then(response => response.json())
-          .then(data => {
-            setResults(data.features);
-            setShowSuggestions(true);
-        })
-      };
+    const [mobile, setMobile] = useState('');
+    const [homePhone, setHomePhone] = useState('');
 
       // 
       const modifications = {
-        address: addressPatient,
-        infosAddress: additionalAddress,
+        mobile: mobile,
+        homePhone: homePhone,
     }
 
     const handleButtonPress = () => {
@@ -42,7 +29,7 @@ export default function ModifyAddressScreen({ navigation, route }) {
             }),
           })
           .then(response => response.json())
-          .then(data => console.log('datttaaa', ata))
+          .then()
           .catch(error => console.error('Error:', error));
         } else {
           console.log('_id is not defined');
@@ -68,40 +55,42 @@ export default function ModifyAddressScreen({ navigation, route }) {
             </TouchableOpacity>       
             </View>  
                 <View>
-                    <Text style={styles.title}>Nouvelle adresse</Text>
+                    <Text style={styles.title}>Téléphone(s)</Text>
                 </View>
                 <View>
                 <TextInput
-                label='Nouvelle adresse'
-                multiline
+                label='Téléphone portable'                
                 mode='outlined'
+                keyboardType='phone-pad'
                 theme={{ colors: { primary: '#99BD8F' }}}
                 style={{marginTop: 5, width: 350}}
                 onChangeText={(text) => {
-                  setAddressPatient(text);
-                  fetchAddress(text);
-                  setResults([]);
+                    let cleaned = ('' + text).replace(/\D/g, '');                    
+                    if (cleaned.length > 10) {
+                        cleaned = cleaned.substring(0, 10);
+                    }                    
+                    const match = cleaned.match(/(\d{0,2})/g);
+                    const phoneNumber = match.join('.').replace(/\.$/, '');
+                    setMobile(phoneNumber)
                 }}
-                value={addressPatient}              
+                value={mobile}              
               />
-              { results && results.map((result, index) => (
-                    <List.Item
-                        key={index}
-                        title={result.properties.label}  
-                        onPress={() => setAddressPatient(result.properties.label)}                                                
-                    />
-                ))}
                 <TextInput
-                label="Complément d'adresse"
-                multiline
+                label="Téléphone fixe (facultatif)"                
                 mode='outlined'
+                keyboardType='phone-pad'
                 theme={{ colors: { primary: '#99BD8F' }}}
                 style={{marginTop: 10, width: 350}}
                 onChangeText={(text) => {
-                  setAdditionalAddress(text)
-                  setResults([]);
+                    let cleaned = ('' + text).replace(/\D/g, '');                    
+                    if (cleaned.length > 10) {
+                      cleaned = cleaned.substring(0, 10);
+                    }                    
+                    const match = cleaned.match(/(\d{0,2})/g);
+                    const phoneNumber = match.join('.').replace(/\.$/, '');
+                    setHomePhone(phoneNumber);                 
                 }}
-                value={additionalAddress}              
+                value={homePhone}              
               />
                 </View>
                 <View style={styles.button}>
@@ -130,7 +119,7 @@ const styles = StyleSheet.create({
  title: {
     color: '#99BD8F',
     fontFamily: 'Poppins_600SemiBold', 
-    fontSize: 30,
+    fontSize: 27,
     marginBottom: 50
  },
  button: {

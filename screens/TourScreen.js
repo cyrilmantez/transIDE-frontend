@@ -35,7 +35,7 @@ export default function TourScreen({navigation}) {
   //////////////// fonction en chage du fetch pour récupérer les patients à voir :
   const allData =()=> {
     const tokenByDefault = user.officesTokens;
-    fetch('http://192.168.1.162:3000/patients/allPatients', {
+    fetch('http://192.168.1.14:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: tokenByDefault.filter(e => e.isByDefault)[0].token, dateOfToday : date })
@@ -100,7 +100,7 @@ export default function TourScreen({navigation}) {
   
 /////////////fonction en charge du fetch de mise à jour treatment in DB:
 const updateTreatmentInDB = (a, b, c) => {
-  fetch('http://192.168.1.5:3000/patients/updateTreatment', {
+  fetch('http://192.168.1.14:3000/patients/updateTreatment', {
     method: 'PUT',
     headers: {'Content-Type' : 'application/json'},
     body: JSON.stringify({

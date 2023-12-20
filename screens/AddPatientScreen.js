@@ -307,7 +307,14 @@ export default function AddPatientScreen({navigation}) {
                                 }}
                                 keyboardType='phone-pad'
                                 value={phoneNumber} 
-                                onChangeText={text => setPhoneNumber(text)} 
+                                onChangeText={text => {
+                                  let cleaned = ('' + text).replace(/\D/g, '');                    
+                                  if (cleaned.length > 10) {
+                                    cleaned = cleaned.substring(0, 10);
+                                  }                    
+                                  const match = cleaned.match(/(\d{0,2})/g);
+                                  const phoneNumber = match.join('.').replace(/\.$/, '');
+                                  setPhoneNumber(phoneNumber)}} 
                                 style={{ width: 350, marginTop: 15 }} 
                             />
                             <TextInput 
@@ -320,7 +327,14 @@ export default function AddPatientScreen({navigation}) {
                                 }}
                                 keyboardType='phone-pad'
                                 value={homePhone} 
-                                onChangeText={text => setHomePhone(text)} 
+                                onChangeText={text =>{ 
+                                  let cleaned = ('' + text).replace(/\D/g, '');                    
+                                  if (cleaned.length > 10) {
+                                    cleaned = cleaned.substring(0, 10);
+                                  }                    
+                                  const match = cleaned.match(/(\d{0,2})/g);
+                                  const phoneNumber = match.join('.').replace(/\.$/, '');
+                                  setHomePhone(phoneNumber)}} 
                                 style={{ width: 350, marginTop: 15 }} 
                             />
                             <TextInput 
