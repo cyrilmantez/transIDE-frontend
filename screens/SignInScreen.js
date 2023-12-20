@@ -28,7 +28,14 @@ export default function SignInScreen({navigation}) {
           dispatch(login({username: signInName, token: data.token, officesTokens : data.officesToken }));
           setSignInName('');
           setSignInPassword('');
-          navigation.navigate('TabNavigator');
+          navigation.reset({
+            index: 0,
+            routes: [
+              { name: 'DrawerNavigator' },
+              { name: 'TabNavigator' }
+            ],
+          });
+          navigation.dispatch(DrawerActions.openDrawer());
         }
       })
   }

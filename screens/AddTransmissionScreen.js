@@ -5,8 +5,6 @@ import { useEffect, useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Dropdown from './Dropdown';
-
 import { addPatient } from '../reducers/patients';
 import { useDispatch, useSelector } from 'react-redux';
 import { Camera, FlashMode} from 'expo-camera';
@@ -32,7 +30,7 @@ export default function AddTransmissionScreen({navigation}) {
     console.log('patient :',patient);
 
     useEffect (() => {
-      fetch(`http://192.168.1.5:3000/patients/allPatients/${officeToken}`).then(
+      fetch(`http://192.168.1.5:3000/patients/allPatientDay/${officeToken}`).then(
         response => response.json())
         .then(data => setAllPatients(data.Patients))
     }, [])
@@ -296,10 +294,7 @@ export default function AddTransmissionScreen({navigation}) {
        alignItems: 'center',
      
       },
-      dropdown: {
-       top: 0,
-       left: 0,
-       },
+
      header: {
        height: '10%',
        width : '100%',

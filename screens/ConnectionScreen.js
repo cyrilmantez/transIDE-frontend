@@ -1,8 +1,10 @@
-import { Button, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, AppRegistry, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import LottieView from 'lottie-react-native';
 import React, { useRef, useEffect } from 'react';
+
+AppRegistry.registerComponent('X', () => App);
 
 export default function ConnectionScreen({ navigation }) {
   const animationRef = useRef(null);
@@ -42,6 +44,7 @@ export default function ConnectionScreen({ navigation }) {
                           <Text style={styles.text}>Se connecter</Text>
                       </TouchableOpacity>
                   </View>
+                  <Text onPress={() => navigation.navigate('TabNavigator')}>Lien Temporaire</Text>
                 </View>
               </KeyboardAwareScrollView>
             </SafeAreaView>

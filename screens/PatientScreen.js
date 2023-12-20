@@ -14,8 +14,8 @@ export default function App({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    fetch(`http://192.168.1.14:3000/patients/patient/${route.params._id}`).then(response => response.json())
-    .then(data => {
+    fetch(`http://192.168.1.14:3000/patients/patientById/${route.params._id}`).then(response => response.json())
+    .then(data => {console.log('data de patient :', data.patient)
         setPatient(data.patient)
     });
     
@@ -342,11 +342,12 @@ containerscroll: {
   width: 320,
   alignItems: 'center',
   justifyContent: 'center',
+  paddingLeft: 10,
 },
 centerView: {
   justifyContent: "center",
   alignItems: "center",
-  marginTop: 120,
+  marginTop: '10%',
 },
 closemodal: {
   position: 'absolute',
@@ -355,8 +356,8 @@ closemodal: {
 
 modalView: {
   margin: 20,
-  height: 450,
-  width: 350,
+  height: '85%',
+  width: '97%',
   backgroundColor: "#99BD8F",
   borderRadius: 20,
   padding: 35,
@@ -431,8 +432,8 @@ journalBtn: {
   width: 360,
   height: 50,
   borderRadius: 10,
-  marginTop: 20,
-  marginBottom: 10,
+  marginTop: 10,
+  marginBottom: 20,
   justifyContent: 'center',
   alignItems: 'center',
 },

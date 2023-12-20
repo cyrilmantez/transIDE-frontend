@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity, StatusBar} from 'react-native';
-import Dropdown from './Dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
@@ -23,6 +22,7 @@ export default function TourScreen({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalAddressVisible, setModalAddressVisible] = useState(false);
 
+
   ////////////// gestion des tous/restants :
   const [seeAll, setSeeAll] = useState(true)
 
@@ -32,7 +32,7 @@ export default function TourScreen({navigation}) {
 
   //////////////// fonction en chage du fetch pour récupérer les patients à voir :
   const allData =()=> {
-    fetch('http://192.168.0.25:3000/patients/allPatients', {
+    fetch('http://192.168.1.14:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: user.officesTokens[0].token, dateOfToday : date })
@@ -97,7 +97,7 @@ export default function TourScreen({navigation}) {
   
 /////////////fonction en charge du fetch de mise à jour treatment in DB:
 const updateTreatmentInDB = (a, b, c) => {
-  fetch('http://192.168.1.5:3000/patients/updateTreatment', {
+  fetch('http://192.168.1.14:3000/patients/updateTreatment', {
     method: 'PUT',
     headers: {'Content-Type' : 'application/json'},
     body: JSON.stringify({
@@ -403,7 +403,9 @@ const updateTreatmentInDB = (a, b, c) => {
                 <View style={styles.containerHeader}>
                         <View style={styles.header}>
                           <View>
-                             {/* <Dropdown style={styles.dropdown} navigation={navigation} /> */}
+                          <TouchableOpacity>
+                            <FontAwesome name='bars' size={32} color='#99BD8F'/>
+                          </TouchableOpacity> 
                           </View>
                           <Text style={{fontFamily: 'Poppins_400Regular', fontSize: 24,color: '#99BD8F', marginTop: 5,}}>Au boulot !</Text>
                           <Image

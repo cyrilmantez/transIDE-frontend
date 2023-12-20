@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, View, SafeAreaView, ScrollView, Image,TouchableOpacity, StatusBar , Platform ,Modal} from 'react-native';
-import Dropdown from './Dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
@@ -40,7 +39,7 @@ export default function TransmissionScreen({navigation}) {
   //get 10lastDayData from dataBase, and dispatch in the reducer
   useFocusEffect(
     React.useCallback(() => {
-    fetch(`http://192.168.0.25:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
+    fetch(`http://192.168.1.14:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
         .then((data) => {
           if(data.result){
             const compareDates = (a, b) => new Date(b.date) - new Date(a.date);
@@ -131,7 +130,7 @@ console.log('transmissions' ,transmissions)
     <StatusBar barStyle="light-content"/>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Dropdown style={styles.dropdown} navigation={navigation} />
+          {/* <Dropdown style={styles.dropdown} navigation={navigation} /> */}
           <Image 
           style={styles.image}
           source={require('../assets/logo.png')} />
@@ -224,10 +223,7 @@ const styles = StyleSheet.create({
   marginLeft: 0,
   marginRight: 0,
  },
- dropdown: {
-  top: 0,
-  left: 0,
-  },
+
 header: {
   height: '8%',
   justifyContent: 'space-between',
