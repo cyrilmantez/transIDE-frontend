@@ -15,6 +15,7 @@ export default function SignInScreen({navigation}) {
   const [isModalVisible, setIsModalVisible] = useState(false)
  //console.log('coucou');
  
+ 
   const handleConnexion = () => {
     fetch('http://192.168.1.14:3000/users/signin', {
       method: 'POST',
