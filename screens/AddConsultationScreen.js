@@ -28,7 +28,7 @@ export default function AddConsultationScreen({ navigation, route }) {
 
 
     useEffect (() => {
-        fetch(`http://192.168.1.5:3000/patients/allPatients/${officeToken}`).then(
+        fetch(`http://192.168.1.162:3000/patients/allPatients/${officeToken}`).then(
           response => response.json())
           .then(data => {
             //console.log(data.Patients)

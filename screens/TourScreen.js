@@ -98,11 +98,8 @@ export default function TourScreen({navigation}) {
   
 /////////////fonction en charge du fetch de mise à jour treatment in DB:
 const updateTreatmentInDB = (a, b, c) => {
-<<<<<<<<< Temporary merge branch 1
+
   fetch('http://192.168.1.162:3000/patients/updateTreatment', {
-=========
-  fetch('http://192.168.0.25:3000/patients/updateTreatment', {
->>>>>>>>> Temporary merge branch 2
     method: 'PUT',
     headers: {'Content-Type' : 'application/json'},
     body: JSON.stringify({
@@ -171,15 +168,15 @@ const updateTreatmentInDB = (a, b, c) => {
     <View style={styles.centeredView}>
       <View style={styles.modalView}>
         <Text style={styles.modalText}>validation des soins réalisés</Text>
-        <TouchableOpacity onPress={()=> validation(patientModal)} style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+        <TouchableOpacity onPress={()=> validation(patientModal)} style={{flexDirection: 'row', justifyContent: 'flex-end'}} accessibilityLabel="valider le soin">
           <Text style={{marginTop : 12, marginRight: 30, fontFamily: 'Poppins_400Regular', fontSize: 14,}}>soins validés</Text>
           <Icon source={'checkbox-blank-circle'} size={42} color='#99BD8F' />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => modification(patientModal)} style={{flexDirection: 'row', justifyContent: 'flex-end', marginRight: 20}}>
+        <TouchableOpacity onPress={() => modification(patientModal)} style={{flexDirection: 'row', justifyContent: 'flex-end', marginRight: 20}} accessibilityLabel="Apporter une modification au soin">
           <Text style={{marginTop : 12, marginRight: 30, fontFamily: 'Poppins_400Regular', fontSize: 14, }}>soins à modifier</Text>
           <Icon source={'checkbox-blank-circle'} size={42} color='orange' />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => annulation(patientModal)} style={{flexDirection: 'row', justifyContent: 'flex-end', marginRight: 6}}>
+        <TouchableOpacity onPress={() => annulation(patientModal)} style={{flexDirection: 'row', justifyContent: 'flex-end', marginRight: 6}} accessibilityLabel="annuler le soin">
           <Text style={{marginTop : 12, marginRight: 30, fontFamily: 'Poppins_400Regular',fontSize: 14, }}>soins annulés</Text>
           <Icon source={'checkbox-blank-circle'} size={42} color='#FF0000' />
         </TouchableOpacity>
@@ -428,7 +425,7 @@ const updateTreatmentInDB = (a, b, c) => {
                         <Text style={{fontFamily: 'Poppins_600SemiBold', fontSize: 28,color: '#99BD8F', marginTop: 10,}}>Au boulot !</Text>
                         <View style={styles.calendarContain}>
                                 <View style={styles.previous}>
-                                  <TouchableOpacity>
+                                  <TouchableOpacity accessibilityLabel="revenir à la date d'hier">
                                     <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' onPress={() => changeDate(-1)} />
                                   </TouchableOpacity>
                                 </View>

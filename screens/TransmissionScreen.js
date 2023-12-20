@@ -40,8 +40,10 @@ export default function TransmissionScreen({navigation}) {
   //get 10lastDayData from dataBase, and dispatch in the reducer
   useFocusEffect(
     React.useCallback(() => {
+
     const tokenByDefault = user.officesTokens;
-    fetch(`http://192.168.0.25:3000/transmissions/allTransmissions/${tokenByDefault.filter(e => e.isByDefault)[0].token}/${date}`).then(response => response.json())
+    console.log('token:',tokenByDefault.filter(e => e.isByDefault)[0].token);
+    fetch(`http://192.168.1.162:3000/transmissions/allTransmissions/${tokenByDefault.filter(e => e.isByDefault)[0].token}/${date}`).then(response => response.json())
         .then((data) => {
           if(data.result){
             const compareDates = (a, b) => new Date(b.date) - new Date(a.date);
@@ -97,7 +99,6 @@ export default function TransmissionScreen({navigation}) {
     </ScrollView>)
     })
 
-console.log('transmissions' ,transmissions)
 
 
  //IDE List
@@ -124,8 +125,6 @@ console.log('transmissions' ,transmissions)
           <TouchableOpacity key={index} style={styles.modalTextButton} onPress={() => {setPatientFiltered(`${element.name} ${element.firstname}`), closeModal()}}>
              <Text style={styles.modalText}  >{element.name} {element.firstname}</Text>
           </TouchableOpacity>
-     
-     
     )
 })
  return (
