@@ -405,9 +405,9 @@ const updateTreatmentInDB = (a, b, c) => {
                 <View style={styles.containerHeader}>
                         <View style={styles.header}>
                           <View>
-                          <TouchableOpacity onPress={() => navigation.navigate('MenuScreen')}> 
-                            <FontAwesome name='bars' size={32} color='#99BD8F'/>
-                          </TouchableOpacity> 
+                            <TouchableOpacity onPress={() => navigation.navigate('MenuScreen')}> 
+                              <FontAwesome name='bars' size={32} color='#99BD8F'/>
+                            </TouchableOpacity> 
                           </View>
                           <Text style={{fontFamily: 'Poppins_400Regular', fontSize: 24,color: '#99BD8F', marginTop: 5,}}>Au boulot !</Text>
                           <Image

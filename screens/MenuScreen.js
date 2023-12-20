@@ -1,47 +1,67 @@
-import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Keyboard, TouchableOpacity, SafeAreaView, Modal, TextInput } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Keyboard, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
-import moment from 'moment'; 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useSelector } from 'react-redux';
 
 export default function MenuScreen({ navigation, route }) {
 
-    return (
-        <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                    <ScrollView contentContainerStyle={styles.scrollView}>
-                        <View style={styles.chevron}> 
-                            <TouchableOpacity onPress={() => {navigation.navigate('TabNavigator')}}>
-                                <FontAwesome name={'chevron-left'} size={30} color='white' />
-                            </TouchableOpacity>
-                        </View>
-                        <View styles={styles.titleContainer}>
-                            <FontAwesome name='bars' size={32} color='white'/>
-                            <View>
-                                <Text style={styles.titlePage}>  MENU</Text>
-                            </View>
-                        </View>
-                        <View style={styles.menuContainer}>
-                            <View>
-                                <Text style={styles.choiceText}>Mon compte</Text>
-                            </View>
-                            <View>
-                                <Text style={styles.choiceText}>Gérer mon cabinet</Text>
-                            </View>
-                            <View>
-                                <Text style={styles.choiceText}>Rejoindre une équipe</Text>
-                            </View>
-                            <View>
-                                <Text style={styles.choiceText}>Ressources</Text>
-                            </View>
-                        </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
-            </TouchableWithoutFeedback>
-        </SafeAreaView>
-    );
+    const user = useSelector((state) => state.users.value);
+    const officeToken = useSelector((state) => state.users.value.officesTokens[0].token);
+
+    const toMyAccount = () => {
+        navigation.navigate('MyAccountScreen', {username : user.username, officeToken: user.officesTokens[0].token, officeName: user.officesTokens[0].name, isByDefault: user.officesTokens[0].isByDefault})
+    };
+
+    
+
+    let [fontsLoaded] = useFonts({
+        Poppins_400Regular,
+        Poppins_600SemiBold,
+      });
+  
+ 
+      if (!fontsLoaded) {
+        return <View />;
+      } else {
+
+        return (
+            <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+                <StatusBar barStyle="light-content"/>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                            <ScrollView contentContainerStyle={styles.scrollView}>
+                                <View style={styles.chevron}> 
+                                    <TouchableOpacity onPress={() => {navigation.navigate('TabNavigator')}}>
+                                        <FontAwesome name={'chevron-left'} size={30} color='white' />
+                                    </TouchableOpacity>
+                                </View>
+                                <View styles={styles.titleContainer}>
+                                    <FontAwesome name='bars' size={32} color='white'/>
+                                    <Text style={styles.titlePage}>  MENU</Text>
+                                </View>
+                                <View style={styles.menuContainer}>
+                                    <View>
+                                        <TouchableOpacity onPress={() => toMyAccount()}>
+                                            <Text style={styles.choiceText} >Mon compte</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.choiceText}>Gérer mon cabinet</Text>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.choiceText}>Rejoindre une équipe</Text>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.choiceText}>Ressources</Text>
+                                    </View>
+                                </View>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+                    </TouchableWithoutFeedback>
+            </SafeAreaView>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
