@@ -88,7 +88,11 @@ export default function ModifyAddressScreen({ navigation, route }) {
                     <List.Item
                         key={index}
                         title={result.properties.label}  
-                        onPress={() => setAddressPatient(result.properties.label)}                                                
+                        onPress={() => {
+                          setAddressPatient(result.properties.label);
+                          setShowSuggestions(false);
+                          setResults([]);
+                        }}                                                
                     />
                 ))}
                 <TextInput
