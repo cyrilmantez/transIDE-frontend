@@ -87,21 +87,23 @@ export default function SignInScreen({navigation}) {
                           style={{ width: 350, marginTop: 15 }}
                           onChangeText={text => setSignInName(text)} 
                           value={signInName}/>
-                          <TextInput 
-                          label='Ton mot de passe'
-                          mode='outlined'
-                          theme={{ 
-                            colors: { 
-                              primary: '#99BD8F', 
-                            }
-                          }}
-                          secureTextEntry={passwordVisible} 
-                          style={{ width: 350, marginTop: 15 }}
-                          onChangeText={text => setSignInPassword(text)} 
-                          value={signInPassword}/>
-                          <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 104}}>
-                            <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='grey' />
-                          </TouchableOpacity>
+                          <View style={styles.passwordStyle}>
+                            <TextInput 
+                            label='Ton mot de passe'
+                            mode='outlined'
+                            theme={{ 
+                              colors: { 
+                                primary: '#99BD8F', 
+                              }
+                            }}
+                            secureTextEntry={passwordVisible} 
+                            style={{ width: 350, marginTop: 15}}
+                            onChangeText={text => setSignInPassword(text)} 
+                            value={signInPassword}/>
+                            <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{marginTop: 35, marginLeft : -24}}>
+                              <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='grey' />
+                            </TouchableOpacity>
+                          </View>
                           <TouchableOpacity style={styles.button} onPress={() => handleConnexion()}>
                             <Text style={styles.text}>Valider</Text>
                           </TouchableOpacity>
@@ -161,6 +163,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 40,
   },
+  passwordStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
   inputContainer: {
     flex : 1,
     alignItems: 'center',
@@ -180,7 +186,7 @@ const styles = StyleSheet.create({
     width: 350,
     height: 50,
     borderRadius: 10,
-    marginTop: 25,
+    marginTop: 45,
     justifyContent: 'center',
     alignItems: 'center',
   },

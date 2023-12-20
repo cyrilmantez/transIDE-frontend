@@ -33,7 +33,7 @@ export default function AddTransmissionScreen({navigation}) {
       const tokenByDefault = user.officesTokens;
       const officeToken = tokenByDefault.filter(e => e.isByDefault)[0].token;
       console.log('token:',officeToken)
-      fetch(`http://192.168.1.162:3000/patients/allPatients/${officeToken}`).then(
+      fetch(`http://192.168.0.25:3000/patients/allPatients/${officeToken}`).then(
         response => response.json())
         .then(data => setAllPatients(data.Patients))
     }, [])

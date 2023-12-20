@@ -98,7 +98,11 @@ export default function TourScreen({navigation}) {
   
 /////////////fonction en charge du fetch de mise à jour treatment in DB:
 const updateTreatmentInDB = (a, b, c) => {
+<<<<<<<<< Temporary merge branch 1
   fetch('http://192.168.1.162:3000/patients/updateTreatment', {
+=========
+  fetch('http://192.168.0.25:3000/patients/updateTreatment', {
+>>>>>>>>> Temporary merge branch 2
     method: 'PUT',
     headers: {'Content-Type' : 'application/json'},
     body: JSON.stringify({
@@ -411,9 +415,9 @@ const updateTreatmentInDB = (a, b, c) => {
                 <View style={styles.containerHeader}>
                         <View style={styles.header}>
                           <View>
-                          <TouchableOpacity onPress={() => navigation.navigate('MenuScreen')}> 
-                            <FontAwesome name='bars' size={32} color='#99BD8F'/>
-                          </TouchableOpacity> 
+                            <TouchableOpacity onPress={() => navigation.navigate('MenuScreen')}> 
+                              <FontAwesome name='bars' size={32} color='#99BD8F'/>
+                            </TouchableOpacity> 
                           </View>
                           
                           <Image
