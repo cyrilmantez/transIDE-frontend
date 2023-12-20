@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity, StatusBar} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity, StatusBar, Platform} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
@@ -33,7 +33,7 @@ export default function TourScreen({navigation}) {
   const allData =()=> {
     const tokenByDefault = user.officesTokens;
     console.log(tokenByDefault.filter(e => e.isByDefault)[0].token)
-    fetch('http://192.168.1.14:3000/patients/allPatients', {
+    fetch('http://192.168.1.162:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: tokenByDefault.filter(e => e.isByDefault)[0].token, dateOfToday : date })
@@ -267,8 +267,8 @@ const updateTreatmentInDB = (a, b, c) => {
     }
  
     return (
-        <View key={i}>
-          <Card style={styles.contentcard}>
+      
+          <Card style={styles.contentcard} key={i}>
             <Card.Content style={styles.card}>
               <View>
                 <Paragraph >{patient.hour}</Paragraph>
@@ -316,7 +316,7 @@ const updateTreatmentInDB = (a, b, c) => {
               </View>
             </Card.Content>
           </Card>
-        </View>
+       
     );
   });
 
@@ -344,8 +344,8 @@ const updateTreatmentInDB = (a, b, c) => {
     }
  
       return (
-        <View key={i}>
-          <Card style={styles.contentcard}>
+       
+          <Card style={styles.contentcard} key={i}>
             <Card.Content style={styles.card}>
               <View>
                 <Paragraph >{patient.hour}</Paragraph>
@@ -390,7 +390,7 @@ const updateTreatmentInDB = (a, b, c) => {
               </View>
             </Card.Content>
           </Card>
-        </View>
+        
     );
   
   });
@@ -415,50 +415,64 @@ const updateTreatmentInDB = (a, b, c) => {
                             <FontAwesome name='bars' size={32} color='#99BD8F'/>
                           </TouchableOpacity> 
                           </View>
-                          <Text style={{fontFamily: 'Poppins_400Regular', fontSize: 24,color: '#99BD8F', marginTop: 5,}}>Au boulot !</Text>
+                          
                           <Image
                             style={styles.image}
                             source={require('../assets/logo.png')}
                           />
                         </View>
+                        <Text style={{fontFamily: 'Poppins_600SemiBold', fontSize: 28,color: '#99BD8F', marginTop: 10,}}>Au boulot !</Text>
                         <View style={styles.calendarContain}>
-                          <View style={styles.previous}>
-                            <TouchableOpacity>
-                              <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' onPress={() => changeDate(-1)} />
-                            </TouchableOpacity>
-                          </View>
-                          <View style={styles.calendar}>
-                            <Text style={styles.text} onPress={showDate}>
-                              {`${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`}
-                            </Text>
-                          </View>
-                          <View style={styles.next}>
-                            <TouchableOpacity>
-                              <FontAwesome name={'chevron-right'} size={24} color='#99BD8F' onPress={() => changeDate(+1)} />
-                            </TouchableOpacity>
-                          </View>
-                          <View>
-                            {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
-                          </View>
+                                <View style={styles.previous}>
+                                  <TouchableOpacity>
+                                    <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' onPress={() => changeDate(-1)} />
+                                  </TouchableOpacity>
+                                </View>
+                                <View style={styles.calendar}>
+                                  <Text style={styles.text} onPress={showDate}>
+                                    {`${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`}
+                                  </Text>
+                                </View>
+                                <View style={styles.next}>
+                                  <TouchableOpacity>
+                                    <FontAwesome name={'chevron-right'} size={24} color='#99BD8F' onPress={() => changeDate(+1)} />
+                                  </TouchableOpacity>
+                                </View>
+                                <View>
+                                  {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
+                                </View>
                         </View>
                 </View>
-                <View style={styles.nbrpatient}>
-                  <Text style={styles.textnbrpatient}>Patients visités: {(afficherPatients.length)-(afficherRestants.length)}/{afficherPatients.length}</Text>
+                <View>
+                  <View style={styles.nbrpatient}>
+                      <Text style={styles.textnbrpatient}>Patients visités: {(afficherPatients.length)-(afficherRestants.length)}/{afficherPatients.length}</Text>
+                    </View>
+                    <View style={styles.progressBar}>
+                      <ProgressBar progress={progress} style={{width: 200}} theme={{ colors: { primary: '#99BD8F' } }}/>
+                    </View>
                 </View>
-                <View style={styles.progressBar}>
-                  <ProgressBar progress={progress} style={{width: 200}} theme={{ colors: { primary: '#99BD8F' } }}/>
+                <View style={styles.filterNewContent}>
+                    <View style={styles.switchitem}>
+                        <Text style={styles.switchitemtext}>Tous</Text>                 
+                        <Switch value={isSwitchOn} theme={{ colors: { primary: '#99BD8F' } }}  onValueChange={onToggleSwitch}/>
+                        <Text style={styles.switchitemtext}>Restants</Text>
+                    </View>
+                    {afficherPatients.length>0 && <View style={styles.pluscircle}>
+                        <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' onPress={() => navigation.navigate('AddConsultationScreen')}/>
+                    </View>}
+                    
                 </View>
-                <View style={styles.pluscircle}>
-                    <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' onPress={() => navigation.navigate('AddConsultationScreen')}/>
-                </View>
-                <View style={styles.switchitem}>
-                  <Text style={styles.switchitemtext}>Tous</Text>                 
-                  <Switch value={isSwitchOn} theme={{ colors: { primary: '#99BD8F' } }}  onValueChange={onToggleSwitch}/>
-                  <Text style={styles.switchitemtext}>Restants</Text>
-                </View>
-                <ScrollView contentContainerStyle={styles.allcards}>
+                
+                {afficherPatients.length>0 && <ScrollView contentContainerStyle={styles.allcards}>
                 {seeAll ? afficherPatients : afficherRestants }
-              </ScrollView>
+                </ScrollView>}
+                {afficherPatients.length<1 && (<View style={styles.noConsultationContainer}>
+                    <Text style={{fontFamily: 'Poppins_600SemiBold', fontSize: 15,color: '#99BD8F', marginTop: 10, textAlign:'center'}}>Pas de consultation encore prévue pour aujourd'hui !</Text>
+                    <View style={styles.bigPluscircle}>
+                        <FontAwesome name={'plus-circle'} size={100} color='#99BD8F' onPress={() => navigation.navigate('AddConsultationScreen')}/>
+                    </View>
+                </View>)}
+               
               {modalContent}
               {modalAddressContent}
            </View>    
@@ -472,37 +486,31 @@ const updateTreatmentInDB = (a, b, c) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginTop: 30,
     display: 'flex',
-    borderColor : 'blue',
-    borderWidth : 2,
   },
   containerHeader: {
-    height: '20%',
+    height: '30%',
     backgroundColor: '#fff',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    // alignItems: 'center',
-    borderColor : 'green',
-    borderWidth : 2,
+    alignItems: 'center',
   },
   dropdown: {
     top: 0,
     left: 0,
+    marginLeft: 10,
     },
   header: {
-    // marginBottom: 20,
+    width: '100%',
     justifyContent: 'space-between',
+    alignItems: 'center',
     flexDirection: 'row',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
+
   image: {
     width: 60,
     height: 60,
-    marginLeft: -60,
+    marginLeft: -40,
   },
   calendarContain: {
     flex: 1,
@@ -511,10 +519,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   previous: {
-  marginRight: 20,
+  marginRight: 30,
   },
   next: {
-    marginLeft: 20,
+    marginLeft: 30,
     },
   calendar: {
     backgroundColor: '#99BD8F',
@@ -524,9 +532,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  filterNewContent: {
+    flexDirection:'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
   text: {
     color: '#F1FFEE',
-    fontFamily: 'Poppins_400Regular',
+    fontFamily: 'Poppins_600SemiBold',
     fontSize: 20,
   },
   pluscircle: {
@@ -539,10 +552,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+    backgroundColor: 'white',
   },
   contentcard:{
+    width: '100%',
     marginTop: 10, 
     marginBottom: 2,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 2,
+      }, }),
   },
   nompatient: {
     width: 100,
@@ -551,8 +576,8 @@ const styles = StyleSheet.create({
   allcards: {
     width: '95%',
     marginLeft: 10,
-    borderColor : 'red',
-    borderWidth : 2
+    borderColor: '#fff',
+    borderWidth: 0.5,
   },
   progressBar: {
     marginTop: 10,
@@ -563,7 +588,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   textnbrpatient: {
-    fontFamily: 'Poppins_400Regular',
+    fontFamily: 'Poppins_600SemiBold',
     fontSize: 17,
   },
   switchitem: {
@@ -608,5 +633,15 @@ const styles = StyleSheet.create({
     color: '#99BD8F',
     fontSize: 20,   
     fontFamily: 'Poppins_400Regular',
-  }
+  },
+  noConsultationContainer:{
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor:'#F0F0F0',
+  },
+  bigPluscircle: {
+    marginTop: 30,
+    alignItems: 'flex-end',
+  },
 });

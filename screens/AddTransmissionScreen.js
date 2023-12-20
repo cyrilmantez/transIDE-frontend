@@ -95,21 +95,6 @@ export default function AddTransmissionScreen({navigation}) {
        
     })
 
-    /*const pickDocument = async () => {
-      try {
-        const result = await DocumentPicker.getDocumentAsync();
-        console.log(result.type)
-        if (result.type === 'success') {
-          console.log(result.uri, result.name, result.type, result.size);
-          // Traitez le document sélectionné ici
-          setDocuments(result);
-        } else {
-          console.log('L\'utilisateur a annulé le choix du document');
-        }
-      } catch (err) {
-        console.log('Erreur lors du choix du document', err);
-      }
-    };*/
 
     const handleRegister = () => {
       if(transmission.info.length===0){

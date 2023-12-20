@@ -204,7 +204,6 @@ console.log('transmissions' ,transmissions)
               <TouchableOpacity>
                 <FontAwesome name={'plus-circle'} size={50} color='#99BD8F'  onPress={() => navigation.navigate('AddTransmissionScreen')}/>
               </TouchableOpacity>
-              
             </View>
         </View>
         <ScrollView style={styles.transmissionsContainer}>
@@ -241,6 +240,7 @@ image: {
 journal: {
   color: '#99BD8F',
   fontSize: 30,
+  marginTop: 10,
   marginBottom: 50,
   fontFamily: 'Poppins_600SemiBold',
  },
@@ -255,12 +255,14 @@ journal: {
  },
  textFilter : {
   fontSize: 14,
-  fontFamily: 'Poppins_600SemiBold',
+  fontFamily: 'Poppins_400Regular',
+  textDecorationLine: 'underline',
   
  },
  text : {
   fontSize: 14,
-  fontFamily: 'Poppins_600SemiBold',
+  fontFamily: 'Poppins_400Regular',
+
  },
  buttonContainer:{
   width: '100%',
@@ -286,14 +288,15 @@ textButton : {
 },
 transmissionText:{
   fontSize: 14,
-  fontFamily: 'Poppins_600SemiBold',
+  fontFamily: 'Poppins_400Regular',
   paddingTop: 17,
+  textDecorationLine: 'underline'
 },
 navigation_infos : {
   display : 'flex',
   flexDirection : 'row',
   justifyContent: 'space-between',
-  marginTop: 30,
+  marginTop: 45,
 },
 modalContainer: {
   flex: 1,
@@ -381,11 +384,11 @@ transmission :{
     android: {
       elevation: 2,
     }, }),
-    borderColor: 'blue',
+    
 },
 innerContainer: {
   margin : 10,
-  backgroundColor: 'white', // Assurez-vous que le fond de l'élément à l'intérieur est blanc
+  backgroundColor: 'white', 
   borderColor : 'red',
 },
 personAbout: {
@@ -398,12 +401,13 @@ personAbout: {
 },
 publicationDate :{
   fontSize: 10,
-  fontFamily: 'Poppins_600SemiBold',
+  fontFamily: 'Poppins_400Regular',
   paddingLeft: 5,
+  
 },
 message : {
   fontSize: 12,
-  fontFamily: 'Poppins_600SemiBold',
+  fontFamily: 'Poppins_400Regular',
   marginTop:10,
   paddingLeft: 5,
   paddingRight: 8,
