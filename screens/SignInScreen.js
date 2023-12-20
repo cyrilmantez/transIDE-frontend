@@ -13,7 +13,7 @@ export default function SignInScreen({navigation}) {
   const [signInPassword, setSignInPassword] = useState('');
   const [modalMessage, setModalMessage] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false)
-
+ console.log('coucou');
   const handleConnexion = () => {
     fetch('http://192.168.1.162:3000/users/signin', {
       method: 'POST',
