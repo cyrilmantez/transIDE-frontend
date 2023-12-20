@@ -192,7 +192,6 @@ const updateTreatmentInDB = (a, b, c) => {
   }
 
 
-
 /////////////////////modal Address et redirection vers waze:
   
   const changeStateAddress = (data) => {
@@ -238,7 +237,6 @@ const updateTreatmentInDB = (a, b, c) => {
   </Modal>
   )
 
-     
   
 ///////////////// Afficher les patients :
   const toMinutes = (time) => {
@@ -391,11 +389,9 @@ const updateTreatmentInDB = (a, b, c) => {
               </View>
             </Card.Content>
           </Card>
-        
     );
   
   });
-
 
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -507,7 +503,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
-
   image: {
     width: 60,
     height: 60,
