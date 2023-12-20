@@ -20,9 +20,12 @@ export const usersSlice = createSlice({
           },
         addPhoto: (state, action) => {
             state.value.photos.push(action.payload);
+        },
+        upDateOfficeByDefault : (state, action) => {
+            state.value.officesTokens = action.payload
         }
     },
 });
 
-export const {login, logout, addPhoto} = usersSlice.actions;
+export const {login, logout, addPhoto,upDateOfficeByDefault} = usersSlice.actions;
 export default usersSlice.reducer;

@@ -347,7 +347,6 @@ export default function AddTransmissionScreen({navigation}) {
       },
       patientInput : {
         width: 350,
-       
       },
       suggestionsContainer:{
         width: '70%',

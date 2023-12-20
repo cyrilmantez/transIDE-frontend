@@ -14,7 +14,7 @@ import * as Linking from 'expo-linking';
 export default function TourScreen({navigation}) {
   const user = useSelector((state) => state.users.value)
 
-
+  console.log(user);
   const [date, setDate] = useState(new Date());
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('');

@@ -131,10 +131,10 @@ console.log('transmissions' ,transmissions)
     <StatusBar barStyle="light-content"/>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Dropdown style={styles.dropdown} navigation={navigation} />
-          <Image 
-          style={styles.image}
-          source={require('../assets/logo.png')} />
+            <FontAwesome name={'plus-circle'} size={50} color='#99BD8F'  onPress={() => navigation.navigate('ManagementScreen')}/>
+            <Image 
+            style={styles.image}
+            source={require('../assets/logo.png')} />
         </View>
         <Text style={styles.journal} >Journal</Text>
         <View style={styles.filterContainer}>
@@ -230,6 +230,7 @@ const styles = StyleSheet.create({
   },
 header: {
   height: '8%',
+  width: '100%',
   justifyContent: 'space-between',
   flexDirection: 'row',
 },
