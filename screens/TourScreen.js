@@ -303,6 +303,10 @@ const updateTreatmentInDB = (a, b, c) => {
                   date: patient.date,
                   yearOfBirthday : patient.yearOfBirthday,
                   documentsOfTreatment: patient.documentsOfTreatment,
+
+                  date: patient.date,
+                  yearOfBirthday : patient.yearOfBirthday,
+                  documentsOfTreatment: patient.documentsOfTreatment,
                 })}>
                   <Icon source={'medical-bag'} size={24} color='#99BD8F'/>
                 </TouchableOpacity>
