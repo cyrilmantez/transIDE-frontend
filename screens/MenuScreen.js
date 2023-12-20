@@ -3,8 +3,12 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import React, { useState, useEffect } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useSelector } from 'react-redux';
+import { Icon } from 'react-native-paper';
+import { useDispatch } from 'react-redux';
+import { logout } from '../reducers/users';
 
 export default function MenuScreen({ navigation, route }) {
+    const dispatch = useDispatch();
 
     const user = useSelector((state) => state.users.value);
     const officeToken = useSelector((state) => state.users.value.officesTokens[0].token);
@@ -45,7 +49,11 @@ export default function MenuScreen({ navigation, route }) {
             isByDefault: user.officesTokens[0].isByDefault
         })
     };
-
+    // Déconnexion
+    const handlelogout = () => {
+        dispatch(logout());
+        navigation.navigate('SignInScreen');
+    }
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
         Poppins_600SemiBold,
@@ -71,26 +79,37 @@ export default function MenuScreen({ navigation, route }) {
                                     <Text style={styles.titlePage}>  MENU</Text>
                                 </View>
                                 <View style={styles.menuContainer}>
-                                    <View>
-                                        <TouchableOpacity onPress={() => toMyAccount()}>
-                                            <Text style={styles.choiceText} >Mon compte</Text>
+                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <Icon source={'account-box'} size={30} color={'white'}/>
+                                        <TouchableOpacity onPress={() => toMyAccount()}>                                            
+                                            <Text style={styles.choiceText} > Mon compte</Text>
                                         </TouchableOpacity>
                                     </View>
-                                    <View>
+                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <Icon source={'account-group'} size={30} color={'white'}/>
                                         <TouchableOpacity onPress={() => toMyFirm()}>
-                                            <Text style={styles.choiceText}>Gérer mon cabinet</Text>
+                                            
+                                            <Text style={styles.choiceText}> Gérer mon cabinet</Text>
                                         </TouchableOpacity>
                                     </View>
-                                    <View>
-                                        <TouchableOpacity /* onPress={() => toJoinATeam()} */>
-                                            <Text style={styles.choiceText}>Rejoindre une équipe</Text>
+                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <Icon source={'account-multiple-plus'} size={30} color={'white'}/>      
+                                        <TouchableOpacity onPress={() => navigation.navigate('MyPatientsScreen') } >                                            
+                                            <Text style={styles.choiceText}> Mes patients</Text>
                                         </TouchableOpacity>
                                     </View>
-                                    <View>
+                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <Icon source={'book-open-variant'} size={30} color={'white'}/>
                                         <TouchableOpacity onPress={() => toResources()}>
-                                            <Text style={styles.choiceText}>Ressources</Text>
+                                            <Text style={styles.choiceText}> Ressources</Text>
                                         </TouchableOpacity>
                                     </View>
+                                        <View style={{flexDirection: 'row', alignItems: 'center', top: 320}}>
+                                            <Icon source={'logout'} size={30} color={'white'}/>  
+                                            <TouchableOpacity onPress={() => {handlelogout()}}>
+                                                <Text style={styles.choiceText}> Deconnexion</Text>
+                                            </TouchableOpacity>
+                                        </View>
                                 </View>
                             </ScrollView>
                         </KeyboardAvoidingView>
@@ -126,6 +145,7 @@ const styles = StyleSheet.create({
     },
     menuContainer: {
         marginLeft: 10,
+        height: 650,
     },
     choiceText: {
         color: 'white',

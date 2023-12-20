@@ -29,7 +29,7 @@ import ModifyAddressScreen from './screens/ModifyAddressScreen';
 import ModifyPhoneScreen from './screens/ModifyPhoneScreen';
 import ModifyPACScreen from './screens/ModifyPACScreen';
 import MenuScreen from './screens/MenuScreen';
-
+import MyPatientsScreen from './screens/MyPatientsScreen';
 
 const reducers = combineReducers({users, patients, transmissions});
 
@@ -100,6 +100,7 @@ export default function App() {
             <Stack.Screen name="ModifyAddressScreen" component={ModifyAddressScreen} />
             <Stack.Screen name="ModifyPhoneScreen" component={ModifyPhoneScreen} />
             <Stack.Screen name="ModifyPACScreen" component={ModifyPACScreen} />
+            <Stack.Screen name="MyPatientsScreen" component={MyPatientsScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>
