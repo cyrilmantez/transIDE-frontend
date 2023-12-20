@@ -12,17 +12,31 @@ export default function MenuScreen({ navigation, route }) {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                     <ScrollView contentContainerStyle={styles.scrollView}>
-                    <View style={styles.chevron}> 
-                        <TouchableOpacity onPress={() => {navigation.navigate('TabNavigator')}}>
-                            <FontAwesome name={'chevron-left'} size={30} color='white' />
-                        </TouchableOpacity>
-                    </View>
-                    <View styles={styles.titleContainer}>
-                        <Text style={styles.titlePage}>MENU</Text>
-                    </View>
-                    <View>
-                        
-                    </View>
+                        <View style={styles.chevron}> 
+                            <TouchableOpacity onPress={() => {navigation.navigate('TabNavigator')}}>
+                                <FontAwesome name={'chevron-left'} size={30} color='white' />
+                            </TouchableOpacity>
+                        </View>
+                        <View styles={styles.titleContainer}>
+                            <FontAwesome name='bars' size={32} color='white'/>
+                            <View>
+                                <Text style={styles.titlePage}>  MENU</Text>
+                            </View>
+                        </View>
+                        <View style={styles.menuContainer}>
+                            <View>
+                                <Text style={styles.choiceText}>Mon compte</Text>
+                            </View>
+                            <View>
+                                <Text style={styles.choiceText}>Gérer mon cabinet</Text>
+                            </View>
+                            <View>
+                                <Text style={styles.choiceText}>Rejoindre une équipe</Text>
+                            </View>
+                            <View>
+                                <Text style={styles.choiceText}>Ressources</Text>
+                            </View>
+                        </View>
                     </ScrollView>
                 </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
@@ -34,23 +48,28 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#99BD8F',
-        //justifyContent: 'center',
         //alignItems: 'center',
     },
     scrollView: {
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        
     },
     chevron: {
         alignSelf: 'flex-start',
         marginLeft: 20,
+        marginBottom: 40,
      },
     titleContainer: {
-
+        flexDirection: 'row',
+        width: '100%',
         fontFamily: 'Poppins_600SemiBold',
     },
     titlePage: {
+        //flexDirection: 'row',
+        width: '100%',
+        marginBottom: 20,
         color: 'white',
         fontSize: 30,
         fontFamily: 'Poppins_600SemiBold',
@@ -58,8 +77,19 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     text: {
+
         color: 'white',
         fontSize: 20,
         fontWeight: '400',
-    },  
+    },
+    menuContainer: {
+        //flex: 2,
+        width: '80%',
+        alignItems: 'flex-start',
+    },
+    choiceText: {
+        color: 'white',
+        fontSize: 18,
+        marginTop: 20,
+    },
 });
