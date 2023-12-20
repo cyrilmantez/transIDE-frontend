@@ -48,11 +48,11 @@ export default function SignUpScreen({navigation}) {
           setSignUpPassword('');
           setConfirmPassword('');
           navigation.navigate('TabNavigator');
-          navigation.navigate('DrawerNavigator');
         }
       })
   }
 
+  
 
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,

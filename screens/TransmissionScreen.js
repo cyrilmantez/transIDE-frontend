@@ -40,7 +40,7 @@ export default function TransmissionScreen({navigation}) {
   //get 10lastDayData from dataBase, and dispatch in the reducer
   useFocusEffect(
     React.useCallback(() => {
-    fetch(`http://192.168.1.5:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
+    fetch(`http://192.168.1.162:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
         .then((data) => {
           if(data.result){
             const compareDates = (a, b) => new Date(b.date) - new Date(a.date);
@@ -124,6 +124,7 @@ console.log('transmissions' ,transmissions)
              <Text style={styles.modalText}  >{element.name} {element.firstname}</Text>
           </TouchableOpacity>
      
+     
     )
 })
  return (
@@ -131,10 +132,11 @@ console.log('transmissions' ,transmissions)
     <StatusBar barStyle="light-content"/>
       <View style={styles.container}>
         <View style={styles.header}>
-          {/* <Dropdown style={styles.dropdown} navigation={navigation} /> */}
-          <Image 
-          style={styles.image}
-          source={require('../assets/logo.png')} />
+          
+            <FontAwesome name={'plus-circle'} size={50} color='#99BD8F'  onPress={() => navigation.navigate('ManagementScreen')}/>
+            <Image 
+            style={styles.image}
+            source={require('../assets/logo.png')} />
         </View>
         <Text style={styles.journal} >Journal</Text>
         <View style={styles.filterContainer}>

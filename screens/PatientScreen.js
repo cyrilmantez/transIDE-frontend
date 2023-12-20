@@ -21,6 +21,7 @@ export default function App({ navigation, route }) {
     
   }, []);
 
+  
     // bouton disponible
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [disponibility, setDisponibility] = useState(patient ? patient.disponibility : false);

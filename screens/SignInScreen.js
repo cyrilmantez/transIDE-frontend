@@ -13,7 +13,8 @@ export default function SignInScreen({navigation}) {
   const [signInPassword, setSignInPassword] = useState('');
   const [modalMessage, setModalMessage] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false)
-
+ console.log('coucou');
+ 
   const handleConnexion = () => {
     if (!signInName || !signInPassword) {
       alert('Champs manquants ou incomplets');
