@@ -31,7 +31,7 @@ export default function TourScreen({navigation}) {
 
   //////////////// fonction en chage du fetch pour récupérer les patients à voir :
   const allData =()=> {
-    fetch('http://192.168.1.14:3000/patients/allPatients', {
+    fetch('http://192.168.1.5:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: user.officesTokens[0].token, dateOfToday : date })
@@ -96,7 +96,7 @@ export default function TourScreen({navigation}) {
   
 /////////////fonction en charge du fetch de mise à jour treatment in DB:
 const updateTreatmentInDB = (a, b, c) => {
-  fetch('http://192.168.1.14:3000/patients/updateTreatment', {
+  fetch('http://192.168.1.5:3000/patients/updateTreatment', {
     method: 'PUT',
     headers: {'Content-Type' : 'application/json'},
     body: JSON.stringify({
@@ -147,6 +147,7 @@ const updateTreatmentInDB = (a, b, c) => {
         date: patientModal.date,
         documentsOfTreatment: patientModal.documentsOfTreatment,
         yearOfBirthday : patientModal.yearOfBirthday,
+        hour: patientModal.hour
           });          
   };
 
@@ -294,9 +295,9 @@ const updateTreatmentInDB = (a, b, c) => {
                   isVisited: patient.isVisited,
                   _idTreatment: patient._idTreatment,
                   nurse: user.username,
-                  _idTreatment: patient._idTreatment,
-                  date: patient.date
-
+                  date: patient.date,
+                  yearOfBirthday : patient.yearOfBirthday,
+                  documentsOfTreatment: patient.documentsOfTreatment,
                 })}>
                   <Icon source={'medical-bag'} size={24} color='#99BD8F'/>
                 </TouchableOpacity>
@@ -367,8 +368,9 @@ const updateTreatmentInDB = (a, b, c) => {
                   isVisited: patient.isVisited,
                   _idTreatment: patient._idTreatment,
                   nurse: user.username,
-                  _idTreatment: patient._idTreatment,
-                  date: patient.date
+                  date: patient.date,
+                  yearOfBirthday : patient.yearOfBirthday,
+                  documentsOfTreatment: patientModal.documentsOfTreatment,
 
                 })}>
                   <Icon source={'medical-bag'} size={24} color='#99BD8F'/>
