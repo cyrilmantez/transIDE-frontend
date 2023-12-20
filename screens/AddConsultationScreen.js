@@ -22,16 +22,17 @@ export default function AddConsultationScreen({ navigation, route }) {
     const [suggestions, setSuggestions] = useState([]);
     const [text, setText] = useState('');
     const [idForFetch, setIdForFetch ] = useState('')
+    const [patientFinded, setPatientFinded] = useState(false)
 
-    const officeToken = useSelector((state) => state.users.value.officesTokens[0].token);
-    const user = useSelector((state) => state.users.value.username);
 
+    const user = useSelector((state) => state.users.value);
 
     useEffect (() => {
+        const tokenByDefault = user.officesTokens;
+        const officeToken = tokenByDefault.filter(e => e.isByDefault)[0].token;
         fetch(`http://192.168.1.5:3000/patients/allPatients/${officeToken}`).then(
           response => response.json())
           .then(data => {
-            //console.log(data.Patients)
             setAllPatients(data.Patients)
           })
       }, [])
@@ -71,6 +72,7 @@ export default function AddConsultationScreen({ navigation, route }) {
         setText(`${name} ${firstname}`);
         setPatient({...patient, name , firstname, yearOfBirthday, _id})
         setIdForFetch(_id)
+        setPatientFinded(true)
       }
 
       const suggestionsToDisplay = suggestions.map((item, index) => {
@@ -97,15 +99,18 @@ export default function AddConsultationScreen({ navigation, route }) {
 
     ///////////////////// addTreatment :
     const handleSubmit = () => {
+    
+        //// manip dates :
         const [dayStart, monthStart, yearStart] = startDay.split('/').map(Number);
         const [dayEnd, monthEnd, yearEnd] = endDay.split('/').map(Number);
         const [hours, minutes] = hour.split('h').map(Number)
         const debut = new Date(yearStart , monthStart - 1, dayStart, hours + 1, minutes);
         const fin = new Date(yearEnd, monthEnd - 1, dayEnd, hours + 1, minutes);
-        let newTreatments = [];
+
+        let newAllTreatments = [];
         let currentDate = new Date(debut)
         while (currentDate <= fin) {
-            newTreatments.push({
+            newAllTreatments.push({
               date: new Date(currentDate),
               isVisited : false,
               isOk: false,
@@ -120,24 +125,23 @@ export default function AddConsultationScreen({ navigation, route }) {
             if(frequency === '1X/3 jours'){currentDate.setDate(currentDate.getDate() + 3);}
             if(frequency === '1X/7 jours'){currentDate.setDate(currentDate.getDate() + 7);}
           }
-        // console.log(debut)
-        // console.log(fin)
-        // console.log(newTreatments)
-
-    //     fetch('http://192.168.1.5:3000/patients/addTreatment', {
-    //         method: 'PUT',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify({
-    //              newTreatments : newTreatments,
-    //             _id: idForFetch
-    //         })
-    //     }).then(response => response.json())
-    //     .then(data => {
-    //         if(data.result){
-    //         setModalMessage('consultations ajoutées !');
-    //         setIsModalVisible(true);
-    //         }
-    //     });
+        console.log(idForFetch)
+        console.log(newAllTreatments)
+        fetch('http://192.168.1.5:3000/patients/addTreatment', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                 newTreatments : newAllTreatments,
+                _id: idForFetch
+            })
+        }).then(response => response.json())
+        .then(data => {
+            if(data.result){
+            setModalMessage('consultations ajoutées !');
+            setIsModalVisible(true);
+            setPatientFinded(false)
+            }
+        });
     }
 
 //////////////Close Modal :
@@ -189,15 +193,11 @@ const closeModal = () => {
                                     // onChangeText={text => setPatientName(text)}
                                     onChangeText={text => handlePatientNameChange(text)} 
                                     onFocus={() => setPatient({name : '', firstname: '', yearOfBirthday : '', _id:''})}/>
-                                        {text && patient.name ==='' && (<View style={styles.suggestionsContainer}>
+                                        {text && !patientFinded &&(<View style={styles.suggestionsContainer}>
                                             <>
                                             {suggestionsToDisplay}
                                             </>
                                         </View>)}
-                          
-                             {/* <>
-                                {suggestionsToDisplay}
-                            </> */}
                             <View>
                             <TextInput 
                                 label='soins prévus'
@@ -308,9 +308,6 @@ const styles = StyleSheet.create({
         height: '10%',
         width : '100%',
     },
-    // input: {
-    //     width: 350,
-    // },
     searchPatient:{
         flexDirection: 'row',
     },
