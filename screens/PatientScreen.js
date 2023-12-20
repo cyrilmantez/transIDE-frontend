@@ -5,6 +5,7 @@ import moment from 'moment';
 import 'moment/locale/fr';
 import { Card, Icon } from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function App({ navigation, route }) {
   const { _id: currentPatientId } = route.params;
@@ -12,25 +13,28 @@ export default function App({ navigation, route }) {
   const [value, setValue] = useState('');
   const [visible, setVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [treatments, setTreatments] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [disponibility, setDisponibility] = useState(patient ? patient.disponibility : false);
+  const [refresh, setRefresh] = useState(false);
+  const buttons = ['DISPONIBLE', 'INDISPONIBLE'];
+  const buttonColors = patient && patient.disponibility ? ['#99BD8F', 'transparent'] : ['transparent', 'red'];
 
-  useEffect(() => {
+
+
+  useFocusEffect(
+    React.useCallback(() => {
     fetch(`http://192.168.1.162:3000/patients/patientById/${route.params._id}`).then(response => response.json())
     .then(data => {
-        setPatient(data.patient)
+        setPatient(data.patient);
+        setTreatments(data.patient.treatments);
     });
     
-  }, []);
+  }, []),);
 
   
     // bouton disponible
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const [disponibility, setDisponibility] = useState(patient ? patient.disponibility : false);
-    const [refresh, setRefresh] = useState(false);
-
-    const buttons = ['DISPONIBLE', 'INDISPONIBLE'];
-    const buttonColors = patient && patient.disponibility ? ['#99BD8F', 'transparent'] : ['transparent', 'red'];
-    
-
+  
     const handleButtonPress = (index) => {
       const newDisponibility = index === 0 ? true : false; 
       Alert.alert(
@@ -76,35 +80,6 @@ export default function App({ navigation, route }) {
         { cancelable: false },
       );
     };
-
-    useEffect(() => {
-      
-    }, [disponibility]);
-
-    // Affichage des soins
-    const [treatments, setTreatments] = useState([]);
-
-    useEffect(() => {
-      fetch('http://192.168.1.162:3000/patients/allPatientDay')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          const currentPatient = data.allPatient.find(patient => patient._id === currentPatientId);
-
-      if (currentPatient) {
-
-        setTreatments(currentPatient.treatments);
-      } else {
-        console.log('Patient not found');
-      }
-        })
-        
-    }, []);
-    
     
     const TreatmentList = () => {
       const now = moment();  
