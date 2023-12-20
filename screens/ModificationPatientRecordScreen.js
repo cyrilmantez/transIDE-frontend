@@ -27,7 +27,7 @@ export default function ModificationPatientRecordScreen({ navigation, route }) {
     useEffect(() => {
         // Assurez-vous que 'patient' est défini avant de l'utiliser
         if (patient) { console.log(patient)
-          fetch('http://192.168.0.25:3000/patients/updatePatientById', {
+          fetch('http://192.168.1.162:3000/patients/updatePatientById', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
