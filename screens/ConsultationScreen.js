@@ -26,6 +26,7 @@ export default function ConsultationScreen({ navigation, route }) {
     // Appel à la modale de validation :
     const [modalVisible, setModalVisible] = useState(false);
 
+    
     // Transformation des soins récupérés du tourScreen '\n' :
     useEffect(() => {
         let treatments = '';

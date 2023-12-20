@@ -441,7 +441,7 @@ const updateTreatmentInDB = (a, b, c) => {
                   <ProgressBar progress={progress} style={{width: 200}} theme={{ colors: { primary: '#99BD8F' } }}/>
                 </View>
                 <View style={styles.pluscircle}>
-                    <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' onPress={() => navigation.navigate('AddPatientScreen')}/>
+                    <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' onPress={() => navigation.navigate('AddConsultationScreen')}/>
                 </View>
                 <View style={styles.switchitem}>
                   <Text style={styles.switchitemtext}>Tous</Text>                 

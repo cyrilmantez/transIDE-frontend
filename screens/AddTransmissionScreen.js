@@ -313,8 +313,6 @@ export default function AddTransmissionScreen({navigation}) {
         alignItems: 'center',
      
      },
-
-
      transmission: {
        color: '#99BD8F',
        fontSize: 30,

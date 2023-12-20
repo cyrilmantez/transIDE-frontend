@@ -4,7 +4,6 @@ import { TextInput, List, Icon} from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Dropdown from './Dropdown';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { upDateOfficeByDefault } from '../reducers/users';

@@ -15,11 +15,6 @@ export default function SignInScreen({navigation}) {
   const [isModalVisible, setIsModalVisible] = useState(false)
 
   const handleConnexion = () => {
-    if (!signInName || !signInPassword) {
-      alert('Champs manquants ou incomplets');
-      return;
-    }
-
     fetch('http://192.168.1.5:3000/users/signin', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
