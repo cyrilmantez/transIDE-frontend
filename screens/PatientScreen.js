@@ -150,29 +150,36 @@ export default function App({ navigation, route }) {
         <>
           <Text style={styles.name}>{patient.firstname} {patient.name}</Text>
           <Text style={styles.dob}>{patient.yearOfBirthday}</Text>
-          <View style={{flexDirection: 'row', alignItems: 'center', width: 290, marginRight: 40,}}>
-            <Icon source={'home'} size={30}/>
-            <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>              
-              <Text style={styles.address}>{patient.address} </Text>          
-              <View><Text style={styles.addressplus}>{patient.infosAdress ? patient.infosAdress : "..."}</Text></View>
+          <View>
+            <View style={{flexDirection: 'row', alignItems: 'center'}} >          
+                <View style={{width: 285}}>              
+                    <Text style={styles.address}>{patient.address}</Text>          
+                    <View><Text style={styles.addressplus}>{patient.infosAdress ? patient.infosAdress : ""}</Text></View>
+                </View>
+                <TouchableOpacity onPress={() => navigation.navigate('ModifyAddressScreen', { _id : patient._id})}style={{ width: 35, height: 35, alignItems: 'center', justifyContent: 'space-between'}}>
+                    <FontAwesome name={'pencil-square-o'} size={24} color='black'/>
+                </TouchableOpacity>
             </View>
-          </View>
-          <View style={{flexDirection: 'row', alignItems: 'center', width: 300}}>
-            <Icon source={'phone'} size={27}/>
-            <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
-              <Text style={styles.mobile}>{patient.mobile ? patient.mobile : "Non renseigné"}</Text>
-              <Text style={styles.homephone}>{patient.homePhone}</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}} >
+              <View>
+                <Text style={styles.mobile}>{patient.mobile ? patient.mobile : "Non renseigné"}</Text>
+                <Text style={styles.homephone}>{patient.homePhone ? patient.homePhone : ""}</Text>
+              </View>
+              <TouchableOpacity style={{ width: 35, height: 35, alignItems: 'center', justifyContent: 'center'}}>
+                    <FontAwesome name={'pencil-square-o'} size={24} color='black'/>
+              </TouchableOpacity>
             </View>
           </View>
           <Text style={styles.pac}>Personne à contacter en cas d'urgence</Text>
-          <Text style={styles.icei}>{patient.ICEIdentity ? patient.ICEIdentity : "Non renseigné"}</Text>
-          <Text style={styles.icep}>{patient.ICEPhoneNumber}</Text>
-          <TouchableOpacity style={styles.btnscroll} onPress={() => {
-            navigation.navigate('ModificationPatientRecordScreen', { _id : patient._id})
-            setModalVisible(false)
-            }}>
-            <Text style={styles.btnmodify}>Modifier</Text>
-          </TouchableOpacity>
+          <View style={{flexDirection: 'row', alignItems: 'center'}} >          
+                <View style={{width: 285}}>              
+                    <Text style={styles.address}>{patient.ICEIdentity}</Text>          
+                    <Text>{patient.ICEPhoneNumber ? patient.ICEPhoneNumber : ""}</Text>
+                </View>
+                <TouchableOpacity style={{ width: 35, height: 35, alignItems: 'center', justifyContent: 'center'}}>
+                    <FontAwesome name={'pencil-square-o'} size={24} color='black'/>
+                </TouchableOpacity>
+            </View>
         </>)}
         </View>
       );
@@ -202,6 +209,8 @@ export default function App({ navigation, route }) {
           </View>
         </Modal>
       );
+
+      
 
   if (!patient) {
     return (<View />);
@@ -293,6 +302,7 @@ const styles = StyleSheet.create({
   backgroundColor: '#99BD8F',
 
  },
+
  name: {
   fontFamily: 'Poppins_600SemiBold', 
   fontSize: 20,
@@ -344,10 +354,8 @@ homephone: {
 marginBottom: 10,
 },
 containerscroll: {
-  width: 320,
   alignItems: 'center',
-  justifyContent: 'center',
-  paddingLeft: 10,
+  justifyContent: 'center',  
 },
 centerView: {
   justifyContent: "center",
@@ -402,19 +410,6 @@ button: {
 },
 selected: {
   backgroundColor: '#99BD8F',
-},
-btnscroll: {
-  backgroundColor: '#CADDC5',
-  marginTop: 20,
-  width: 300,
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: 40,
-  borderRadius: 10,
-},
-btnmodify: {
-  fontFamily: 'Poppins_600SemiBold', 
-  fontSize: 17,
 },
 
 text: {
