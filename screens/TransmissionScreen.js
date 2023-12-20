@@ -40,7 +40,7 @@ export default function TransmissionScreen({navigation}) {
   //get 10lastDayData from dataBase, and dispatch in the reducer
   useFocusEffect(
     React.useCallback(() => {
-    fetch(`http://192.168.1.5:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
+    fetch(`http://192.168.1.162:3000/transmissions/allTransmissions/${userToken}/${date}`).then(response => response.json())
         .then((data) => {
           if(data.result){
             const compareDates = (a, b) => new Date(b.date) - new Date(a.date);
