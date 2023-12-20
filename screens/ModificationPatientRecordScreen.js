@@ -8,19 +8,17 @@ export default function ModificationPatientRecordScreen({ navigation, route }) {
     const [data, setData] = useState({}); 
     const [patient, setPatient] = useState(null);
 
-    const [address, setAddress] = useState('');
+    const [address, setAddress] = useState(''); 
 
-
-    useEffect(() => {
-      if (patient) { console.log(patient)
-        fetch(`http://192.168.1.14:3000/patients/allPatientDay/${patient._id}`)
+  useEffect(() => {
+    if (patient) {
+      fetch(`http://192.168.1.14:3000/patients/allPatientDay/${patient._id}`)
         .then(response => response.json())
-        .then(data => {
-          console.log('data.add :', data);
-          setAddress(data.address);
+        .then(data => {console.log('data recherchée: ', data)
+          setAddress(data.address); 
         })
-      }
-    }, []);
+    }
+  }, []);
     
 
 
@@ -94,8 +92,8 @@ export default function ModificationPatientRecordScreen({ navigation, route }) {
                                         label='Adresse'
                                         mode='outlined'
                                         theme={{ colors: { primary: '#99BD8F' }}}
-                                        value={data.address} 
-                                        onChangeText={text => setAddress(text)}
+                                        value={address} 
+                                        onChange={text => setAddress(text)}
                                       />
                                     <Icon
                                         icon="delete"
