@@ -1,19 +1,9 @@
-// Commentaire
 import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Keyboard, TouchableOpacity, SafeAreaView, Modal, TextInput } from 'react-native';
-//import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
 import moment from 'moment'; 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-//import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
-
-//import FontAwesome from 'react-native-vector-icons/FontAwesome';
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//import { faPhone, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
-//import PatientScreen from './screens/PatientScreen';
-//import users from '../reducers/users';
-//import patients from '../reducers/patients';
 
 export default function ConsultationScreen({ navigation, route }) {
     
@@ -360,7 +350,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
-      justifyContent: 'center',
+        justifyContent: 'center',
     },
     titlePage: {
         color: '#99BD8F',

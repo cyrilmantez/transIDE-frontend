@@ -22,9 +22,6 @@ export default function TourScreen({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalAddressVisible, setModalAddressVisible] = useState(false);
 
-  console.log(patientModal);
-
-
   ////////////// gestion des tous/restants :
   const [seeAll, setSeeAll] = useState(true)
 
@@ -414,7 +411,7 @@ const updateTreatmentInDB = (a, b, c) => {
                 <View style={styles.containerHeader}>
                         <View style={styles.header}>
                           <View>
-                          <TouchableOpacity>
+                          <TouchableOpacity onPress={() => navigation.navigate('MenuScreen')}> 
                             <FontAwesome name='bars' size={32} color='#99BD8F'/>
                           </TouchableOpacity> 
                           </View>
