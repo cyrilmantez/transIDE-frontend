@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, View, SafeAreaView, ScrollView, Image,TouchableOpacity, StatusBar , Platform ,Modal} from 'react-native';
-import Dropdown from './Dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
@@ -28,6 +27,7 @@ export default function TransmissionScreen({navigation}) {
   const openModal = (target) => {
     setModalVisible(true);
     target === 'IDE' ? setIdeVisible(true) : setPatientsVisible(true);
+    // target === 'Patients' ?
   };
   //Close Modal
   const closeModal = () => {
@@ -131,10 +131,10 @@ console.log('transmissions' ,transmissions)
     <StatusBar barStyle="light-content"/>
       <View style={styles.container}>
         <View style={styles.header}>
-            <FontAwesome name={'plus-circle'} size={50} color='#99BD8F'  onPress={() => navigation.navigate('ManagementScreen')}/>
-            <Image 
-            style={styles.image}
-            source={require('../assets/logo.png')} />
+          {/* <Dropdown style={styles.dropdown} navigation={navigation} /> */}
+          <Image 
+          style={styles.image}
+          source={require('../assets/logo.png')} />
         </View>
         <Text style={styles.journal} >Journal</Text>
         <View style={styles.filterContainer}>
@@ -224,10 +224,7 @@ const styles = StyleSheet.create({
   marginLeft: 0,
   marginRight: 0,
  },
- dropdown: {
-  top: 0,
-  left: 0,
-  },
+
 header: {
   height: '8%',
   width: '100%',

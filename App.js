@@ -27,6 +27,7 @@ import AddPatientScreen from './screens/AddPatientScreen';
 import AddTransmissionScreen from './screens/AddTransmissionScreen';
 import ModificationPatientRecordScreen from './screens/ModificationPatientRecordScreen';
 import AddConsultationScreen from './screens/AddConsultationScreen';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 
 const reducers = combineReducers({users, patients, transmissions});
 
@@ -47,6 +48,41 @@ export const persistor = persistStore(store);
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
+
+const CustomDrawerContent = (props) => {
+  return (
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <DrawerItem
+        label="Fermer le tiroir"
+        onPress={() => props.navigation.closeDrawer()}
+      />
+    </DrawerContentScrollView>
+  );
+}
+
+const DrawerNavigator = () => {
+  return (
+    <Drawer.Navigator 
+      initialRouteName="Tournée"
+      drawerContent={props => <CustomDrawerContent {...props} />}
+      screenOptions={{
+        headerShown: false,
+        drawerIcon: ({focused, size}) => (
+          <FontAwesome  name={'map-pin'} size={24} color='#99BD8F' />
+        ),
+      }}
+    > 
+      <Drawer.Screen name="Tournée" component={TourScreen} />
+      <Drawer.Screen name="Transmissions" component={TransmissionScreen} />
+      <Drawer.Screen name="Mon compte" component={MyAccountScreen} />
+      <Drawer.Screen name="ManagementScreen" component={ManagementScreen}/>            
+      <Drawer.Screen name="Rejoindre un cabinet" component={JoinScreen} />
+      <Drawer.Screen name="RessourcesScreen" component={RessourcesScreen}/>
+    </Drawer.Navigator>
+  );
+}
 
 const TabNavigator = () => {
   return (
@@ -84,17 +120,14 @@ export default function App() {
             <Stack.Screen name="ConnectionScreen" component={ConnectionScreen}/>
             <Stack.Screen name="TabNavigator" component={TabNavigator}/>
             <Stack.Screen name="SignUpScreen" component={SignUpScreen}/>
-            <Stack.Screen name="SignInScreen" component={SignInScreen}/>
-            <Stack.Screen name="MyAccountScreen" component={MyAccountScreen}/>
-            <Stack.Screen name="ManagementScreen" component={ManagementScreen}/>
-            <Stack.Screen name="JoinScreen" component={JoinScreen}/>
-            <Stack.Screen name="RessourcesScreen" component={RessourcesScreen}/>
+            <Stack.Screen name="SignInScreen" component={SignInScreen}/>            
             <Stack.Screen name="PatientScreen" component={PatientScreen}/>
             <Stack.Screen name="ConsultationScreen" component={ConsultationScreen}/>
             <Stack.Screen name="AddPatientScreen" component={AddPatientScreen}/>
             <Stack.Screen name="AddTransmissionScreen" component={AddTransmissionScreen}/>
             <Stack.Screen name="ModificationPatientRecordScreen" component={ModificationPatientRecordScreen}/>
             <Stack.Screen name='AddConsultationScreen' component={AddConsultationScreen}/>
+            <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

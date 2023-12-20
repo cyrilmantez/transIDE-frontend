@@ -5,8 +5,6 @@ import { useEffect, useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Dropdown from './Dropdown';
-
 import { addPatient } from '../reducers/patients';
 import { useDispatch, useSelector } from 'react-redux';
 import { Camera, FlashMode} from 'expo-camera';
@@ -296,10 +294,7 @@ export default function AddTransmissionScreen({navigation}) {
        alignItems: 'center',
      
       },
-      dropdown: {
-       top: 0,
-       left: 0,
-       },
+
      header: {
        height: '10%',
        width : '100%',

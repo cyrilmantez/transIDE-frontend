@@ -342,11 +342,12 @@ containerscroll: {
   width: 320,
   alignItems: 'center',
   justifyContent: 'center',
+  paddingLeft: 10,
 },
 centerView: {
   justifyContent: "center",
   alignItems: "center",
-  marginTop: 100,
+  marginTop: '10%',
 },
 closemodal: {
   position: 'absolute',
@@ -356,8 +357,8 @@ closemodal: {
 modalView: {
  
   margin: 20,
-  height: 450,
-  width: 350,
+  height: '85%',
+  width: '97%',
   backgroundColor: "#99BD8F",
   borderRadius: 20,
   padding: 35,
@@ -432,8 +433,8 @@ journalBtn: {
   width: 360,
   height: 50,
   borderRadius: 10,
-  marginTop: 20,
-  marginBottom: 10,
+  marginTop: 10,
+  marginBottom: 20,
   justifyContent: 'center',
   alignItems: 'center',
 },
