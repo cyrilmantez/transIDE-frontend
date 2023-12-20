@@ -4,7 +4,7 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import moment from 'moment';
 import 'moment/locale/fr';
 import { Card, Icon } from 'react-native-paper';
-import 'react-native-gesture-handler';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function App({ navigation, route }) {
   const { _id: currentPatientId } = route.params;
@@ -14,13 +14,14 @@ export default function App({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    fetch(`http://192.168.1.5:3000/patients/patientById/${route.params._id}`).then(response => response.json())
+    fetch(`http://192.168.1.14:3000/patients/patientById/${route.params._id}`).then(response => response.json())
     .then(data => {
         setPatient(data.patient)
     });
     
   }, []);
 
+  
     // bouton disponible
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [disponibility, setDisponibility] = useState(patient ? patient.disponibility : false);
@@ -44,7 +45,7 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http://192.168.1.5:3000/patients/updatePatientById', {
+                fetch('http://192.168.1.14:3000/patients/updatePatientById', {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -84,7 +85,7 @@ export default function App({ navigation, route }) {
     const [treatments, setTreatments] = useState([]);
 
     useEffect(() => {
-      fetch('http://192.168.1.5:3000/patients/allPatientDay')
+      fetch('http://192.168.1.14:3000/patients/allPatientDay')
         .then(response => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -167,10 +168,9 @@ export default function App({ navigation, route }) {
           <Text style={styles.icei}>{patient.ICEIdentity ? patient.ICEIdentity : "Non renseigné"}</Text>
           <Text style={styles.icep}>{patient.ICEPhoneNumber}</Text>
           <TouchableOpacity style={styles.btnscroll} onPress={() => {
-              navigation.navigate('ModificationPatientRecordScreen');
-              setModalVisible(false);
-            }}
-            >
+            navigation.navigate('ModificationPatientRecordScreen', { _id : patient._id})
+            setModalVisible(false)
+            }}>
             <Text style={styles.btnmodify}>Modifier</Text>
           </TouchableOpacity>
         </>)}
@@ -210,8 +210,13 @@ export default function App({ navigation, route }) {
       <>
           <SafeAreaView style={{ flex: 0, backgroundColor: '#99BD8F' }} />
           <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-              <View style={styles.container}>                           
-                  <View style={styles.headcontent}>
+              <View style={styles.container}>    
+                <View style={{ position: 'absolute', top: 15, left: 15 }} > 
+                    <TouchableOpacity onPress={() => navigation.navigate('TabNavigator')} >
+                      <FontAwesome name={'chevron-left'} size={30} color='#99BD8F'/>
+                    </TouchableOpacity>        
+                </View>              
+                  <View>
                       <Text style={styles.title}>FICHE PATIENT</Text>
                   </View>
                   <Card style={styles.patientcontent}>
@@ -243,7 +248,7 @@ export default function App({ navigation, route }) {
                     ))}
                     
                   </View> 
-                  <View style={styles.journalContainer}>
+                  <View>
                     <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10,}}>
                       <Text style={styles.journalTitle}>Journal des soins</Text>
                     </View>
@@ -279,7 +284,7 @@ const styles = StyleSheet.create({
     color: '#99BD8F',
     fontFamily: 'Poppins_600SemiBold', 
     fontSize: 30,
-    marginTop: 20,
+    marginTop: 30,
     marginBottom: 20,
  },
 
@@ -357,7 +362,7 @@ closemodal: {
 modalView: {
  
   margin: 20,
-  height: '85%',
+  height: '75%',
   width: '97%',
   backgroundColor: "#99BD8F",
   borderRadius: 20,
@@ -420,11 +425,11 @@ journalTitle: {
   fontFamily: 'Poppins_400Regular',
   color: '#99BD8F',
   fontSize: 20,
-  marginTop: 15,
+  marginTop: 20,
 },
 journalContent: {
   backgroundColor: '#F0F0F0',
-  height: 260,
+  height: 330,
   width: 360,
   borderRadius: 10,
 },
@@ -433,7 +438,7 @@ journalBtn: {
   width: 360,
   height: 50,
   borderRadius: 10,
-  marginTop: 10,
+  marginTop: 20,
   marginBottom: 20,
   justifyContent: 'center',
   alignItems: 'center',
