@@ -1,12 +1,4 @@
-import { Platform, UIManager } from 'react-native';
-
-if (Platform.OS === 'android') {
-    if (UIManager.setLayoutAnimationEnabledExperimental) {
-        UIManager.setLayoutAnimationEnabledExperimental(true);
-    }
-}
-
-import { Button, TouchableWithoutFeedback, ScrollView, Modal, Keyboard, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity, View,  } from 'react-native';
+import { Button, TouchableWithoutFeedback, Platform, ScrollView, Modal, Keyboard, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity, View,  } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { TextInput, List} from 'react-native-paper';
 import { useEffect, useState } from 'react';
@@ -15,8 +7,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { addPatient } from '../reducers/patients';
 import { useDispatch, useSelector } from 'react-redux';
-import { Camera, FlashMode} from 'expo-camera';
-import { addPhoto } from '../reducers/users';
+
 
 export default function AddPatientScreen({navigation}) {
     const dispatch = useDispatch();
@@ -36,16 +27,10 @@ export default function AddPatientScreen({navigation}) {
     const [dobPatient, setdobPatient] = useState('');
     const [results, setResults] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [displayDate, setDisplayDate] = useState('');
-    const [mode, setMode] = useState('');
+
 
     // Hook Add RDV
-    const showPicker = (currentMode) => {
-      setMode(currentMode)
-    };
     const handleDateChange = (event, selectedDate) => {
-      
-      showPicker();
   
       const currentDate = selectedDate || dateHeure;
       setDateHeure(currentDate);
@@ -75,7 +60,7 @@ export default function AddPatientScreen({navigation}) {
       };
 
   const handleRegister = () => {      
-        fetch('http://192.168.1.14:3000/patients/addPatient', {
+        fetch('http://192.168.1.162:3000/patients/addPatient', {
           method: 'POST',
           headers: {'Content-Type' : 'application/json'},
           body: JSON.stringify({
@@ -164,36 +149,6 @@ export default function AddPatientScreen({navigation}) {
       </Modal>
       );
 
-      // Photo
-              //Permission
-      // const [hasPermission, setHasPermission] = useState(false);
-      // const [flashMode, setFlashMode] = useState(FlashMode.off);
-
-      // useEffect(() => {
-      //   (async () => {
-      //     const {status} = await Camera.requestCameraPermissionsAsync();
-      //     setHasPermission(status === 'granted')
-      //   })();
-      // }, []);
-
-      // const takePicture = async () => {
-      //   const photo = await cameraRef.takePictureAsync({quality: 0.4});
-      //   const formData = new FormData();
-      //     formData.append('photoFromAddPatientScreen', {
-      //       ueri: photo.uri,
-      //       type: 'image/jpeg',
-      //       name: 'photo.jpg',
-      //     });
-
-      //     fetch('/upload', {
-      //       method: 'POST',
-      //       body: formData,
-      //     }).then((response) => response.json())
-      //     .then((data) =>{
-
-      //     })
-      //     dispatch(addPhoto(photo.uri))
-      // }
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
         Poppins_600SemiBold,
@@ -307,7 +262,14 @@ export default function AddPatientScreen({navigation}) {
                                 }}
                                 keyboardType='phone-pad'
                                 value={phoneNumber} 
-                                onChangeText={text => setPhoneNumber(text)} 
+                                onChangeText={text => {
+                                  let cleaned = ('' + text).replace(/\D/g, '');                    
+                                  if (cleaned.length > 10) {
+                                    cleaned = cleaned.substring(0, 10);
+                                  }                    
+                                  const match = cleaned.match(/(\d{0,2})/g);
+                                  const phoneNumber = match.join('.').replace(/\.$/, '');
+                                  setPhoneNumber(phoneNumber)}} 
                                 style={{ width: 350, marginTop: 15 }} 
                             />
                             <TextInput 
@@ -320,7 +282,14 @@ export default function AddPatientScreen({navigation}) {
                                 }}
                                 keyboardType='phone-pad'
                                 value={homePhone} 
-                                onChangeText={text => setHomePhone(text)} 
+                                onChangeText={text =>{ 
+                                  let cleaned = ('' + text).replace(/\D/g, '');                    
+                                  if (cleaned.length > 10) {
+                                    cleaned = cleaned.substring(0, 10);
+                                  }                    
+                                  const match = cleaned.match(/(\d{0,2})/g);
+                                  const phoneNumber = match.join('.').replace(/\.$/, '');
+                                  setHomePhone(phoneNumber)}} 
                                 style={{ width: 350, marginTop: 15 }} 
                             />
                             <TextInput 
@@ -353,7 +322,7 @@ export default function AddPatientScreen({navigation}) {
                                 <DateTimePicker
                                     style={{ marginTop: 15, backgroundColor: 'white' }}
                                     value={dateHeure}
-                                    mode={mode}
+                                    mode='datetime'
                                     display="default"
                                     locale="fr-FR"
                                     onChange={handleDateChange}

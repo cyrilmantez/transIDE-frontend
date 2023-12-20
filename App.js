@@ -19,14 +19,16 @@ import users from './reducers/users';
 import patients from './reducers/patients';
 import transmissions from './reducers/transmissions';
 import ManagementScreen from './screens/ManagementScreen';
-import JoinScreen from './screens/JoinScreen';
 import RessourcesScreen from './screens/RessourcesScreen';
 import PatientScreen from './screens/PatientScreen';
 import ConsultationScreen from './screens/ConsultationScreen';
 import AddPatientScreen from './screens/AddPatientScreen';
 import AddTransmissionScreen from './screens/AddTransmissionScreen';
-import ModificationPatientRecordScreen from './screens/ModificationPatientRecordScreen';
 import AddConsultationScreen from './screens/AddConsultationScreen';
+import ModifyAddressScreen from './screens/ModifyAddressScreen';
+import ModifyPhoneScreen from './screens/ModifyPhoneScreen';
+import ModifyPACScreen from './screens/ModifyPACScreen';
+import MenuScreen from './screens/MenuScreen';
 
 
 const reducers = combineReducers({users, patients, transmissions});
@@ -90,12 +92,14 @@ export default function App() {
             <Stack.Screen name="ConsultationScreen" component={ConsultationScreen}/>
             <Stack.Screen name="AddPatientScreen" component={AddPatientScreen}/>
             <Stack.Screen name="AddTransmissionScreen" component={AddTransmissionScreen}/>
-            <Stack.Screen name="ModificationPatientRecordScreen" component={ModificationPatientRecordScreen}/>
             <Stack.Screen name='AddConsultationScreen' component={AddConsultationScreen}/>
             <Stack.Screen name="ManagementScreen" component={ManagementScreen}/>     
-            <Stack.Screen name="Rejoindre un cabinet" component={JoinScreen} />
             <Stack.Screen name="RessourcesScreen" component={RessourcesScreen}/>    
             <Stack.Screen name="Mon compte" component={MyAccountScreen} />
+            <Stack.Screen name="MenuScreen" component={MenuScreen} />
+            <Stack.Screen name="ModifyAddressScreen" component={ModifyAddressScreen} />
+            <Stack.Screen name="ModifyPhoneScreen" component={ModifyPhoneScreen} />
+            <Stack.Screen name="ModifyPACScreen" component={ModifyPACScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

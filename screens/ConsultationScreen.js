@@ -1,24 +1,14 @@
-// Commentaire
 import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Keyboard, TouchableOpacity, SafeAreaView, Modal, TextInput } from 'react-native';
-//import { TextInput} from 'react-native-paper';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import React, { useState, useEffect } from 'react';
 import moment from 'moment'; 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-//import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
-
-//import FontAwesome from 'react-native-vector-icons/FontAwesome';
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//import { faPhone, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
-//import PatientScreen from './screens/PatientScreen';
-//import users from '../reducers/users';
-//import patients from '../reducers/patients';
 
 export default function ConsultationScreen({ navigation, route }) {
     
     const user = useSelector((state) => state.users.value);
-    const officeToken = useSelector((state) => state.users.value.officesTokens[0].token);
+   
     // Récupération des données du patient de TourScreen :
     const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, yearOfBirthday: route.params.yearOfBirthday, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone, isOk: route.params.isOk, isOkWithModification: route.params.isOkWithModification, _idTreatment: route.params._idTreatment, documentsOfTreatment: route.params.documentsOfTreatment});
     // Récupération des soins prévus de TourScreen (tableau de strings):
@@ -43,8 +33,6 @@ export default function ConsultationScreen({ navigation, route }) {
         setPlannedTreatments(treatments);
     }, []);
 
-    //console.log(patient);
-
     // Validation des modifications effectuées :
     const validation = () => {
         let isVisited = false;
@@ -57,7 +45,7 @@ export default function ConsultationScreen({ navigation, route }) {
             isVisited = true;
         }
         
-        fetch('http://192.168.0.25:3000/patients/updateTreatment', {
+        fetch('http://192.168.1.162:3000/patients/updateTreatment', {
             method: 'PUT',
             headers: {'Content-Type' : 'application/json'},
             body: JSON.stringify({
@@ -74,13 +62,16 @@ export default function ConsultationScreen({ navigation, route }) {
             }).then(response => response.json())
             .then(data => {
                 if(data.result) {
-                    console.log(data);
+                    console.log('updateTreatment', data);
                     navigation.navigate('TabNavigator');
             }
         })
 
-        if(transmission > 0) {
-            fetch('http://192.168.0.25:3000/transmissions/addtransmission', {
+        if(transmission.length > 0) {
+            console.log('essai');
+            const tokenByDefault = user.officesTokens;
+            console.log(tokenByDefault.filter(e => e.isByDefault)[0].token);
+            fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: {'Content-Type' : 'application/json'},
                 body: JSON.stringify({
@@ -92,19 +83,22 @@ export default function ConsultationScreen({ navigation, route }) {
                     },
                     patient: {
                         name: patient.name, 
-                        yearOfBirthday:patient.yearOfBirthday, 
+                        yearOfBirthday: patient.yearOfBirthday, 
                     },
-                    token: officeToken,
+                    token: tokenByDefault.filter(e => e.isByDefault)[0].token,
                 })
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
+                if(data.result) {
+                    console.log('addtransmission', data);
+                }
             })
         }
       };
     
-    
+      console.log(patient);
+      console.log( patient.yearOfBirthday);
 
         /* if(route.params.actions !== plannedTreatments) {
             validation(true, true, true);
@@ -124,12 +118,7 @@ export default function ConsultationScreen({ navigation, route }) {
             setIsOkWithModification(false);
         })
     } */
-    
-    
-    //console.log('soinsprévus', plannedTreatments)
-    //console.log('patient', patient);
-    //console.log('firstname', patient.firstname);
-    
+        
     // Formatage de la date de la consultation :
     const date = moment(route.params.date).format('L');
     // Formatage de l'heure de la consultation :
@@ -361,7 +350,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
-      justifyContent: 'center',
+        justifyContent: 'center',
     },
     titlePage: {
         color: '#99BD8F',
