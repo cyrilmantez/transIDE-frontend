@@ -24,7 +24,7 @@ export default function App({ navigation, route }) {
 
   useFocusEffect(
     React.useCallback(() => {
-    fetch(`http://192.168.1.162:3000/patients/patientById/${route.params._id}`).then(response => response.json())
+    fetch(`http://192.168.0.25:3000/patients/patientById/${route.params._id}`).then(response => response.json())
     .then(data => {
         setPatient(data.patient);
         setTreatments(data.patient.treatments);
@@ -49,7 +49,7 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http://192.168.1.162:3000/patients/updatePatientById', {
+                fetch('http://192.168.0.25:3000/patients/updatePatientById', {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
