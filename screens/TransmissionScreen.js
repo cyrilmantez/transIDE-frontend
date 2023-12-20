@@ -143,7 +143,7 @@ console.log('transmissions' ,transmissions)
                       <Text style={styles.textButton} >{ideFiltered}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={showDate}>
-                      <Text style={styles.textButton} >{`${String(date.getHours()).padStart(2, '0')}-${String(date.getMonth()+1).padStart(2, '0')}-${date.getFullYear()}`}</Text>
+                      <Text style={styles.textButton} >{date.getDate().toString()}-{(date.getMonth()+1).toString()}-{(date.getFullYear()).toString()}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={() => openModal('Patients')}>
                       <Text style={styles.textButton} >{patientFiltered}</Text>
@@ -226,6 +226,7 @@ const styles = StyleSheet.create({
 
 header: {
   height: '8%',
+  width: '100%',
   justifyContent: 'space-between',
   flexDirection: 'row',
 },

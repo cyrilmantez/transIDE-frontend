@@ -123,7 +123,7 @@ export default function AddTransmissionScreen({navigation}) {
           transmission : newTransmission,
           token : officeToken,
         }
-        fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
+        fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -152,7 +152,7 @@ export default function AddTransmissionScreen({navigation}) {
                   transmission : newTransmission,
                   token : officeToken,
                 }
-                fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
+                fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -342,7 +342,6 @@ export default function AddTransmissionScreen({navigation}) {
       },
       patientInput : {
         width: 350,
-       
       },
       suggestionsContainer:{
         width: '70%',
@@ -398,7 +397,7 @@ export default function AddTransmissionScreen({navigation}) {
 
        transmissionInput : {
         width: '95%',
-       
+      
         borderRadius: 50,
 
       },
