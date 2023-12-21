@@ -3,7 +3,6 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {Card, TextInput } from 'react-native-paper';
-import {Card, TextInput } from 'react-native-paper';
 
 export default function MyPatientsScreen({ navigation, route }) {
     const user = useSelector((state) => state.users.value)
