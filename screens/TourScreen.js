@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpaci
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
-import { Card, Paragraph, ProgressBar, Switch, Icon, Modal, Button } from 'react-native-paper';
+import { Card, Paragraph, ProgressBar, Switch, Icon,Modal, Button } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useFocusEffect } from '@react-navigation/native';
@@ -21,6 +21,7 @@ export default function TourScreen({navigation}) {
   const [patientModal, setPatientModal] = useState({})
   const [modalVisible, setModalVisible] = useState(false);
   const [modalAddressVisible, setModalAddressVisible] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   ////////////// gestion des tous/restants :
   const [seeAll, setSeeAll] = useState(true)
@@ -83,7 +84,57 @@ export default function TourScreen({navigation}) {
     newDate.setDate(newDate.getDate() + days);
     setDate(newDate);
   }
-
+   //Close Menu
+   const closeMenu = () => {
+    setIsMenuVisible(false)
+   }
+   const menu = () => {
+    <Modal transparent visible={isMenuVisible} animationType='slide' onRequestClose={closeMenu}>
+                            <View style={styles.menuContainer}>
+                              <View style={styles.menuContent}>
+                                        <View style={styles.skipMenu}>
+                                          <TouchableOpacity  onPress={ closeMenu}>
+                                            <FontAwesome name='bars' size={36} color='white'/>
+                                          </TouchableOpacity>
+                                          <Text style={{fontSize: 26,fontFamily: 'Poppins_600SemiBold',color:'white', textAlign: 'center', marginTop: 10}} >Menu</Text>
+                                        </View>
+                                        
+                                  <View style={{width:'100%', marginTop:60, marginLeft:10}}>
+                                      <View style={styles.linkContainer}>
+                                        <Icon source={'account-box'} size={30} color={'white'}/>
+                                        <TouchableOpacity style={styles.link} onPress={() => {navigation.navigate("Mon compte"), closeMenu()}}>
+                                          <Text style={styles.linkText}>Mon Compte</Text>
+                                        </TouchableOpacity>
+                                      </View >
+                                        <View style={styles.linkContainer}>
+                                          <Icon source={'account-group'} size={30} color={'white'}/>
+                                          <TouchableOpacity style={styles.link} onPress={() => {navigation.navigate("ManagementScreen"),closeMenu()}}>
+                                            <Text style={styles.linkText}>Gérer mon cabinet</Text>
+                                          </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.linkContainer}>
+                                          <Icon source={'account-multiple-plus'} size={30} color={'white'}/>  
+                                          <TouchableOpacity style={styles.link} onPress={() => closeMenu()}>
+                                            <Text style={styles.linkText}>Mes patients</Text>
+                                          </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.linkContainer}>
+                                          <Icon source={'book-open-variant'} size={30} color={'white'}/>
+                                          <TouchableOpacity style={styles.link} onPress={() => {navigation.navigate("RessourcesScreen"), closeMenu()}}>
+                                            <Text style={styles.linkText}>Ressources</Text>
+                                          </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.linkContainerDeconnexion}>
+                                            <Icon source={'logout'} size={30} color={'white'}/>  
+                                            <TouchableOpacity style={styles.link} onPress={() => {navigation.navigate("ConnectionScreen"), closeMenu()}}>
+                                              <Text style={styles.linkText}>Déconnexion</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                  </View>
+                              </View>
+                            </View>
+                  </Modal>
+   }
 
   // Switch :
   const [isSwitchOn, setIsSwitchOn] = useState(false);
@@ -403,12 +454,15 @@ const updateTreatmentInDB = (a, b, c) => {
      return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#99BD8F' }}>
           <StatusBar barStyle="light-content"/>
+              
             <View style={styles.container}>
+                 {menu}
                 <View style={styles.containerHeader}>
+                   
                         <View style={styles.header}>
-                          <View>
-                            <TouchableOpacity style={styles.barsStyle} onPress={() => navigation.navigate('MenuScreen')}> 
-                              <FontAwesome name='bars' size={32} color='#99BD8F'/>
+                          <View style={{marginLeft:10, marginBottom: 15}}>
+                            <TouchableOpacity style={styles.barsStyle} onPress={() => setIsMenuVisible(true)}> 
+                              <FontAwesome name='bars' size={36} color='#99BD8F'/>
                             </TouchableOpacity> 
                           </View>
                           
@@ -645,4 +699,45 @@ const styles = StyleSheet.create({
     marginTop: 30,
     alignItems: 'flex-end',
   },
+  //CSS MENU
+menuContainer: {
+  flex: 1,
+  alignItems: 'flex-start',
+},
+menuContent: {
+  backgroundColor: '#99BD8F',
+  padding: 8,
+  borderTopRightRadius: 10,
+  borderBottomRightRadius: 10,
+  elevation: 5,
+  height: '93%',
+  width: '80%',
+  justifyContent: 'flex-start',
+  alignContent: 'center',
+},
+skipMenu:{
+  marginLeft: 10,
+},
+linkContainer:{
+  flexDirection: 'row',
+  marginTop: 25,
+
+},
+link:{
+  marginLeft:10,
+},
+linkText : {
+  fontSize: 20,
+  fontFamily: 'Poppins_400Regular',
+  color:'white',
+},
+linkContainerDeconnexion : {
+  fontSize: 20,
+  fontFamily: 'Poppins_400Regular',
+  color:'white',
+  marginTop:270,
+  marginLeft:5,
+  flexDirection: 'row',
+}
+
 });
