@@ -128,7 +128,7 @@ export default function AddTransmissionScreen({navigation}) {
           transmission : newTransmission,
           token : officeToken,
         }
-        fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
+        fetch('http://192.168.1.14:3000/transmissions/addtransmission', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -159,7 +159,7 @@ export default function AddTransmissionScreen({navigation}) {
                   transmission : newTransmission,
                   token : officeToken,
                 }
-                fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
+                fetch('http://192.168.1.14:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
