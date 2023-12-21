@@ -140,109 +140,109 @@ export default function TransmissionScreen({navigation}) {
     <StatusBar barStyle="light-content"/>
       <View style={styles.container}>
       <Modal transparent visible={isMenuVisible} animationType='slide' onRequestClose={closeMenu}>
-                <View style={styles.menuContainer}>
-                  <View style={styles.menuContent}>
-                              <FontAwesome name='bars' size={36} color='white' marginLeft={10} marginTop={10}/>
-                      <View style={{width:'100%', marginTop:60, marginLeft:10}}>
-                            <TouchableOpacity style={styles.link} onPress={() => navigation.navigate("Mon compte")}>
-                              <Text style={styles.linkText}>Mon Compte</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.link} onPress={() => navigation.navigate("ManagementScreen")}>
-                              <Text style={styles.linkText}>Gérer mon cabinet</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.link} onPress={() => navigation.navigate("RessourcesScreen")}>
-                              <Text style={styles.linkText}>Ressources</Text>
-                            </TouchableOpacity>
-                      </View>
-                            
-                      <TouchableOpacity style={{marginTop:300, marginLeft:10}} onPress={closeMenu}>
-                        <Text style={{fontSize: 20,fontFamily: 'Poppins_400Regular',color:'white'}}>Déconnexion</Text>
-                      </TouchableOpacity>
-                  </View>
-                </View>
-      </Modal>
-        <View style={styles.header}>
-            <TouchableOpacity onPress={() => setIsMenuVisible(true)}>
-                         <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' />
+        <View style={styles.menuContainer}>
+          <View style={styles.menuContent}>
+              <FontAwesome name='bars' size={36} color='white' marginLeft={10} marginTop={10}/>
+              <View style={{width:'100%', marginTop:60, marginLeft:10}}>
+                <TouchableOpacity style={styles.link} onPress={() => navigation.navigate("Mon compte")}>
+                  <Text style={styles.linkText}>Mon Compte</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.link} onPress={() => navigation.navigate("ManagementScreen")}>
+                  <Text style={styles.linkText}>Gérer mon cabinet</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.link} onPress={() => navigation.navigate("RessourcesScreen")}>
+                  <Text style={styles.linkText}>Ressources</Text>
+                </TouchableOpacity>
+              </View>
+                    
+              <TouchableOpacity style={{marginTop:300, marginLeft:10}} onPress={closeMenu}>
+                <Text style={{fontSize: 20,fontFamily: 'Poppins_400Regular',color:'white'}}>Déconnexion</Text>
               </TouchableOpacity>
-           
-            <Image 
-            style={styles.image}
-            source={require('../assets/logo.png')} />
-        </View>
-        <Text style={styles.journal} >Journal</Text>
-        <View style={styles.filterContainer}>
-            <Text style={styles.textFilter}>Filtrer par :</Text>
-            <View style={styles.buttonContainer}>
-                  <TouchableOpacity style={styles.button} onPress={() => openModal('IDE')}>
-                      <Text style={styles.textButton} >{ideFiltered}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={showDate}>
-                      <Text style={styles.textButton} >{date.getDate().toString()}-{(date.getMonth()+1).toString()}-{(date.getFullYear()).toString()}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={() => openModal('Patients')}>
-                      <Text style={styles.textButton} >{patientFiltered}</Text>
-                  </TouchableOpacity>
-            </View>
-            <Modal transparent visible={modalVisible} onRequestClose={closeModal}>
-                <View style={styles.modalContainer}>
-                  <View style={styles.modalContent}>
-                    <ScrollView style={styles.modalList}>
-                    {ideVisible && (
-                      <>
-                      <TouchableOpacity style={styles.modalTextButton}
-                          onPress={() => {
-                            setIdeFiltered('Tout le cabinet');
-                            closeModal();
-                          }}>
-                         <Text style={{ textAlign: 'center', fontWeight: 'bold'}}
-                        >
-                          TOUT LE CABINET
-                        </Text>
-                      </TouchableOpacity>
-                       
-                        {ideListToDisplay}
-                      </>
-                    )}
-                      {patientsVisible &&  (
-                      <>
-                      <TouchableOpacity style={styles.modalTextButton}
-                          onPress={() => {
-                            setPatientFiltered('Tous les patients');
-                            closeModal();
-                          }}>
-                        <Text
-                          style={{ textAlign: 'center', fontWeight: 'bold'}}
-                        >
-                          TOUS LES PATIENTS
-                        </Text>
-                      </TouchableOpacity>
-                        {patientsListToDisplay}
-                      </>
-                    )}
-                    </ScrollView>
-                    <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-                      <Text style={styles.modalButtonText}>Fermer</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-            </Modal>
-            <View>
-                  {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
-            </View>
-            <View style={styles.navigation_infos} >
-              <Text style={styles.transmissionText}>{transmissionsToDisplay.length} transmissions</Text>
-              <TouchableOpacity>
-                <FontAwesome name={'plus-circle'} size={50} color='#99BD8F'  onPress={() => navigation.navigate('AddTransmissionScreen')}/>
-              </TouchableOpacity>
-            </View>
-        </View>
-        <ScrollView style={styles.transmissionsContainer}>
-          <View style={styles.transmissions}>
-             {transmissionsToDisplay}
           </View>
-        </ScrollView>
+        </View>
+      </Modal>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => setIsMenuVisible(true)}>
+          <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' />
+        </TouchableOpacity>
+          
+        <Image 
+        style={styles.image}
+        source={require('../assets/logo.png')} />
       </View>
+      <Text style={styles.journal} >Journal</Text>
+      <View style={styles.filterContainer}>
+        <Text style={styles.textFilter}>Filtrer par :</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={() => openModal('IDE')}>
+            <Text style={styles.textButton} >{ideFiltered}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={showDate}>
+            <Text style={styles.textButton} >{date.getDate().toString()}-{(date.getMonth()+1).toString()}-{(date.getFullYear()).toString()}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => openModal('Patients')}>
+            <Text style={styles.textButton} >{patientFiltered}</Text>
+          </TouchableOpacity>
+        </View>
+        <Modal transparent visible={modalVisible} onRequestClose={closeModal}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <ScrollView style={styles.modalList}>
+              {ideVisible && (
+                <>
+                <TouchableOpacity style={styles.modalTextButton}
+                    onPress={() => {
+                      setIdeFiltered('Tout le cabinet');
+                      closeModal();
+                    }}>
+                    <Text style={{ textAlign: 'center', fontWeight: 'bold'}}
+                  >
+                    TOUT LE CABINET
+                  </Text>
+                </TouchableOpacity>
+                  
+                  {ideListToDisplay}
+                </>
+              )}
+                {patientsVisible &&  (
+                <>
+                <TouchableOpacity style={styles.modalTextButton}
+                    onPress={() => {
+                      setPatientFiltered('Tous les patients');
+                      closeModal();
+                    }}>
+                  <Text
+                    style={{ textAlign: 'center', fontWeight: 'bold'}}
+                  >
+                    TOUS LES PATIENTS
+                  </Text>
+                </TouchableOpacity>
+                  {patientsListToDisplay}
+                </>
+              )}
+              </ScrollView>
+              <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                <Text style={styles.modalButtonText}>Fermer</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+          <View>
+                {visible && <DateTimePicker value={date} mode={mode} onChange={dateChange} />}
+          </View>
+          <View style={styles.navigation_infos} >
+            <Text style={styles.transmissionText}>{transmissionsToDisplay.length} transmissions</Text>
+            <TouchableOpacity>
+              <FontAwesome name={'plus-circle'} size={50} color='#99BD8F'  onPress={() => navigation.navigate('AddTransmissionScreen')}/>
+            </TouchableOpacity>
+          </View>
+      </View>
+      <ScrollView style={styles.transmissionsContainer}>
+        <View style={styles.transmissions}>
+            {transmissionsToDisplay}
+        </View>
+      </ScrollView>
+    </View>
    
   </SafeAreaView>
 );
