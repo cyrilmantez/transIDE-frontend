@@ -3,8 +3,9 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useSelector } from 'react-redux';
 import { Icon } from 'react-native-paper';
+import React from 'react';
 
-export default function MyAccountScreen(navigation) {
+export default function MyAccountScreen({navigation}) {
 
   const user = useSelector((state) => state.users.value);
 
@@ -35,8 +36,8 @@ export default function MyAccountScreen(navigation) {
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
               <ScrollView contentContainerStyle={styles.scrollView}>
                 <View style={styles.chevron}> 
-                  <TouchableOpacity onPress={() => {navigation.navigate('TabNavigator')}}>
-                    <FontAwesome name={'chevron-left'} size={30} color='#99BD8F' marginTop={20} />
+                  <TouchableOpacity onPress={() => navigation.navigate('TabNavigator')} >
+                    <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' marginTop={20} />
                   </TouchableOpacity>
                 </View>
                 <View style={styles.container}>
