@@ -5,6 +5,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
+import { Icon } from 'react-native-paper';
 
 
  
@@ -142,28 +143,54 @@ export default function TransmissionScreen({navigation}) {
       <Modal transparent visible={isMenuVisible} animationType='slide' onRequestClose={closeMenu}>
                 <View style={styles.menuContainer}>
                   <View style={styles.menuContent}>
-                              <FontAwesome name='bars' size={36} color='white' marginLeft={10} marginTop={10}/>
+                            <View style={styles.skipMenu}>
+                               <TouchableOpacity  onPress={ closeMenu}>
+                                <FontAwesome name='bars' size={36} color='white'/>
+                              </TouchableOpacity>
+                              <Text style={{fontSize: 26,fontFamily: 'Poppins_600SemiBold',color:'white', textAlign: 'center', marginTop: 10}} >Menu</Text>
+                            </View>
+                             
                       <View style={{width:'100%', marginTop:60, marginLeft:10}}>
-                            <TouchableOpacity style={styles.link} onPress={() => navigation.navigate("Mon compte")}>
+                          <View style={styles.linkContainer}>
+                            <Icon source={'account-box'} size={30} color={'white'}/>
+                             <TouchableOpacity style={styles.link} onPress={() => {navigation.navigate("Mon compte"), closeMenu()}}>
                               <Text style={styles.linkText}>Mon Compte</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.link} onPress={() => navigation.navigate("ManagementScreen")}>
-                              <Text style={styles.linkText}>Gérer mon cabinet</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.link} onPress={() => navigation.navigate("RessourcesScreen")}>
-                              <Text style={styles.linkText}>Ressources</Text>
-                            </TouchableOpacity>
+                          </View >
+                            <View style={styles.linkContainer}>
+                              <Icon source={'account-group'} size={30} color={'white'}/>
+                              <TouchableOpacity style={styles.link} onPress={() => {navigation.navigate("ManagementScreen"),closeMenu()}}>
+                                <Text style={styles.linkText}>Gérer mon cabinet</Text>
+                              </TouchableOpacity>
+                            </View>
+                            <View style={styles.linkContainer}>
+                              <Icon source={'account-multiple-plus'} size={30} color={'white'}/>  
+                              <TouchableOpacity style={styles.link} onPress={() => closeMenu()}>
+                                <Text style={styles.linkText}>Mes patients</Text>
+                              </TouchableOpacity>
+                            </View>
+                            <View style={styles.linkContainer}>
+                               <Icon source={'book-open-variant'} size={30} color={'white'}/>
+                              <TouchableOpacity style={styles.link} onPress={() => {navigation.navigate("RessourcesScreen"), closeMenu()}}>
+                                <Text style={styles.linkText}>Ressources</Text>
+                              </TouchableOpacity>
+                            </View>
+                            <View style={styles.linkContainerDeconnexion}>
+                                <Icon source={'logout'} size={30} color={'white'}/>  
+                                <TouchableOpacity style={styles.link} onPress={() => {navigation.navigate("ConnectionScreen"), closeMenu()}}>
+                                  <Text style={styles.linkText}>Déconnexion</Text>
+                                </TouchableOpacity>
+                            </View>
+                              
                       </View>
                             
-                      <TouchableOpacity style={{marginTop:300, marginLeft:10}} onPress={closeMenu}>
-                        <Text style={{fontSize: 20,fontFamily: 'Poppins_400Regular',color:'white'}}>Déconnexion</Text>
-                      </TouchableOpacity>
+                      
                   </View>
                 </View>
       </Modal>
         <View style={styles.header}>
             <TouchableOpacity onPress={() => setIsMenuVisible(true)}>
-                         <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' />
+                  <FontAwesome marginLeft={20} marginTop={10} name='bars' size={36} color='#99BD8F'/>
               </TouchableOpacity>
            
             <Image 
@@ -442,6 +469,9 @@ message : {
   paddingBottom: 5,
   textAlign: 'justify',
 },
+
+
+//CSS MENU
 menuContainer: {
   flex: 1,
   alignItems: 'flex-start',
@@ -449,20 +479,37 @@ menuContainer: {
 menuContent: {
   backgroundColor: '#99BD8F',
   padding: 8,
-  borderRadius: 10,
+  borderTopRightRadius: 10,
+  borderBottomRightRadius: 10,
   elevation: 5,
   height: '93%',
-  width: '70%',
+  width: '80%',
   justifyContent: 'flex-start',
   alignContent: 'center',
-  
+},
+skipMenu:{
+  marginLeft: 10,
+},
+linkContainer:{
+  flexDirection: 'row',
+  marginTop: 25,
+
 },
 link:{
-  marginTop:40,
+  marginLeft:10,
 },
 linkText : {
   fontSize: 20,
   fontFamily: 'Poppins_400Regular',
   color:'white',
+},
+linkContainerDeconnexion : {
+  fontSize: 20,
+  fontFamily: 'Poppins_400Regular',
+  color:'white',
+  marginTop:270,
+  marginLeft:5,
+  flexDirection: 'row',
 }
+
 });
