@@ -223,11 +223,11 @@ const updateTreatmentInDB = (a, b, c) => {
         </View>
         <View>
         <TouchableOpacity onPress={()=> openWazeWithAddress()} style={{flexDirection: 'row', justifyContent: 'flex-end', marginRight: 20, marginBottom: 20}}>
-          <Text style={{marginTop : 12, marginRight: 40, fontFamily: 'Poppins_400Regular', fontSize: 14,}}>y aller avec Waze...</Text>
+          <Text style={{marginTop : 16, marginRight: 34, fontFamily: 'Poppins_400Regular', fontSize: 14,}}>y aller avec Waze !!!</Text>
           <Icon source={'waze'} size={42} color='#99BD8F' style={{marginLeft: 0}}/>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setModalAddressVisible(!modalAddressVisible)} style={{flexDirection: 'row', justifyContent: 'flex-end', marginRight: 20}}>
-          <Text style={{marginTop : 12, marginRight: 30, fontFamily: 'Poppins_400Regular', fontSize: 14, }}>rester dans TransIDE</Text>
+          <Text style={{marginTop : 16, marginRight: 30, fontFamily: 'Poppins_400Regular', fontSize: 14, }}>rester dans TransIDE</Text>
           <Icon source={'close-circle'} size={42} color='#99BD8F' />
         </TouchableOpacity>
         </View>

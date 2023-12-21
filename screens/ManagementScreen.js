@@ -50,7 +50,7 @@ export default function ManagementScreen({navigation}) {
       const tokens = offices;
       const tokenByDefault = tokens.filter(e => e.isByDefault === true)
       console.log(tokenByDefault[0].token)
-      fetch('http://192.168.1.162:3000/users/usersByOffice', {
+      fetch('http://192.168.0.25:3000/users/usersByOffice', {
         method: 'PUT',
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify({
