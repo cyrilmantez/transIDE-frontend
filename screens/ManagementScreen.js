@@ -50,7 +50,7 @@ export default function ManagementScreen({navigation}) {
       const tokens = offices;
       const tokenByDefault = tokens.filter(e => e.isByDefault === true)
       console.log(tokenByDefault[0].token)
-      fetch('http://192.168.1.162:3000/users/usersByOffice', {
+      fetch('http://192.168.1.5:3000/users/usersByOffice', {
         method: 'PUT',
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify({
@@ -79,7 +79,7 @@ export default function ManagementScreen({navigation}) {
       dispatch(upDateOfficeByDefault(newOfficesTokens));
       
       const officeByDefault = newOfficesTokens[index].token;
-      fetch('http://192.168.1.14:3000/users/newOfficesToken', {
+      fetch('http://192.168.1.5:3000/users/newOfficesToken', {
         method: 'PUT',
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify({
@@ -113,7 +113,7 @@ export default function ManagementScreen({navigation}) {
     setModalMessage('Tu appartiens déjà à ce cabinet !');
     setIsModalVisible(true);
   }else{
-    fetch('http://192.168.1.14:3000/users/newOffice', {
+    fetch('http://192.168.1.5:3000/users/newOffice', {
         method: 'POST',
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify({

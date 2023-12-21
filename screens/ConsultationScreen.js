@@ -13,6 +13,7 @@ export default function ConsultationScreen({ navigation, route }) {
     const [patient, setPatient]= useState({_id : route.params._id, date: route.params.date, firstname: route.params.firstname, name: route.params.name, yearOfBirthday: route.params.yearOfBirthday, address: route.params.address, mobile: route.params.mobile, homePhone: route.params.homePhone, isOk: route.params.isOk, isOkWithModification: route.params.isOkWithModification, _idTreatment: route.params._idTreatment, documentsOfTreatment: route.params.documentsOfTreatment});
     // Récupération des soins prévus de TourScreen (tableau de strings):
     const [plannedTreatments, setPlannedTreatments] = useState('');
+    const [baseTreatments, setBaseTreatments] = useState('')
     // Transmission :
     const [transmission, setTransmission] = useState('');
     // Statut de la consultation à la validation :
@@ -27,51 +28,68 @@ export default function ConsultationScreen({ navigation, route }) {
     useEffect(() => {
         let treatments = '';
         for( const treatment of route.params.actions) {
-            treatments = `${treatment} 
-            ${treatments} `;
+            treatments = `${treatment} ${treatments}`;
         }
-        setPlannedTreatments(treatments);
+        setPlannedTreatments(treatments)
+        setBaseTreatments(treatments);
     }, []);
 
     // Validation des modifications effectuées :
-    const validation = () => {
-        let isVisited = false;
-        let isOkWithModification = false;
-
-        if(route.params.actions !== plannedTreatments) {
-            isOkWithModification = true;
-        }
-        if (consultationDone) {
-            isVisited = true;
-        }
-        
-        fetch('http://192.168.1.14:3000/patients/updateTreatment', {
-            method: 'PUT',
-            headers: {'Content-Type' : 'application/json'},
-            body: JSON.stringify({
-                _id: patient._id,
-                isVisited: isVisited,
-                isOk: true,
-                isOkWithModification: isOkWithModification,
-                date: patient.date,
-                nurse: user.username,
-                documentsOfTreatment: patient.documentsOfTreatment,
-                actions: plannedTreatments,
-                _idTreatment: patient._idTreatment,
-             })
-            }).then(response => response.json())
-            .then(data => {
-                if(data.result) {
-                    console.log('updateTreatment', data);
-                    navigation.navigate('TabNavigator');
+    const validation = (arg) => {
+        if (arg) {
+            if (baseTreatments !== plannedTreatments) {
+                console.log('if', route.params.actions)
+                fetch('http://192.168.1.5:3000/patients/updateTreatment', {
+                    method: 'PUT',
+                    headers: {'Content-Type' : 'application/json'},
+                    body: JSON.stringify({
+                        _id: patient._id,
+                        isVisited: true,
+                        isOk: true,
+                        isOkWithModification: true,
+                        date: patient.date,
+                        nurse: user.username,
+                        documentsOfTreatment: patient.documentsOfTreatment,
+                        actions: plannedTreatments,
+                        _idTreatment: patient._idTreatment,
+                     })
+                    }).then(response => response.json())
+                    .then(data => {
+                        if(data.result) {
+                            console.log('updateTreatment', data);
+                            navigation.navigate('TabNavigator');
+                    }
+                })
+            } else if (baseTreatments === plannedTreatments) {
+                fetch('http://192.168.1.5:3000/patients/updateTreatment', {
+                    method: 'PUT',
+                    headers: {'Content-Type' : 'application/json'},
+                    body: JSON.stringify({
+                        _id: patient._id,
+                        isVisited: true,
+                        isOk: true,
+                        isOkWithModification: false,
+                        date: patient.date,
+                        nurse: user.username,
+                        documentsOfTreatment: patient.documentsOfTreatment,
+                        actions: plannedTreatments,
+                        _idTreatment: patient._idTreatment,
+                     })
+                    }).then(response => response.json())
+                    .then(data => {
+                        if(data.result) {
+                            console.log('updateTreatment', data);
+                            navigation.navigate('TabNavigator');
+                    }
+                })
             }
-        })
+        }
 
         if(transmission.length > 0) {
-            console.log('essai');
+            //console.log('essai');
             const tokenByDefault = user.officesTokens;
             console.log(tokenByDefault.filter(e => e.isByDefault)[0].token);
-            fetch('http://192.168.1.14:3000/transmissions/addtransmission', {
+            fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: {'Content-Type' : 'application/json'},
                 body: JSON.stringify({
@@ -96,28 +114,7 @@ export default function ConsultationScreen({ navigation, route }) {
             })
         }
       };
-    
-      console.log(patient);
-      console.log( patient.yearOfBirthday);
 
-        /* if(route.params.actions !== plannedTreatments) {
-            validation(true, true, true);
-        } else {
-            validation(true, true, false);
-        } */
-
-    /* const updateTreatmentInDB = () => {
-        fetch('http://192.168.0.25:3000/patients/allPatients', {
-            method: 'PUT',
-            headers: {'Content-Type' : 'application/json'},
-            body: JSON.stringify({officeToken: user.officesTokens, dateOfToday : date })
-        }).then(response => response.json())
-        .then(data => {
-            setIsVisited(false);
-            setIsOk(false);
-            setIsOkWithModification(false);
-        })
-    } */
         
     // Formatage de la date de la consultation :
     const date = moment(route.params.date).format('L');
@@ -147,13 +144,13 @@ export default function ConsultationScreen({ navigation, route }) {
                         <View style={styles.dataTop}>
                             <FontAwesome name={'map-pin'} size={24} color='black' />
                             <View>
-                                <Text>  {patient.address}</Text>
+                                <Text>     {patient.address}</Text>
                             </View>
                         </View>
                         <View style={styles.dataBottom}>
                             <FontAwesome name={'phone'} size={24} color='black' />
                             <View>
-                                <Text>  {patientPhones}</Text>
+                                <Text>    {patientPhones}</Text>
                             </View>
                         </View>
                     </View>
@@ -181,6 +178,8 @@ export default function ConsultationScreen({ navigation, route }) {
                 }}>
                 <Text style={styles.modalChoiceText}>Non</Text>
                 </TouchableOpacity>
+
+
                 <TouchableOpacity onPress={()=> {
                     setModalVisible(!modalVisible);
                     setConsultationModalVisible(true);
@@ -204,18 +203,20 @@ export default function ConsultationScreen({ navigation, route }) {
         >
         <View style={styles.centeredView}>
             <View style={styles.modalView}>
-                <Text style={styles.modalText}>As-tu déjà effectué la consultation ?</Text>
+                <Text style={styles.modalText}>Souhaites-tu valider la consultation ?</Text>
                 <View style={styles.modalChoice}>
                     <TouchableOpacity onPress={()=> {
                         setConsultationModalVisible(!consultationModalVisible);
-                        validation();
+                        validation(false);
                     }}>
                     <Text style={styles.modalChoiceText}>Non</Text>
                     </TouchableOpacity>
+
+
                     <TouchableOpacity onPress={()=> {
                         setConsultationModalVisible(!consultationModalVisible);
-                        setConsultationDone(true);
-                        validation();
+                        // setConsultationDone(true);
+                        validation(true);
                     }}>
                     <Text style={styles.modalChoiceText}>Oui</Text>
                     </TouchableOpacity>
@@ -345,7 +346,7 @@ export default function ConsultationScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 35, 
+        marginTop: 25, 
         marginBottom: 10,
         flex: 1,
         backgroundColor: '#fff',
@@ -367,7 +368,7 @@ const styles = StyleSheet.create({
     },
     chevron: {
        alignSelf: 'flex-start',
-       marginLeft: 20,
+    //    marginLeft: 5,
     },
     titleSoins: {
        color: '#99BD8F',
