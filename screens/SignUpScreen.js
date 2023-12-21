@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, Text, View, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform, TouchableOpacity } from 'react-native';
+import { Button, StyleSheet, SafeAreaView, Text, View, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform, TouchableOpacity, Modal} from 'react-native';
 import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
@@ -15,24 +15,33 @@ export default function SignUpScreen({navigation}) {
   const [signUpName, setSignUpName] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [colorMode, setColorMode] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false)
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/;
 
+  const closeModal = () => {
+    setIsModalVisible(false);
+    setModalMessage('');
+  }
+
   const handleRegister = () => {
     if (signUpPassword !== confirmPassword) {
-      alert('Les mots de passe ne correspondent pas. Dommage...');
+      setModalMessage('Les mots de passe ne correspondent pas. Dommage...');
+      setIsModalVisible(true);
       return;
     };
 
     if (!emailRegex.test(signUpEmail)) {
-      alert('Veuillez saisir une adresse e-mail valide.');
+      setModalMessage('Veuillez saisir une adresse e-mail valide.');
+      setIsModalVisible(true);
       return;
     };
 
     if (!passwordRegex.test(signUpPassword)) {
-      alert('Le mot de passe doit contenir 10 caractères minimum, dont au moins un caractère spécial, une majuscule et une minuscule');
+      setModalMessage('Le mot de passe doit contenir 10 caractères minimum, dont au moins un caractère spécial, une majuscule et une minuscule');
+      setIsModalVisible(true);
       return;
     }
     
@@ -48,8 +57,9 @@ export default function SignUpScreen({navigation}) {
           setSignUpName('');
           setSignUpPassword('');
           setConfirmPassword('');
-          setColorMode(false);
+          setModalMessage('');
           navigation.navigate('TabNavigator');
+
         }
       })
   }
@@ -71,82 +81,93 @@ export default function SignUpScreen({navigation}) {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <ScrollView contentContainerStyle={styles.scrollView}>
-            <View style={styles.innerContainer}>
-              <Text style={styles.bienvenue} >Bienvenue !</Text>
-            </View>
-            <View style={styles.innerContainer}>
-              <Text style={styles.creetoncompte} >Crée ton compte</Text>
-            </View>
-            <View style={styles.innerContainer}>
-              <TextInput 
-                label='Ton adresse mail' 
-                mode='outlined'
-                theme={{ 
-                  colors: { 
-                    primary: '#99BD8F', 
-                  }
-                }}
-                style={{ width: 350, marginTop: 15 }} 
-                
-                onChangeText={text => setSignUpEmail(text)} 
-                value={signUpEmail}/>
-              <TextInput 
-                label="Ton nom d'utilisateur"
-                theme={{ 
-                  colors: { 
-                    primary: '#99BD8F', 
-                  }
-                }}
-                style={{ width: 350, marginTop: 15 }}  
-                mode='outlined'
-                onChangeText={text => setSignUpName(text)} 
-                value={signUpName}/>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <TextInput 
-                    label='Ton mot de passe' 
-                    theme={{ 
-                      colors: { 
-                        primary: '#99BD8F', 
-                      }
-                    }}
-                    style={{ width: 350, marginTop: 15 }} 
-                    mode='outlined'
-                    secureTextEntry={passwordVisible}
-                    onChangeText={text => setSignUpPassword(text)}
-                    value={signUpPassword}
-                  />
-                  <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 32}}>
-                      <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='#99BD8F'/>
-                  </TouchableOpacity>
+              <View>
+                    <View style={styles.innerContainer}>
+                      <Text style={styles.bienvenue} >Bienvenue !</Text>
+                        <Text style={styles.creetoncompte} >Crée ton compte</Text>
+                    </View>
+                    <View style={styles.inputContainer}>
+                          <TextInput 
+                            label="Ton nom d'utilisateur"
+                            theme={{ 
+                              colors: { 
+                                primary: '#99BD8F', 
+                              }
+                            }}
+                            style={{ width: 350, marginTop: 15 }}  
+                            mode='outlined'
+                            onChangeText={text => setSignUpName(text)} 
+                            value={signUpName}/>
+                          <TextInput 
+                            label='Ton adresse mail' 
+                            mode='outlined'
+                            theme={{ 
+                              colors: { 
+                                primary: '#99BD8F', 
+                              }
+                            }}
+                            style={{ width: 350, marginTop: 15 }} 
+                            
+                            onChangeText={text => setSignUpEmail(text)} 
+                            value={signUpEmail}/>
+                         
+                          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                              <TextInput 
+                                label='Ton mot de passe' 
+                                theme={{ 
+                                  colors: { 
+                                    primary: '#99BD8F', 
+                                  }
+                                }}
+                                style={{ width: 350, marginTop: 15 }} 
+                                mode='outlined'
+                                secureTextEntry={passwordVisible}
+                                onChangeText={text => setSignUpPassword(text)}
+                                value={signUpPassword}
+                              />
+                              <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 20, top: 32}}>
+                                  <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='#99BD8F'/>
+                              </TouchableOpacity>
+                            </View>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                              <TextInput 
+                                label='Ton mot de passe (oui oui, encore...)' 
+                                theme={{ 
+                                  colors: { 
+                                    primary: '#99BD8F', 
+                                  }
+                                }}
+                                style={{ width: 350, marginTop: 15 }} 
+                                mode='outlined'
+                                secureTextEntry={passwordVisible}
+                                onChangeText={text => setConfirmPassword(text)}
+                                value={confirmPassword}
+                              />
+                              <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 20, top: 33}}>
+                                  <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='#99BD8F' />
+                              </TouchableOpacity>
+                            </View>
+                        <TouchableOpacity style={styles.button} onPress={() => handleRegister()}>
+                          <Text style={styles.text} >Valider</Text>
+                        </TouchableOpacity>
+                        <View style={styles.footer}>
+                          <Text style={styles.footertext}>Déjà un compte ?</Text>
+                          <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
+                            <Text style={[styles.footertext, {marginTop: 5, color: 'blue'}]}>CONNECTE-TOI</Text>
+                          </TouchableOpacity>
+                        </View>
+                        <Modal transparent visible={isModalVisible} onRequestClose={closeModal}>
+                            <View style={styles.modalContainer}>
+                              <View style={styles.modalContent}>
+                                  <Text style={styles.modalText}>{modalMessage}</Text>
+                                  <TouchableOpacity style={styles.closeButton} onPress={() => closeModal()}>
+                                    <Text style={styles.modalButtonText}>Fermer</Text>
+                                  </TouchableOpacity>
+                              </View>
+                            </View>
+                      </Modal>
+                    </View>
               </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <TextInput 
-                    label='Ton mot de passe (oui oui, encore...)' 
-                    theme={{ 
-                      colors: { 
-                        primary: '#99BD8F', 
-                      }
-                    }}
-                    style={{ width: 350, marginTop: 15 }} 
-                    mode='outlined'
-                    secureTextEntry={passwordVisible}
-                    onChangeText={text => setConfirmPassword(text)}
-                    value={confirmPassword}
-                  />
-                  <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 10, top: 33}}>
-                      <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='#99BD8F' />
-                  </TouchableOpacity>
-              </View>
-              <TouchableOpacity style={styles.button} onPress={() => handleRegister()}>
-                <Text style={styles.text} >Valider</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.footer}>
-              <Text style={styles.footertext}>Déjà un compte ?</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
-                <Text style={[styles.footertext, {marginTop: 20, color: 'blue'}]}>CONNECTE-TOI</Text>
-              </TouchableOpacity>
-            </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
@@ -161,28 +182,35 @@ const styles = StyleSheet.create({
  container: {
    flex: 1,
    alignItems: 'center',
-   justifyContent: 'center',
    backgroundColor: 'white',
+
  },
  scrollView: {
    flexGrow: 1,
-   justifyContent: 'center',
+   alignItems: 'center',
  },
  innerContainer: {
+  flex:1,
    alignItems: 'center',
-   justifyContent: 'center',
+
  },
+ inputContainer: {
+  flex : 1,
+  alignItems: 'center',
+},
+
  bienvenue: {
   color: '#99BD8F',
   fontSize: 30,
-  marginBottom: 50,
+  marginTop: 40,
+  marginBottom: 10,
   fontFamily: 'Poppins_600SemiBold',
  },
  creetoncompte: {
   color: '#99BD8F',
   fontFamily: 'Poppins_600SemiBold',
   fontSize: 40,
-  marginBottom: 80,
+  marginBottom: 30,
  },
 
 button : {
@@ -190,7 +218,7 @@ button : {
   width: 350,
   height: 50,
   borderRadius: 10,
-  marginTop: 25,
+  marginTop: 50,
   justifyContent: 'center',
   alignItems: 'center',
 },
@@ -201,9 +229,47 @@ text: {
 footer: {
   alignItems: 'center',
    justifyContent: 'center',
-  marginTop: 50,
+  marginTop: 40,
+  marginBottom: 20,
 },
 footertext: {
   fontFamily: 'Poppins_600SemiBold', 
-}
+},
+modalContainer: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+},
+modalContent: {
+  backgroundColor: 'white',
+  padding: 8,
+  borderRadius: 10,
+  borderColor: '#99BD8F',
+  borderWidth: 5,
+  elevation: 5,
+  height: 300,
+  width: 250,
+  display:'flex',
+  justifyContent: 'space-between',
+  alignContent: 'center'
+},
+closeButton :{
+  borderColor: 'white',
+  borderWidth: 1,
+  display:'flex',
+  justifyContent: 'center',
+  alignContent: 'center',
+  marginBottom: 10,
+  height: 40,
+  backgroundColor:'#99BD8F',
+},
+modalButtonText:{
+  textAlign: 'center',
+  color: 'white',
+ },
+ modalText:{
+  textAlign: 'center',
+  marginTop: 90,
+ }
 });

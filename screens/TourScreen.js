@@ -114,7 +114,7 @@ export default function TourScreen({navigation}) {
                                         </View>
                                         <View style={styles.linkContainer}>
                                           <Icon source={'account-multiple-plus'} size={30} color={'white'}/>  
-                                          <TouchableOpacity style={styles.link} onPress={() => closeMenu()}>
+                                          <TouchableOpacity style={styles.link} onPress={() => {navigation.navigate("MyPatientsScreen"), closeMenu()}}>
                                             <Text style={styles.linkText}>Mes patients</Text>
                                           </TouchableOpacity>
                                         </View>

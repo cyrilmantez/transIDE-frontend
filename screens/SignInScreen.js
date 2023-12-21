@@ -89,34 +89,32 @@ export default function SignInScreen({navigation}) {
                           onChangeText={text => setSignInName(text)} 
                           value={signInName}/>
                           <View style={styles.passwordStyle}>
-                            <TextInput 
-                            label='Ton mot de passe'
-                            mode='outlined'
-                            theme={{ 
-                              colors: { 
-                                primary: '#99BD8F', 
-                              }
-                            }}
-                            secureTextEntry={passwordVisible} 
-                            style={{ width: 350, marginTop: 15}}
-                            onChangeText={text => setSignInPassword(text)} 
-                            value={signInPassword}/>
-                            <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{marginTop: 35, marginLeft : -24}}>
-                              <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='grey' />
-                            </TouchableOpacity>
+                                <TextInput 
+                                label='Ton mot de passe'
+                                mode='outlined'
+                                theme={{ 
+                                  colors: { 
+                                    primary: '#99BD8F', 
+                                  }
+                                }}
+                                secureTextEntry={passwordVisible} 
+                                style={{ width: 350, marginTop: 15}}
+                                onChangeText={text => setSignInPassword(text)} 
+                                value={signInPassword}/>
+                                <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={{position: 'absolute', right: 20, top: 32}}>
+                                  <FontAwesome name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color='#99BD8F' />
+                                </TouchableOpacity>
                           </View>
                           <TouchableOpacity style={styles.button} onPress={() => handleConnexion()}>
                             <Text style={styles.text}>Valider</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity>
-                            <Text style={[styles.footertext, {marginTop: 10, color: 'blue'}]}>Des trous de mémoire ?</Text>
-                          </TouchableOpacity>
+                          
                           <View style={styles.footer}>
                             <Text style={styles.footertext}>Pas encore de compte ?</Text>
                             <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
                               <Text style={[styles.footertext, {marginTop: 5, color: 'blue'}]}>Vite! Crée le en 10 secondes</Text>
                             </TouchableOpacity>
-                    </View>
+                          </View>
                   <Modal transparent visible={isModalVisible} onRequestClose={closeModal}>
                         <View style={styles.modalContainer}>
                           <View style={styles.modalContent}>
@@ -176,11 +174,12 @@ const styles = StyleSheet.create({
   footer: {
     alignItems: 'center',
      justifyContent: 'center',
-    marginTop: 50,
+    marginTop: 20,
+    marginBottom: 20,
   },
   footertext: {
     fontFamily: 'Poppins_600SemiBold', 
-    marginTop: 40,
+    marginTop: 20,
   },
   button : {
     backgroundColor: '#99BD8F',
