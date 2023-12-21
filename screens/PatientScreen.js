@@ -107,11 +107,11 @@ export default function App({ navigation, route }) {
                 <Card key={index} style={isModified ? {backgroundColor: '#F9EAB6', width: 350, marginBottom: 10} : (!isOk && isVisited ? {backgroundColor: '#FF0000', width: 350, marginBottom: 10} : {width: 350, marginBottom: 10})}>
                   <Card.Content>
                     <View>
-                      <Text style={isFuture ? { marginBottom: 5, fontFamily: 'Poppins_600SemiBold'} : {marginBottom: 5, fontFamily: 'Poppins_600SemiBold'}}>
+                      <Text style={isFuture ? { marginBottom: 5, fontFamily: 'Poppins_600SemiBold', fontStyle: 'italic'} : {marginBottom: 5, fontFamily: 'Poppins_600SemiBold'}}>
                         {treatmentDate.format('DD/MM/YYYY - HH:mm')} :
                       </Text>
                       {treatment.actions.map((action, actionIndex) => (
-                        <Text key={`${index}-${actionIndex}`} style={isFuture ? {fontFamily: 'Poppins_400Regular',} : {fontFamily: 'Poppins_400Regular',}}>
+                        <Text key={`${index}-${actionIndex}`} style={isFuture ? {fontFamily: 'Poppins_400Regular', fontStyle: 'italic'} : {fontFamily: 'Poppins_400Regular',}}>
                           Action : {action}
                         </Text>
                       ))}
