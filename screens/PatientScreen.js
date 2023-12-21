@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Modal, ScrollView, Alert, StyleSheet, SafeAreaView, Animated, TouchableOpacity, Touchable } from 'react-native';
+import { View, Text, Modal, ScrollView, Alert,Image, StyleSheet, SafeAreaView, Animated, TouchableOpacity, Touchable , StatusBar} from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import moment from 'moment';
 import 'moment/locale/fr';
@@ -7,7 +7,7 @@ import { Card, Icon } from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFocusEffect } from '@react-navigation/native';
 
-export default function App({ navigation, route }) {
+export default function PatientScreen({ navigation, route }) {
   const { _id: currentPatientId } = route.params;
   const [patient, setPatient] = useState(null);
   const [value, setValue] = useState('');
@@ -93,7 +93,7 @@ export default function App({ navigation, route }) {
     
             if (isWithin90Days) {
               return (
-                <Card key={index} style={isModified ? {backgroundColor: '#F9EAB6', width: 350, marginBottom: 10} : (isFuture ? {backgroundColor: '#CADDC5', width: 350, marginBottom: 10} : {width: 350, marginBottom: 10})}>
+                <Card key={index} style={isModified ? {backgroundColor: '#F9EAB6', width: 340, marginBottom: 5} : (isFuture ? { width: 340, marginBottom: 5, borderBlockColor:'#99BD8F', borderWidth:1} : {backgroundColor: '#CADDC5',width: 340, marginBottom: 5})}>
                   <Card.Content>
                     <View>
                       <Text style={isFuture ? { marginBottom: 5, fontFamily: 'Poppins_600SemiBold'} : {marginBottom: 5, fontFamily: 'Poppins_600SemiBold'}}>
@@ -201,20 +201,22 @@ export default function App({ navigation, route }) {
     return (<View />);
   } else {
     return (
-      <>
-          <SafeAreaView style={{ flex: 0, backgroundColor: '#99BD8F' }} />
+    
           <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+             <StatusBar barStyle="light-content"/>
               <View style={styles.container}>    
-                <View style={{ position: 'absolute', top: 15, left: 15 }} > 
-                    <TouchableOpacity onPress={() => navigation.navigate('TabNavigator')} >
-                      <FontAwesome name={'chevron-left'} size={30} color='#99BD8F'/>
-                    </TouchableOpacity>        
-                </View>              
+                  <View style={styles.header}>
+                          <View>
+                          <FontAwesome name={'chevron-left'} size={24} color='#99BD8F'  marginLeft={15} onPress={() => navigation.navigate('TabNavigator')} />
+                          </View>
+                           <Text style={styles.title}>FICHE PATIENT</Text>
+                          
+                        </View>           
                   <View>
-                      <Text style={styles.title}>FICHE PATIENT</Text>
+                     
                   </View>
                   <Card style={styles.patientcontent}>
-                    <Card.Content style={{height: 140, width: 352}}>
+                    <Card.Content style={{height:150, width: 352}}>
                       <ScrollView>
                         <TouchableOpacity onPress={handlePress}>
                           {scrollViewContent}
@@ -224,23 +226,23 @@ export default function App({ navigation, route }) {
                   </Card>
                   <View style={styles.content}> 
                   <View style={styles.buttoncontain}>
-                  {buttons.map((button, index) => (
-                      <TouchableOpacity
-                        key={`${index}-${refresh}`}
-                        onPress={() => {
-                          handleButtonPress(index);
-                          setDisponibility(patient.disponibility);
-                        }}
-                        style={[
-                          styles.button,
-                          index === selectedIndex ? styles.selected : null,
-                          { backgroundColor: buttonColors[index] }
-                        ]}
-                      >
-                        <Text style={styles.text}>{button}</Text>
-                      </TouchableOpacity>
-                    ))}
-                    
+                        {buttons.map((button, index) => (
+                            <TouchableOpacity
+                              key={`${index}-${refresh}`}
+                              onPress={() => {
+                                handleButtonPress(index);
+                                setDisponibility(patient.disponibility);
+                              }}
+                              style={[
+                                styles.button,
+                                index === selectedIndex ? styles.selected : null,
+                                { backgroundColor: buttonColors[index] }
+                              ]}
+                            >
+                              <Text style={styles.text}>{button}</Text>
+                            </TouchableOpacity>
+                          ))}
+
                   </View> 
                   <View>
                     <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10,}}>
@@ -263,7 +265,7 @@ export default function App({ navigation, route }) {
                   
               </View>{ModalContent}
           </SafeAreaView>
-      </>
+  
     );
   }
 }
@@ -271,23 +273,44 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    borderColor:'red',
+    borderWidth:1,
 
+  },
+  header: {
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderColor:'blue',
+    borderWidth:1,
+  },
+  image: {
+    width: 60,
+    height: 60,
+    marginLeft: -40,
   },
   title: {
     color: '#99BD8F',
     fontFamily: 'Poppins_600SemiBold', 
     fontSize: 30,
-    marginTop: 30,
-    marginBottom: 20,
+    borderColor:'red',
+    borderWidth:1,
+    marginLeft: 50,
  },
-
  patientcontent: {
-  marginBottom: 20,
   backgroundColor: '#99BD8F',
-
+  borderColor:'red',
+  borderWidth:1,
  },
-
+ content:{
+  width: '100%',
+  marginTop: 20,
+  borderColor:'red',
+  borderWidth:1,
+  alignItems:'center',
+ },
  name: {
   fontFamily: 'Poppins_600SemiBold', 
   fontSize: 20,
@@ -356,7 +379,8 @@ closemodal: {
 },
 
 modalView: {
- 
+  borderColor:'red',
+  borderWidth:1,
   margin: 20,
   height: '68%',
   width: '97%',
@@ -383,7 +407,10 @@ modalText: {
   textAlign: "center"
 },
 buttoncontain: {
+  width: '95%',
   flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
   borderRadius: 5,
   borderWidth: 1,
   borderColor: '#99BD8F',
@@ -394,7 +421,7 @@ button: {
   padding: 10,
   justifyContent: 'center',
   alignItems: 'center',
-  width: 178,
+  width: '50%',
 },
 selected: {
   backgroundColor: '#99BD8F',
@@ -421,8 +448,7 @@ journalBtn: {
   width: 360,
   height: 50,
   borderRadius: 10,
-  marginTop: 20,
-  marginBottom: 20,
+  marginTop : 20,
   justifyContent: 'center',
   alignItems: 'center',
 },
@@ -431,9 +457,7 @@ textBtn: {
   fontSize: 17,
 },
 treatmentAffichage: {
-  marginTop: 10,
-  marginLeft: 10,
-  marginRight: 10,
+  
   alignItems: 'center',
 },
 

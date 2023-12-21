@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, View, SafeAreaView, ScrollView, Image,TouchableOpacity, StatusBar , Platform ,Modal} from 'react-native';
+import React, { useState, useRef } from 'react';
+import { Button, StyleSheet, Text, View, SafeAreaView, ScrollView, Image,TouchableOpacity, StatusBar , Platform ,Modal, Animated} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
@@ -22,6 +22,9 @@ export default function TransmissionScreen({navigation}) {
   const [modalList, setModalList] = useState([])
   const [ideFiltered, setIdeFiltered] = useState('Tout le cabinet');
   const [patientFiltered, setPatientFiltered] = useState('Tous les patients');
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+
+
 
   //Open the Modal
   const openModal = (target) => {
@@ -36,6 +39,12 @@ export default function TransmissionScreen({navigation}) {
     setPatientsVisible(false);
     setModalList([]); 
   }
+
+   //Close Menu
+   const closeMenu = () => {
+    setIsMenuVisible(false)
+   }
+   
 
   //get 10lastDayData from dataBase, and dispatch in the reducer
   useFocusEffect(
@@ -131,9 +140,33 @@ export default function TransmissionScreen({navigation}) {
   <SafeAreaView style={{flex: 1, backgroundColor: '#99BD8F'}}>
     <StatusBar barStyle="light-content"/>
       <View style={styles.container}>
+      <Modal transparent visible={isMenuVisible} animationType='slide' onRequestClose={closeMenu}>
+                <View style={styles.menuContainer}>
+                  <View style={styles.menuContent}>
+                              <FontAwesome name='bars' size={36} color='white' marginLeft={10} marginTop={10}/>
+                      <View style={{width:'100%', marginTop:60, marginLeft:10}}>
+                            <TouchableOpacity style={styles.link} onPress={() => navigation.navigate("Mon compte")}>
+                              <Text style={styles.linkText}>Mon Compte</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.link} onPress={() => navigation.navigate("ManagementScreen")}>
+                              <Text style={styles.linkText}>Gérer mon cabinet</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.link} onPress={() => navigation.navigate("RessourcesScreen")}>
+                              <Text style={styles.linkText}>Ressources</Text>
+                            </TouchableOpacity>
+                      </View>
+                            
+                      <TouchableOpacity style={{marginTop:300, marginLeft:10}} onPress={closeMenu}>
+                        <Text style={{fontSize: 20,fontFamily: 'Poppins_400Regular',color:'white'}}>Déconnexion</Text>
+                      </TouchableOpacity>
+                  </View>
+                </View>
+      </Modal>
         <View style={styles.header}>
-          
-            <FontAwesome name={'plus-circle'} size={50} color='#99BD8F'  onPress={() => navigation.navigate('ManagementScreen')}/>
+            <TouchableOpacity onPress={() => setIsMenuVisible(true)}>
+                         <FontAwesome name={'plus-circle'} size={50} color='#99BD8F' />
+              </TouchableOpacity>
+           
             <Image 
             style={styles.image}
             source={require('../assets/logo.png')} />
@@ -410,5 +443,27 @@ message : {
   paddingBottom: 5,
   textAlign: 'justify',
 },
-
+menuContainer: {
+  flex: 1,
+  alignItems: 'flex-start',
+},
+menuContent: {
+  backgroundColor: '#99BD8F',
+  padding: 8,
+  borderRadius: 10,
+  elevation: 5,
+  height: '93%',
+  width: '70%',
+  justifyContent: 'flex-start',
+  alignContent: 'center',
+  
+},
+link:{
+  marginTop:40,
+},
+linkText : {
+  fontSize: 20,
+  fontFamily: 'Poppins_400Regular',
+  color:'white',
+}
 });
