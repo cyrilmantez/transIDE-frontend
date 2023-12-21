@@ -35,9 +35,9 @@ export default function MyAccountScreen(navigation) {
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
               <ScrollView contentContainerStyle={styles.scrollView}>
                 <View style={styles.chevron}> 
-                    <TouchableOpacity onPress={() => {navigation.navigate('TabNavigator')}}>
-                        <FontAwesome name={'chevron-left'} size={30} color='#99BD8F' marginTop={20} />
-                    </TouchableOpacity>
+                  <TouchableOpacity onPress={() => {navigation.navigate('TabNavigator')}}>
+                    <FontAwesome name={'chevron-left'} size={30} color='#99BD8F' marginTop={20} />
+                  </TouchableOpacity>
                 </View>
                 <View style={styles.container}>
                   <Text style={styles.titlePage}>Mon Compte</Text>
@@ -67,6 +67,10 @@ export default function MyAccountScreen(navigation) {
                     <Text style={styles.userInfo} >Photo de profil</Text>
                     <FontAwesome name={'chevron-right'} size={20} color='#99BD8F' />
                   </View>
+                </View>
+                <View style={styles.messageContainer}>
+                  <Text style={styles.message}>Page en cours de construction</Text>
+                  <Text style={styles.message}>Merci de votre compréhension !</Text>
                 </View>
               </ScrollView>
             </KeyboardAvoidingView>
@@ -124,7 +128,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F0F0',
     /* borderColor: 'red',
     borderWidth: 4, */
-    height: '100%',
+    //height: '100%',
   },
   line: {
     paddingLeft: 10,
@@ -141,6 +145,21 @@ const styles = StyleSheet.create({
     color: '#99BD8F',
     fontSize: 18,
     fontFamily: 'Poppins_400Regular',
+  },
+  messageContainer: {
+    /* borderColor: 'red',
+    borderWidth: 4, */
+    alignItems: 'center',
+    backgroundColor:'#99BD8F',
+    marginTop: 10,
+  },
+  message: {
+    color: 'white',
+    fontSize: 15,
+    fontFamily: 'Poppins_400Regular',
+    textAlign: 'center',
+    padding: 5,
+    marginTop: 5,
   },
   button : {
       backgroundColor: '#99BD8F',
