@@ -125,8 +125,8 @@ export default function AddConsultationScreen({ navigation, route }) {
             if(frequency === '1X/3 jours'){currentDate.setDate(currentDate.getDate() + 3);}
             if(frequency === '1X/7 jours'){currentDate.setDate(currentDate.getDate() + 7);}
           }
-        console.log(idForFetch)
-        console.log(newAllTreatments)
+        // console.log(idForFetch)
+        // console.log(newAllTreatments)
         fetch('http://192.168.1.5:3000/patients/addTreatment', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -167,16 +167,19 @@ const closeModal = () => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                         <View style={styles.header}>
-                            <TouchableOpacity>
-                            <FontAwesome name={'chevron-left'} size={24} color='#99BD8F' marginTop={20} marginLeft={15} onPress={() => navigation.navigate('TabNavigator')} />
-                            </TouchableOpacity>
-                            <Image 
-                            style={styles.image}
-                            source={require('../assets/logo.png')} />
+                            <View style={styles.headerTop}>
+                                <TouchableOpacity style={styles.chevronIcon}>
+                                <FontAwesome name={'chevron-left'} size={24} color='#99BD8F'  onPress={() => navigation.navigate('TabNavigator')} />
+                                </TouchableOpacity>
+                                <Image 
+                                style={styles.image}
+                                source={require('../assets/logo.png')} />
+                            </View>
+                            <View styles={styles.titleContainer}>
+                                <Text style={styles.titlePage}>Nouvelle consultation</Text>
+                            </View>
                         </View>
-                        <View styles={styles.titleContainer}>
-                            <Text style={styles.titlePage}>Nouvelle consultation</Text>
-                        </View>
+                        <ScrollView style={{flex: 0.8}}>
                         <View style={styles.inputContainer}>    
                                 <TextInput  
                                     label='Nom du patient'
@@ -280,6 +283,7 @@ const closeModal = () => {
                           </View>
                         </View>
                   </Modal>
+                  </ScrollView>
                 </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
         </SafeAreaView>
@@ -294,25 +298,31 @@ const styles = StyleSheet.create({
         // flex: 1,
         // backgroundColor: '#fff',
     },
-    header: {
-        height: '10%',
+    header:{
+        height: '20%',
+        width : '100%',
+        justifyContent: 'space-around',
+        alignItems : 'center',
+    },
+    headerTop: {
+        height: '50%',
         width : '100%',
         justifyContent: 'space-between',
         flexDirection: 'row',
+        // marginTop: 20,
       },
+    chevronIcon: {
+        marginTop: 10,
+        marginLeft: 5
+    },
     image: {
         width: 60,
         height: 60,
+        marginTop: -5
       },
     titleContainer: {
-        height: '10%',
+        height: '3%',
         width : '100%',
-    },
-    searchPatient:{
-        flexDirection: 'row',
-    },
-    searchIcon: {
-        marginRight: -50,
     },
     frequency: {
         flexDirection: 'row',
@@ -321,7 +331,7 @@ const styles = StyleSheet.create({
     },
     titlePage: {
         color: '#99BD8F',
-        marginTop: -60,
+        // marginTop: -60,
         fontSize: 30,
         fontFamily: 'Poppins_600SemiBold',
     },

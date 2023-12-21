@@ -33,7 +33,7 @@ export default function AddTransmissionScreen({navigation}) {
       const tokenByDefault = user.officesTokens;
       const officeToken = tokenByDefault.filter(e => e.isByDefault)[0].token;
       console.log('token:',officeToken)
-      fetch(`http://192.168.1.14:3000/patients/allPatients/${officeToken}`).then(
+      fetch(`http://192.168.0.25:3000/patients/allPatients/${officeToken}`).then(
         response => response.json())
         .then(data => setAllPatients(data.Patients))
     }, [])
@@ -87,6 +87,7 @@ export default function AddTransmissionScreen({navigation}) {
     }
     const suggestionsToDisplay = suggestions.map((item, index) => {
        return (
+       
           <TouchableOpacity key={index} style={styles.listSuggestionText} onPress={()=>{handlePatientChoice (item.name, item.firstname, item.yearOfBirthday)}}>
           <Text style={styles.textAlign}>{`${item.name} ${item.firstname} - ${item.yearOfBirthday}`} </Text>
         </TouchableOpacity>
@@ -94,6 +95,21 @@ export default function AddTransmissionScreen({navigation}) {
        
     })
 
+    /*const pickDocument = async () => {
+      try {
+        const result = await DocumentPicker.getDocumentAsync();
+        console.log(result.type)
+        if (result.type === 'success') {
+          console.log(result.uri, result.name, result.type, result.size);
+          // Traitez le document sélectionné ici
+          setDocuments(result);
+        } else {
+          console.log('L\'utilisateur a annulé le choix du document');
+        }
+      } catch (err) {
+        console.log('Erreur lors du choix du document', err);
+      }
+    };*/
 
     const handleRegister = () => {
       if(transmission.info.length===0){
@@ -112,7 +128,7 @@ export default function AddTransmissionScreen({navigation}) {
           transmission : newTransmission,
           token : officeToken,
         }
-        fetch('http://192.168.1.14:3000/transmissions/addtransmission', {
+        fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -143,7 +159,7 @@ export default function AddTransmissionScreen({navigation}) {
                   transmission : newTransmission,
                   token : officeToken,
                 }
-                fetch('http://192.168.1.14:3000/transmissions/addtransmission', {
+                fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -285,14 +301,13 @@ export default function AddTransmissionScreen({navigation}) {
        alignItems: 'center',
      
       },
-
      header: {
        height: '10%',
        width : '100%',
        justifyContent: 'space-between',
        flexDirection: 'row',
-
      },
+     
      image: {
        width: 60,
        height: 60,
@@ -333,7 +348,6 @@ export default function AddTransmissionScreen({navigation}) {
         width: 350,
       },
       suggestionsContainer:{
-        marginRight: 80,
         width: '70%',
         display:'flex',
         overflow: 'scroll',
@@ -353,7 +367,7 @@ export default function AddTransmissionScreen({navigation}) {
       listSuggestionText:{
         textAlign: 'center',
         backgroundColor: 'white',
-        paddingLeft:10,
+        marginTop: 10,
         height: 30,
         ...Platform.select({
           ios: {
@@ -363,7 +377,7 @@ export default function AddTransmissionScreen({navigation}) {
             shadowRadius: 3,
           },
           android: {
-            elevation: 2,
+            elevation: 5,
           },
         }),
       },

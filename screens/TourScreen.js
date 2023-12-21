@@ -33,7 +33,7 @@ export default function TourScreen({navigation}) {
   const allData =()=> {
     const tokenByDefault = user.officesTokens;
     console.log(tokenByDefault.filter(e => e.isByDefault)[0].token)
-    fetch('http://192.168.1.14:3000/patients/allPatients', {
+    fetch('http://192.168.1.5:3000/patients/allPatients', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({officeToken: tokenByDefault.filter(e => e.isByDefault)[0].token, dateOfToday : date })
@@ -98,7 +98,7 @@ export default function TourScreen({navigation}) {
   
 /////////////fonction en charge du fetch de mise à jour treatment in DB:
 const updateTreatmentInDB = (a, b, c) => {
-  fetch('http://192.168.1.162:3000/patients/updateTreatment', {
+  fetch('http://192.168.1.5:3000/patients/updateTreatment', {
     method: 'PUT',
     headers: {'Content-Type' : 'application/json'},
     body: JSON.stringify({
@@ -223,11 +223,11 @@ const updateTreatmentInDB = (a, b, c) => {
         </View>
         <View>
         <TouchableOpacity onPress={()=> openWazeWithAddress()} style={{flexDirection: 'row', justifyContent: 'flex-end', marginRight: 20, marginBottom: 20}}>
-          <Text style={{marginTop : 12, marginRight: 40, fontFamily: 'Poppins_400Regular', fontSize: 14,}}>y aller avec Waze...</Text>
+          <Text style={{marginTop : 16, marginRight: 34, fontFamily: 'Poppins_400Regular', fontSize: 14,}}>y aller avec Waze !!!</Text>
           <Icon source={'waze'} size={42} color='#99BD8F' style={{marginLeft: 0}}/>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setModalAddressVisible(!modalAddressVisible)} style={{flexDirection: 'row', justifyContent: 'flex-end', marginRight: 20}}>
-          <Text style={{marginTop : 12, marginRight: 30, fontFamily: 'Poppins_400Regular', fontSize: 14, }}>rester dans TransIDE</Text>
+          <Text style={{marginTop : 16, marginRight: 30, fontFamily: 'Poppins_400Regular', fontSize: 14, }}>rester dans TransIDE</Text>
           <Icon source={'close-circle'} size={42} color='#99BD8F' />
         </TouchableOpacity>
         </View>
