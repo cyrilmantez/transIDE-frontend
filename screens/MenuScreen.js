@@ -72,7 +72,7 @@ export default function MenuScreen({ navigation, route }) {
                             <ScrollView >
                                 <View style={styles.bars}> 
                                     <TouchableOpacity onPress={() => {navigation.navigate('TabNavigator')}}>
-                                    <FontAwesome name='bars' size={32} color='white'/>
+                                        <FontAwesome name='bars' size={32} color='white'/>
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.titleContainer}>                                    
