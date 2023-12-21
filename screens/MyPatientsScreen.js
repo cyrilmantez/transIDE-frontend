@@ -3,6 +3,7 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {Card, TextInput } from 'react-native-paper';
+import {Card, TextInput } from 'react-native-paper';
 
 export default function MyPatientsScreen({ navigation, route }) {
     const user = useSelector((state) => state.users.value)
@@ -16,8 +17,9 @@ export default function MyPatientsScreen({ navigation, route }) {
         fetch(`http://192.168.1.14:3000/patients/allPatients/${defaultOffice}`)
           .then(response => response.json())
           .then(data => {
-            if (data.Patients) {  
-              setData(data);               
+            if (data.Patients) {  console.log('data', data)
+              setData(data); 
+              
             }
           })
           .catch(error => console.error(error));
