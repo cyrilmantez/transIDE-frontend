@@ -94,7 +94,7 @@ export default function MenuScreen({ navigation, route }) {
                                     </View>
                                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                         <Icon source={'account-multiple-plus'} size={30} color={'white'}/>      
-                                        <TouchableOpacity onPress={() => navigation.navigate('MyPatientsScreen') } >                                            
+                                        <TouchableOpacity >                                            
                                             <Text style={styles.choiceText}> Mes patients</Text>
                                         </TouchableOpacity>
                                     </View>

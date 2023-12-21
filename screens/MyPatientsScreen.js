@@ -3,6 +3,7 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {Card, TextInput } from 'react-native-paper';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function MyPatientsScreen({ navigation, route }) {
     const user = useSelector((state) => state.users.value)
@@ -13,7 +14,7 @@ export default function MyPatientsScreen({ navigation, route }) {
     useEffect(() => {
         const tokenByDefault = user.officesTokens;
         const defaultOffice = tokenByDefault.filter(e => e.isByDefault)[0].token;
-        fetch(`http://192.168.0.25:3000/patients/allPatients/${defaultOffice}`)
+        fetch(`http://192.168.1.14:3000/patients/allPatients/${defaultOffice}`)
           .then(response => response.json())
           .then(data => {
             if (data.Patients) {  console.log('data', data)
@@ -76,6 +77,11 @@ export default function MyPatientsScreen({ navigation, route }) {
                 <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={styles.container}>
+                            <View style={{ position: 'absolute', top: 35, left: 15 }} > 
+                                <TouchableOpacity onPress={() => navigation.navigate('TabNavigator')} >
+                                    <FontAwesome name={'chevron-left'} size={30} color='#99BD8F'/>
+                                </TouchableOpacity>        
+                            </View> 
                             <Text style={styles.title}>PATIENTS</Text>
                             <View style={{marginTop: 20}}>
                                 <TextInput
