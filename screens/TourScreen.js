@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity, StatusBar, Platform} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity, StatusBar, Platform, Modal} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
-import { Card, Paragraph, ProgressBar, Switch, Icon,Modal, Button } from 'react-native-paper';
+import { Card, Paragraph, ProgressBar, Switch, Icon, Button } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useFocusEffect } from '@react-navigation/native';
@@ -89,7 +89,7 @@ export default function TourScreen({navigation}) {
     setIsMenuVisible(false)
    }
    const menu = () => {
-    <Modal transparent visible={isMenuVisible} animationType='slide' onRequestClose={closeMenu}>
+    return (<Modal transparent visible={isMenuVisible} animationType='slide' onRequestClose={closeMenu}>
                             <View style={styles.menuContainer}>
                               <View style={styles.menuContent}>
                                         <View style={styles.skipMenu}>
@@ -133,7 +133,7 @@ export default function TourScreen({navigation}) {
                                   </View>
                               </View>
                             </View>
-                  </Modal>
+                  </Modal>)
    }
 
   // Switch :
@@ -393,7 +393,6 @@ const updateTreatmentInDB = (a, b, c) => {
     }
  
       return (
-       
           <Card style={styles.contentcard} key={i}>
             <Card.Content style={styles.card}>
               <View>
@@ -454,9 +453,8 @@ const updateTreatmentInDB = (a, b, c) => {
      return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#99BD8F' }}>
           <StatusBar barStyle="light-content"/>
-              
             <View style={styles.container}>
-                 {menu}
+                 {menu()}
                 <View style={styles.containerHeader}>
                    
                         <View style={styles.header}>
