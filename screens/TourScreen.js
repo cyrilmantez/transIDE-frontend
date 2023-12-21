@@ -483,6 +483,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     display: 'flex',
+    backgroundColor: 'white',
   },
   containerHeader: {
     height: '30%',
@@ -491,9 +492,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  dropdown: {
-    top: 0,
-    left: 0,
+  barsStyle: {
+    alignContent: 'flex-start',
+    marginTop: 10,
     marginLeft: 10,
     },
   header: {
