@@ -3,7 +3,7 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold  } from '@expo-google
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Card } from 'react-native-paper';
 
-export default function RessourcesScreen() {
+export default function RessourcesScreen({navigation}) {
   const openURL = () => {
     Alert.alert(
       "Quitter l'application",
