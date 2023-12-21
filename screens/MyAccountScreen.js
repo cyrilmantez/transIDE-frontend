@@ -4,7 +4,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useSelector } from 'react-redux';
 import { Icon } from 'react-native-paper';
 
-export default function MyAccountScreen(navigation) {
+export default function MyAccountScreen({navigation}) {
 
   const user = useSelector((state) => state.users.value);
 
