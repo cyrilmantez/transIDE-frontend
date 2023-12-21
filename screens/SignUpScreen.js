@@ -1,4 +1,4 @@
-import { Button, StyleSheet, SafeAreaView, Text, View, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform, TouchableOpacity } from 'react-native';
+import { StyleSheet, SafeAreaView, Text, View, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
@@ -15,6 +15,7 @@ export default function SignUpScreen({navigation}) {
   const [signUpName, setSignUpName] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [colorMode, setColorMode] = useState(false);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/;
@@ -38,15 +39,16 @@ export default function SignUpScreen({navigation}) {
     fetch('http://192.168.0.25:3000/users/signup', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
-      body: JSON.stringify({email: signUpEmail.toLowerCase(), username: signUpName, password: signUpPassword})
+      body: JSON.stringify({email: signUpEmail.toLowerCase(), username: signUpName, password: signUpPassword, colorMode: colorMode})
     }).then(response => response.json())
       .then(data => {
         if (data.result){
-          dispatch(login({username: signUpName, token: data.token,  officesTokens : data.officesTokens }));
+          dispatch(login({username: signUpName, token: data.token,  officesTokens : data.officesTokens, colorMode: data.colorMode }));
           setSignUpEmail('');
           setSignUpName('');
           setSignUpPassword('');
           setConfirmPassword('');
+          setColorMode(false);
           navigation.navigate('TabNavigator');
         }
       })

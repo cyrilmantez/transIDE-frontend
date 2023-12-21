@@ -77,6 +77,7 @@ const TabNavigator = () => {
     </Tab.Navigator>
     );
 }
+  
 
 export default function App() {
   return (

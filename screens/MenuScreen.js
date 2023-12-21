@@ -80,7 +80,7 @@ export default function MenuScreen({ navigation, route }) {
                                 </View>
                                 <View style={styles.menuContainer}>
                                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                        <Icon source={'account-box'} size={30} color={'white'}/>
+                                        <Icon source={'account'} size={30} color={'white'}/>
                                         <TouchableOpacity onPress={() => toMyAccount()}>                                            
                                             <Text style={styles.choiceText} > Mon compte</Text>
                                         </TouchableOpacity>
