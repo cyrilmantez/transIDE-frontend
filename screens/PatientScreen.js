@@ -98,21 +98,20 @@ export default function App({ navigation, route }) {
             const isFuture = treatmentDate.isAfter(now);
             const isWithin90Days = now.diff(treatmentDate, 'days') <= 90;
             const isModified = treatment.isOkWithModification;
-            const isOK = !treatment.isOk;
-
-          
-
+            const isOk = treatment.isOk;
+            const isVisited = treatment.isVisited;
     
             if (isWithin90Days) {
+              
               return (
-                <Card key={index} style={isModified ? {backgroundColor: '#F9EAB6', width: 350, marginBottom: 10} : (isFuture ? {backgroundColor: '#CADDC5', width: 350, marginBottom: 10} : {width: 350, marginBottom: 10})}>
+                <Card key={index} style={isModified ? {backgroundColor: '#F9EAB6', width: 350, marginBottom: 10} : (!isOk && isVisited ? {backgroundColor: '#FF0000', width: 350, marginBottom: 10} : {width: 350, marginBottom: 10})}>
                   <Card.Content>
                     <View>
-                      <Text style={isFuture ? { marginBottom: 5, fontFamily: 'Poppins_600SemiBold'} : {marginBottom: 5, fontFamily: 'Poppins_600SemiBold'}}>
+                      <Text style={isFuture ? { marginBottom: 5, fontFamily: 'Poppins_600SemiBold', fontStyle: 'italic'} : {marginBottom: 5, fontFamily: 'Poppins_600SemiBold'}}>
                         {treatmentDate.format('DD/MM/YYYY - HH:mm')} :
                       </Text>
                       {treatment.actions.map((action, actionIndex) => (
-                        <Text key={`${index}-${actionIndex}`} style={isFuture ? {fontFamily: 'Poppins_400Regular',} : {fontFamily: 'Poppins_400Regular',}}>
+                        <Text key={`${index}-${actionIndex}`} style={isFuture ? {fontFamily: 'Poppins_400Regular', fontStyle: 'italic'} : {fontFamily: 'Poppins_400Regular',}}>
                           Action : {action}
                         </Text>
                       ))}
