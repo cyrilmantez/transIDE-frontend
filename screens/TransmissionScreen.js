@@ -413,6 +413,7 @@ modalButtonText:{
  },
 transmissionsContainer:{
   width: '95%',
+  marginTop: 15
 },
 transmissions : {
   width: '100%',
@@ -477,8 +478,9 @@ menuContent: {
   borderTopRightRadius: 10,
   borderBottomRightRadius: 10,
   elevation: 5,
-  height: '93%',
+  height: '85%',
   width: '80%',
+  marginTop: 47,
   justifyContent: 'flex-start',
   alignContent: 'center',
 },

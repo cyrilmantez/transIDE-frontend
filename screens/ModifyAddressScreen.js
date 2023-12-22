@@ -42,7 +42,7 @@ export default function ModifyAddressScreen({ navigation, route }) {
             }),
           })
           .then(response => response.json())
-          .then(data => console.log('datttaaa', ata))
+          .then(data => {})
           .catch(error => console.error('Error:', error));
         } else {
           console.log('_id is not defined');
