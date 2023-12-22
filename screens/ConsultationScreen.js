@@ -39,7 +39,7 @@ export default function ConsultationScreen({ navigation, route }) {
         if (arg) {
             if (baseTreatments !== plannedTreatments) {
                 console.log('if', route.params.actions)
-                fetch('http://192.168.1.5:3000/patients/updateTreatment', {
+                fetch('http://192.168.1.162:3000/patients/updateTreatment', {
                     method: 'PUT',
                     headers: {'Content-Type' : 'application/json'},
                     body: JSON.stringify({
