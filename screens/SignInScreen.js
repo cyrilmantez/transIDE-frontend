@@ -12,7 +12,7 @@ export default function SignInScreen({navigation}) {
   const [signInName, setSignInName] = useState('');
   const [signInPassword, setSignInPassword] = useState('');
   const [modalMessage, setModalMessage] = useState('');
-  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isModalVisible, setIsModalVisible] = useState(false);
  
   const handleConnexion = () => {
     fetch('http://192.168.1.162:3000/users/signin', {

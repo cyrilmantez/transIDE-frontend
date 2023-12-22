@@ -47,7 +47,7 @@ export default function MyPatientsScreen({ navigation, route }) {
                                 <View>
                                     <Text style={styles.text}>Nom: {patient.name}</Text>
                                     <Text style={styles.text}>Prénom: {patient.firstname}</Text>
-                                    <Text style={styles.text}>Date de naissance: {patient.yearOfBirthday}</Text>
+                                    <Text style={styles.text}>Année de naissance: {patient.yearOfBirthday}</Text>
                                 </View>
                             </Card.Content>
                         </Card>

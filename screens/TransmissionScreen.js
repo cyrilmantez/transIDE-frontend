@@ -348,7 +348,7 @@ transmissionText:{
   fontSize: 14,
   fontFamily: 'Poppins_400Regular',
   paddingTop: 17,
-  textDecorationLine: 'underline'
+  textDecorationLine: 'underline',
 },
 navigation_infos : {
   display : 'flex',
@@ -412,23 +412,18 @@ modalButtonText:{
   color: 'white',
  },
 transmissionsContainer:{
-  flex:1,
   width: '95%',
-  marginTop: 30,
-  display: 'flex',
 },
 transmissions : {
-  flex:1,
   width: '100%',
-  display: 'flex',
   justifyContent: 'center',
   alignContent: 'center', 
+  marginTop: 15,
   
 },
 transmission :{
   width: '100%',
-  height: 150,
-  marginBottom: 10,
+  marginTop: 0,
   ...Platform.select({
     ios: {
       shadowColor: 'black',
