@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Modal, ScrollView, Alert, StyleSheet, SafeAreaView, Animated, TouchableOpacity, Touchable } from 'react-native';
+import { View, Text, Modal, ScrollView, Alert, StyleSheet, SafeAreaView, Animated, TouchableOpacity, Touchable, Linking } from 'react-native';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import moment from 'moment';
 import 'moment/locale/fr';
@@ -129,7 +129,8 @@ export default function App({ navigation, route }) {
       const handlePress = () => {
         setModalVisible(true);
       };
-      
+      const phoneNumberToClic = patient ? patient.mobile : null;
+
       const scrollViewContent = (
         <View style={styles.containerscroll}>
           {patient && (
@@ -151,7 +152,9 @@ export default function App({ navigation, route }) {
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}} >
               <View>
-                <Text style={styles.mobile}>{patient.mobile ? patient.mobile : "Non renseigné"}</Text>
+              <Text onPress={() => Linking.openURL(`tel:${phoneNumberToClic}`)} style={styles.mobile}>
+                {phoneNumberToClic ? phoneNumberToClic : "Non renseigné"}
+              </Text>
                 <Text style={styles.homephone}>{patient.homePhone ? patient.homePhone : ""}</Text>
               </View>
               <TouchableOpacity onPress={() => {

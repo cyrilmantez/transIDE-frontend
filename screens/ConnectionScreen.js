@@ -10,8 +10,8 @@ export default function ConnectionScreen({ navigation }) {
   const animationRef = useRef(null);
 
   useEffect(() => {
+    
     animationRef.current?.play();
-
   }, []);
 
     let [fontsLoaded] = useFonts({
