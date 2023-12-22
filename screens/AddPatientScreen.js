@@ -60,7 +60,7 @@ export default function AddPatientScreen({navigation}) {
       };
 
   const handleRegister = () => {      
-        fetch('http://192.168.1.5:3000/patients/addPatient', {
+        fetch('http://192.168.1.14:3000/patients/addPatient', {
           method: 'POST',
           headers: {'Content-Type' : 'application/json'},
           body: JSON.stringify({
@@ -196,7 +196,7 @@ export default function AddPatientScreen({navigation}) {
                                 style={{ width: 350, marginTop: 15 }} 
                             />
                             <TextInput 
-                                label='Date de naissance' 
+                                label='Année de naissance' 
                                 mode='outlined'
                                 multiline
                                 theme={{ 
@@ -207,7 +207,7 @@ export default function AddPatientScreen({navigation}) {
                                 style={{ width: 350, marginTop: 15 }} 
                                 value={dobPatient} 
                                 onChangeText={text => setdobPatient(text)} 
-                                placeholder='JJ/MM/AAAA' 
+                                placeholder='1900' 
                             />
                             <TextInput 
                                 label='Adresse' 
@@ -268,8 +268,8 @@ export default function AddPatientScreen({navigation}) {
                                     cleaned = cleaned.substring(0, 10);
                                   }                    
                                   const match = cleaned.match(/(\d{0,2})/g);
-                                  const phoneNumber = match.join('.').replace(/\.$/, '');
-                                  setPhoneNumber(phoneNumber)}} 
+                                  const phoneNumber1 = match.join('.').replace(/\.$/, '');
+                                  setPhoneNumber(phoneNumber1)}} 
                                 style={{ width: 350, marginTop: 15 }} 
                             />
                             <TextInput 
@@ -288,8 +288,8 @@ export default function AddPatientScreen({navigation}) {
                                     cleaned = cleaned.substring(0, 10);
                                   }                    
                                   const match = cleaned.match(/(\d{0,2})/g);
-                                  const phoneNumber = match.join('.').replace(/\.$/, '');
-                                  setHomePhone(phoneNumber)}} 
+                                  const phoneNumber2 = match.join('.').replace(/\.$/, '');
+                                  setHomePhone(phoneNumber2)}} 
                                 style={{ width: 350, marginTop: 15 }} 
                             />
                             <TextInput 
@@ -314,7 +314,14 @@ export default function AddPatientScreen({navigation}) {
                                 }}
                                 keyboardType='phone-pad'
                                 value={phonePersonToContact} 
-                                onChangeText={text => setPhonePersonToContact(text)} 
+                                onChangeText={text => {
+                                  let cleaned = ('' + text).replace(/\D/g, '');                    
+                                  if (cleaned.length > 10) {
+                                    cleaned = cleaned.substring(0, 10);
+                                  }                    
+                                  const match = cleaned.match(/(\d{0,2})/g);
+                                  const phoneNumber3 = match.join('.').replace(/\.$/, '');                                  
+                                  setPhonePersonToContact(phoneNumber3)}}
                                 style={{ width: 350, marginTop: 15 }} 
                             />
                             <View style={styles.rdv}>

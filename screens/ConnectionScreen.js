@@ -43,7 +43,7 @@ export default function ConnectionScreen({ navigation }) {
                       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignInScreen')}>
                           <Text style={styles.text}>Se connecter</Text>
                       </TouchableOpacity>
-                  </View>
+                  </View>                 
                 </View>
               </KeyboardAwareScrollView>
             </SafeAreaView>

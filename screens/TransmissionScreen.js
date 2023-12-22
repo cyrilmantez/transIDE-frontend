@@ -52,7 +52,7 @@ export default function TransmissionScreen({navigation}) {
     React.useCallback(() => {
 
     const tokenByDefault = user.officesTokens;
-    fetch(`http://192.168.1.5:3000/transmissions/allTransmissions/${tokenByDefault.filter(e => e.isByDefault)[0].token}/${date}`).then(response => response.json())
+    fetch(`http://192.168.1.14:3000/transmissions/allTransmissions/${tokenByDefault.filter(e => e.isByDefault)[0].token}/${date}`).then(response => response.json())
         .then((data) => {
           if(data.result){
             const compareDates = (a, b) => new Date(b.date) - new Date(a.date);
@@ -348,7 +348,7 @@ transmissionText:{
   fontSize: 14,
   fontFamily: 'Poppins_400Regular',
   paddingTop: 17,
-  textDecorationLine: 'underline'
+  textDecorationLine: 'underline',
 },
 navigation_infos : {
   display : 'flex',
@@ -412,23 +412,18 @@ modalButtonText:{
   color: 'white',
  },
 transmissionsContainer:{
-  flex:1,
   width: '95%',
-  marginTop: 30,
-  display: 'flex',
 },
 transmissions : {
-  flex:1,
   width: '100%',
-  display: 'flex',
   justifyContent: 'center',
   alignContent: 'center', 
+  marginTop: 15,
   
 },
 transmission :{
   width: '100%',
-  height: 150,
-  marginBottom: 10,
+  marginTop: 0,
   ...Platform.select({
     ios: {
       shadowColor: 'black',

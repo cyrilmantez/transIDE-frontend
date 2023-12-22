@@ -14,7 +14,7 @@ export default function MyPatientsScreen({ navigation, route }) {
     useEffect(() => {
         const tokenByDefault = user.officesTokens;
         const defaultOffice = tokenByDefault.filter(e => e.isByDefault)[0].token;
-        fetch(`http://192.168.1.5:3000/patients/allPatients/${defaultOffice}`)
+        fetch(`http://192.168.1.14:3000/patients/allPatients/${defaultOffice}`)
           .then(response => response.json())
           .then(data => {
             if (data.Patients) {  console.log('data', data)
@@ -47,7 +47,7 @@ export default function MyPatientsScreen({ navigation, route }) {
                                 <View>
                                     <Text style={styles.text}>Nom: {patient.name}</Text>
                                     <Text style={styles.text}>Prénom: {patient.firstname}</Text>
-                                    <Text style={styles.text}>Date de naissance: {patient.yearOfBirthday}</Text>
+                                    <Text style={styles.text}>Année de naissance: {patient.yearOfBirthday}</Text>
                                 </View>
                             </Card.Content>
                         </Card>
