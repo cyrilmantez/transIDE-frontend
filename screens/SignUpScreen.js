@@ -48,11 +48,11 @@ export default function SignUpScreen({navigation}) {
     fetch('http://192.168.1.162:3000/users/signup', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
-      body: JSON.stringify({email: signUpEmail.toLowerCase(), username: signUpName, password: signUpPassword, colorMode: colorMode})
+      body: JSON.stringify({email: signUpEmail.toLowerCase(), username: signUpName, password: signUpPassword})
     }).then(response => response.json())
       .then(data => {
         if (data.result){
-          dispatch(login({username: signUpName, token: data.token,  officesTokens : data.officesTokens, colorMode: data.colorMode }));
+          dispatch(login({username: signUpName, token: data.token,  officesTokens : data.officesTokens}));
           setSignUpEmail('');
           setSignUpName('');
           setSignUpPassword('');

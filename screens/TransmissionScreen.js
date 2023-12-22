@@ -413,6 +413,7 @@ modalButtonText:{
  },
 transmissionsContainer:{
   width: '95%',
+  marginTop: 15,
 },
 transmissions : {
   width: '100%',
