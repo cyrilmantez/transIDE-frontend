@@ -437,7 +437,7 @@ transmission :{
       shadowRadius: 3,
     },
     android: {
-      elevation: 2,
+      elevation: 3,
     }, }),
     
 },

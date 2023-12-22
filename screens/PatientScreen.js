@@ -49,7 +49,7 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http://192.168.1.5:3000/patients/updatePatientById', {
+                fetch('http://192.168.1.162:3000/patients/updatePatientById', {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -98,6 +98,10 @@ export default function App({ navigation, route }) {
             const isFuture = treatmentDate.isAfter(now);
             const isWithin90Days = now.diff(treatmentDate, 'days') <= 90;
             const isModified = treatment.isOkWithModification;
+            const isOK = !treatment.isOk;
+
+          
+
     
             if (isWithin90Days) {
               return (
