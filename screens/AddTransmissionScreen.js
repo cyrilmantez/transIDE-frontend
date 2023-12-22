@@ -3,6 +3,7 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import { TextInput, List} from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useSelector} from 'react-redux';
 
 //mport * as DocumentPicker from 'expo-document-picker';
 
@@ -28,7 +29,7 @@ export default function AddTransmissionScreen({navigation}) {
       const tokenByDefault = user.officesTokens;
       const officeToken = tokenByDefault.filter(e => e.isByDefault)[0].token;
       console.log('token:',officeToken)
-      fetch(`http://192.168.1.162:3000/patients/allPatients/${officeToken}`).then(
+      fetch(`http://192.168.1.5:3000/patients/allPatients/${officeToken}`).then(
         response => response.json())
         .then(data => setAllPatients(data.Patients))
     }, [])
@@ -123,7 +124,7 @@ export default function AddTransmissionScreen({navigation}) {
           transmission : newTransmission,
           token : officeToken,
         }
-        fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
+        fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -154,7 +155,7 @@ export default function AddTransmissionScreen({navigation}) {
                   transmission : newTransmission,
                   token : officeToken,
                 }
-                fetch('http://192.168.1.162:3000/transmissions/addtransmission', {
+                fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)

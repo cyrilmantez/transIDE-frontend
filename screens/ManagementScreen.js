@@ -91,7 +91,7 @@ export default function ManagementScreen({navigation}) {
         .then(data => {
          
           if(data.result){
-            setModalMessage('Nouveau cabinet par default');
+            setModalMessage('Nouveau cabinet par défaut');
             setAllIDE(data.allIDE)
           }else{
             setModalMessage('Error')
