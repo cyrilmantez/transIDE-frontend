@@ -43,10 +43,7 @@ export default function ConnectionScreen({ navigation }) {
                       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignInScreen')}>
                           <Text style={styles.text}>Se connecter</Text>
                       </TouchableOpacity>
-                  </View>
-                  <Text onPress={() => navigation.navigate('MyPatientsScreen')}>Lien Temporaire</Text>
-                  
-                  <Text onPress={() => navigation.navigate('MenuScreen')}>Lien Temporaire MenuScreen</Text>
+                  </View>                 
                 </View>
               </KeyboardAwareScrollView>
             </SafeAreaView>

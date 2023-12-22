@@ -18,7 +18,7 @@ export default function ModifyPACScreen({ navigation, route }) {
 
     const handleButtonPress = () => {
         if (_id) {
-          fetch('http://192.168.1.5:3000/patients/updatePatientById', {
+          fetch('http://192.168.1.14:3000/patients/updatePatientById', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
