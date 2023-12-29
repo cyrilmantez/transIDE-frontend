@@ -15,7 +15,7 @@ export default function SignInScreen({navigation}) {
   const [isModalVisible, setIsModalVisible] = useState(false);
  
   const handleConnexion = () => {
-    fetch('http://192.168.1.5:3000/users/signin', {
+    fetch('http://192.168.1.162:3000/users/signin', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({username: signInName, password: signInPassword})
@@ -27,18 +27,13 @@ export default function SignInScreen({navigation}) {
           setSignInPassword('');
           navigation.navigate('TabNavigator');
         }else{
-          if(data.error === 'Missing or empty fields'){
-            setModalMessage('Merci de renseigner les champs de saisie');
-            setIsModalVisible(true);
-          }else{
-            setModalMessage('Utilisateur et/ou mot de pass incorrect');
+            setModalMessage(data.error)
             setIsModalVisible(true);
           }
           
-        }
-        
-      })
+        })
   }
+  
   const closeModal = () => {
     setIsModalVisible(false);
     setModalMessage('');

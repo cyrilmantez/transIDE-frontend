@@ -18,40 +18,22 @@ export default function SignUpScreen({navigation}) {
   const [modalMessage, setModalMessage] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false)
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/;
-
   const closeModal = () => {
     setIsModalVisible(false);
     setModalMessage('');
   }
 
   const handleRegister = () => {
-    if (signUpPassword !== confirmPassword) {
-      setModalMessage('Les mots de passe ne correspondent pas. Dommage...');
-      setIsModalVisible(true);
-      return;
-    };
-
-    if (!emailRegex.test(signUpEmail)) {
-      setModalMessage('Veuillez saisir une adresse e-mail valide.');
-      setIsModalVisible(true);
-      return;
-    };
-
-    if (!passwordRegex.test(signUpPassword)) {
-      setModalMessage('Le mot de passe doit contenir 10 caractères minimum, dont au moins un caractère spécial, une majuscule et une minuscule');
-      setIsModalVisible(true);
-      return;
-    }
-    
-    fetch('http://192.168.1.5:3000/users/signup', {
+    fetch('http://192.168.1.162:3000/users/signup', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
-      body: JSON.stringify({email: signUpEmail.toLowerCase(), username: signUpName, password: signUpPassword})
+      body: JSON.stringify({email: signUpEmail.toLowerCase(), username: signUpName, password: signUpPassword, confirmPassword: confirmPassword})
     }).then(response => response.json())
       .then(data => {
-        if (data.result){
+        if(!data.result){
+          setModalMessage(data.error);
+          setIsModalVisible(true);
+        }else {
           dispatch(login({username: signUpName, token: data.token,  officesTokens : data.officesTokens}));
           setSignUpEmail('');
           setSignUpName('');
