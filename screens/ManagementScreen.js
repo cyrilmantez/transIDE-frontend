@@ -79,7 +79,7 @@ export default function ManagementScreen({navigation}) {
       dispatch(upDateOfficeByDefault(newOfficesTokens));
       
       const officeByDefault = newOfficesTokens[index].token;
-      fetch('http://192.168.1.162:3000/users/newOfficesToken', {
+      fetch('http://192.168.1.162:3000/users/newOfficeByDefault', {
         method: 'PUT',
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify({
