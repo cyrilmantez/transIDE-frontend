@@ -24,7 +24,7 @@ export default function SignUpScreen({navigation}) {
   }
 
   const handleRegister = () => {
-    fetch('http://192.168.1.162:3000/users/signup', {
+    fetch('https://transide-backend.vercel.app/users/signup', {
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({email: signUpEmail.toLowerCase(), username: signUpName, password: signUpPassword, confirmPassword: confirmPassword})

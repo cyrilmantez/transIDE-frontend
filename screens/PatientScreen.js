@@ -21,7 +21,7 @@ export default function App({ navigation, route }) {
 
   useFocusEffect(
     React.useCallback(() => {
-    fetch(`http://192.168.1.5:3000/patients/patientById/${route.params._id}`).then(response => response.json())
+    fetch(`https://transide-backend.vercel.app/patients/patientById/${route.params._id}`).then(response => response.json())
     .then(data => {
         setPatient(data.patient);
         setTreatments(data.patient.treatments);
@@ -49,7 +49,7 @@ export default function App({ navigation, route }) {
             text: 'Oui', 
             onPress: () => {
               if (patient) {
-                fetch('http://192.168.1.5:3000/patients/updatePatientById', {
+                fetch('https://transide-backend.vercel.app/patients/updatePatientById', {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
