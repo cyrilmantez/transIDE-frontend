@@ -12,7 +12,7 @@ export default function ModificationPatientRecordScreen({ navigation, route }) {
 
   useEffect(() => {
     if (patient) {
-      fetch(`http://192.168.1.5:3000/patients/allPatientDay/${patient._id}`)
+      fetch(`https://transide-backend.vercel.app/patients/allPatientDay/${patient._id}`)
         .then(response => response.json())
         .then(data => {console.log('data recherchée: ', data)
           setAddress(data.address); 
@@ -25,7 +25,7 @@ export default function ModificationPatientRecordScreen({ navigation, route }) {
     useEffect(() => {
         // Assurez-vous que 'patient' est défini avant de l'utiliser
         if (patient) { console.log(patient)
-          fetch('http://192.168.1.5:3000/patients/updatePatientById', {
+          fetch('https://transide-backend.vercel.app/patients/updatePatientById', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',

@@ -29,7 +29,7 @@ export default function AddTransmissionScreen({navigation}) {
       const tokenByDefault = user.officesTokens;
       const officeToken = tokenByDefault.filter(e => e.isByDefault)[0].token;
       console.log('token:',officeToken)
-      fetch(`http://192.168.1.5:3000/patients/allPatients/${officeToken}`).then(
+      fetch(`https://transide-backend.vercel.app/patients/allPatients/${officeToken}`).then(
         response => response.json())
         .then(data => setAllPatients(data.Patients))
     }, [])
@@ -124,7 +124,7 @@ export default function AddTransmissionScreen({navigation}) {
           transmission : newTransmission,
           token : officeToken,
         }
-        fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
+        fetch('https://transide-backend.vercel.app/transmissions/addtransmission', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -155,7 +155,7 @@ export default function AddTransmissionScreen({navigation}) {
                   transmission : newTransmission,
                   token : officeToken,
                 }
-                fetch('http://192.168.1.5:3000/transmissions/addtransmission', {
+                fetch('https://transide-backend.vercel.app/transmissions/addtransmission', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)

@@ -31,7 +31,7 @@ export default function ModifyAddressScreen({ navigation, route }) {
 
     const handleButtonPress = () => {
         if (_id) {
-          fetch('http://192.168.1.5:3000/patients/updatePatientById', {
+          fetch('https://transide-backend.vercel.app/patients/updatePatientById', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',

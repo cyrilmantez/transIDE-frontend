@@ -30,7 +30,7 @@ export default function AddConsultationScreen({ navigation, route }) {
     useEffect (() => {
         const tokenByDefault = user.officesTokens;
         const officeToken = tokenByDefault.filter(e => e.isByDefault)[0].token;
-        fetch(`http://192.168.1.5:3000/patients/allPatients/${officeToken}`).then(
+        fetch(`https://transide-backend.vercel.app/patients/allPatients/${officeToken}`).then(
           response => response.json())
           .then(data => {
             setAllPatients(data.Patients)
@@ -125,9 +125,8 @@ export default function AddConsultationScreen({ navigation, route }) {
             if(frequency === '1X/3 jours'){currentDate.setDate(currentDate.getDate() + 3);}
             if(frequency === '1X/7 jours'){currentDate.setDate(currentDate.getDate() + 7);}
           }
-        // console.log(idForFetch)
-        // console.log(newAllTreatments)
-        fetch('http://192.168.1.5:3000/patients/addTreatment', {
+        
+        fetch('https://transide-backend.vercel.app/patients/addTreatment', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -295,8 +294,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'space-between',
         alignItems: 'center',
-        // flex: 1,
-        // backgroundColor: '#fff',
     },
     header:{
         height: '20%',
@@ -309,7 +306,6 @@ const styles = StyleSheet.create({
         width : '100%',
         justifyContent: 'space-between',
         flexDirection: 'row',
-        // marginTop: 20,
       },
     chevronIcon: {
         marginTop: 10,
@@ -331,7 +327,6 @@ const styles = StyleSheet.create({
     },
     titlePage: {
         color: '#99BD8F',
-        // marginTop: -60,
         fontSize: 30,
         fontFamily: 'Poppins_600SemiBold',
     },
