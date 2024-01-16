@@ -7,7 +7,7 @@ export default function RessourcesScreen({navigation}) {
   const openURL = () => {
     Alert.alert(
       "Quitter l'application",
-      "Vous allez quitter l'application. Êtes-vous sûr de vouloir continuer ?",
+      "Tu vas quitter l'application. Souhaites-tu continuer ?",
       [
         {
           text: "Annuler",
@@ -23,7 +23,7 @@ export default function RessourcesScreen({navigation}) {
   const openURLAnnuaire = () => {
     Alert.alert(
       "Quitter l'application",
-      "Vous allez quitter l'application. Êtes-vous sûr de vouloir continuer ?",
+      "Tu vas quitter l'application. Souhaites-tu continuer ?",
       [
         {
           text: "Annuler",
@@ -39,7 +39,7 @@ export default function RessourcesScreen({navigation}) {
   const openURLArs = () => {
     Alert.alert(
       "Quitter l'application",
-      "Vous allez quitter l'application. Êtes-vous sûr de vouloir continuer ?",
+      "Tu vas quitter l'application. Souhaites-tu continuer ?",
       [
         {
           text: "Annuler",

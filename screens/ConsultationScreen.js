@@ -86,7 +86,6 @@ export default function ConsultationScreen({ navigation, route }) {
         }
 
         if(transmission.length > 0) {
-            //console.log('essai');
             const tokenByDefault = user.officesTokens;
             console.log(tokenByDefault.filter(e => e.isByDefault)[0].token);
             fetch('https://transide-backend.vercel.app/transmissions/addtransmission', {
@@ -215,7 +214,6 @@ export default function ConsultationScreen({ navigation, route }) {
 
                     <TouchableOpacity onPress={()=> {
                         setConsultationModalVisible(!consultationModalVisible);
-                        // setConsultationDone(true);
                         validation(true);
                     }}>
                     <Text style={styles.modalChoiceText}>Oui</Text>
@@ -225,28 +223,11 @@ export default function ConsultationScreen({ navigation, route }) {
         </View>
         </Modal>
     )
-    
-    
-    /* useEffect(() => {
-        fetch(`http://192.168.0.25:3000/patients/patient/6579c5d4c2873da0530e41bf`).then(response => response.json())
-        .then(data => {
-            //console.log('retour du back', data.result);
-            setPatient({firstname: data.patient.firstname, name: data.patient.name, address: data.patient.address, homePhone: data.patient.homephone, mobile: data.patient.mobile});
-            for(const treatments of data.patient.treatments) {
-                setPlannedTreatments(treatments.actions.join('\n'));                        
-            }
-        });
-    }, []); */
 
     // Effet du clic sur "validation" :
     const handleSubmit = () => {
         setModalVisible(true);
       };
-
-    // Effet du clic sur "Soin non réalisé" :
-    /* const handleCancel = () => {
-
-    } */
 
     let [fontsLoaded] = useFonts({
         Poppins_400Regular,
@@ -291,23 +272,6 @@ export default function ConsultationScreen({ navigation, route }) {
                                         style={styles.soinsPrevus} 
                                         onChangeText={text => setPlannedTreatments(text)}/>
                                 </View>
-                                {/* <View>
-                                    <Text style={styles.titleSoins}>Soins supplémentaires</Text>
-                                    </View>
-                                    <View>      
-                                    <TextInput 
-                                    mode='outlined'
-                                    multiline={true}
-                                    textAlignVertical= 'top'
-                                    theme={{ 
-                                        colors: { 
-                                            primary: '#99BD8F', 
-                                        }
-                                    }}
-                                    style={styles.soinsPrevus} 
-                                    onChangeText={text => setNewTreatments(text)} 
-                                    value={newTreatments}/>
-                                </View>  */}
                                 <View>
                                     <Text style={styles.titleSoins}>Transmission</Text>
                                 </View>            
@@ -329,11 +293,6 @@ export default function ConsultationScreen({ navigation, route }) {
                                     <Text style={styles.text}>Valider</Text>            
                                 </TouchableOpacity>
                             </View>
-                            {/* <View>
-                                <TouchableOpacity onPress={() => handleCancel()} style={styles.cancelButton} activeOpacity={0.8}>  
-                                    <Text style={styles.cancelText}>Soin non réalisé</Text>            
-                                </TouchableOpacity>
-                            </View> */}
                         </ScrollView>
                         {consultationModalContent}
                         {modalContent}
@@ -368,7 +327,6 @@ const styles = StyleSheet.create({
     },
     chevron: {
        alignSelf: 'flex-start',
-    //    marginLeft: 5,
     },
     titleSoins: {
        color: '#99BD8F',

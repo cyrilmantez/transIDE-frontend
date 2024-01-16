@@ -31,7 +31,6 @@ export default function TransmissionScreen({navigation}) {
   const openModal = (target) => {
     setModalVisible(true);
     target === 'IDE' ? setIdeVisible(true) : setPatientsVisible(true);
-    // target === 'Patients' ?
   };
   //Close Modal
   const closeModal = () => {
@@ -467,7 +466,7 @@ message : {
 },
 
 
-//CSS MENU
+/////CSS MENU
 menuContainer: {
   flex: 1,
   alignItems: 'flex-start',

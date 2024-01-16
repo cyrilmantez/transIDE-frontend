@@ -90,23 +90,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    /* borderColor: 'red',
-    borderWidth: 4, */
   },
   scrollView: {
     flexGrow: 1,
-    //justifyContent: 'flex-start',
-    //alignItems: 'flex-start',
-    //width: '100%',
-    /* borderColor: 'red',
-    borderWidth: 4, */
   },
   chevron: {
-    //flexDirection: 'row',
     alignSelf: 'flex-start',
     marginLeft: 20,
-    /* borderColor: 'red',
-    borderWidth: 4, */
     width: '80%',
  },
   titlePage: {
@@ -127,9 +117,6 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     backgroundColor: '#F0F0F0',
-    /* borderColor: 'red',
-    borderWidth: 4, */
-    //height: '100%',
   },
   line: {
     paddingLeft: 10,
@@ -148,8 +135,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_400Regular',
   },
   messageContainer: {
-    /* borderColor: 'red',
-    borderWidth: 4, */
     alignItems: 'center',
     backgroundColor:'#99BD8F',
     marginTop: 10,

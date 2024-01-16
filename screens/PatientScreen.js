@@ -17,7 +17,6 @@ export default function App({ navigation, route }) {
   const [buttonColors, setButtonColors] = useState(patient && patient.disponibility ? ['#99BD8F', 'transparent'] : ['transparent', 'red']);
 
   const buttons = ['DISPONIBLE', 'INDISPONIBLE'];
-  //const buttonColors = patient && patient.disponibility ? ['#99BD8F', 'transparent'] : ['transparent', 'red'];
 
   useFocusEffect(
     React.useCallback(() => {
@@ -33,7 +32,7 @@ export default function App({ navigation, route }) {
 
 
   
-    // bouton disponible
+    //////////// bouton disponible :
   
     const handleButtonPress = (index) => {
       const newDisponibility = index === 0 ? true : false; 

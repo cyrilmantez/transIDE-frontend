@@ -144,6 +144,7 @@ export default function TourScreen({navigation}) {
     setSeeAll(!seeAll)
   }
 
+
 /////////////////////////////////////////////////  modal:
   
   
@@ -699,7 +700,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
     alignItems: 'flex-end',
   },
-  //CSS MENU
+
+  /////CSS MENU
 menuContainer: {
   flex: 1,
   alignItems: 'flex-start',
